@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AddPatientPage extends StatelessWidget {
   const AddPatientPage({super.key});
@@ -16,7 +17,7 @@ class AddPatientPage extends StatelessWidget {
 
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,

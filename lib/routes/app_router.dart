@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
+import '../features/news/add_news_page.dart'; 
 
 // ================= AUTH =================
 import '../features/auth/start_page.dart';
 import '../features/auth/login_page.dart';
+import '../features/auth/register_page.dart';
 
 // ================= HOME =================
 import '../features/home/home_patient_page.dart';
@@ -11,6 +13,10 @@ import '../features/home/home_healthcare_page.dart';
 // ================= PROFILE =================
 import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
+
+// ================= NEWS =================
+import '../features/news/news_page.dart';
+import '../features/news/add_news_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -29,6 +35,13 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const LoginPage(),
     ),
+
+    // ================= REGISTER  =================
+    GoRoute(
+    path: '/register',
+    builder: (context, state) =>
+        const RegisterPage(),
+  ),
 
     // ================= HOME PATIENT =================
     GoRoute(
@@ -56,6 +69,20 @@ final GoRouter appRouter = GoRouter(
       path: '/edit-profile',
       builder: (context, state) =>
           const EditProfilePage(),
+    ),
+
+    GoRoute(
+      path: '/news',
+      builder: (context, state) => const NewsPage(),
+    ),
+
+    GoRoute(
+      path: '/add-news',
+      builder: (context, state) => const TambahBeritaScreen(),
+    ),
+    GoRoute(
+      path: '/add-news',
+      builder: (context, state) => const TambahBeritaScreen(),
     ),
   ],
 );

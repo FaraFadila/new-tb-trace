@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({super.key});
@@ -24,6 +27,7 @@ class NewsPage extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 2),
       
       floatingActionButton: Container(
         height: 56,
@@ -45,7 +49,9 @@ class NewsPage extends StatelessWidget {
         ),
         child: FloatingActionButton(
           onPressed: () {
+            print("CCTV: Tombol + diklik!");
             // Aksi saat tombol + ditekan
+            context.push('/add-news');
           },
           backgroundColor: Colors.transparent,
           elevation: 0,

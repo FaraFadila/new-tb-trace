@@ -8,7 +8,7 @@ class PatientBottomNavbar extends StatelessWidget {
 
   const PatientBottomNavbar({
     super.key,
-    this.currentIndex = 0,
+    this.currentIndex = 0,a
   });
 
   @override
