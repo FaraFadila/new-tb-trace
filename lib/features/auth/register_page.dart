@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() =>
-      _LoginPageState();
+  State<RegisterPage> createState() =>
+      _RegisterPageState();
 }
 
-class _LoginPageState
-    extends State<LoginPage> {
+class _RegisterPageState
+    extends State<RegisterPage> {
   bool rememberMe = false;
+
   bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+
+  final TextEditingController
+      nameController =
+      TextEditingController();
 
   final TextEditingController
       emailController =
@@ -21,6 +27,10 @@ class _LoginPageState
 
   final TextEditingController
       passwordController =
+      TextEditingController();
+
+  final TextEditingController
+      confirmPasswordController =
       TextEditingController();
 
   @override
@@ -49,6 +59,7 @@ class _LoginPageState
                     fontSize: 25.sp,
                     fontWeight:
                         FontWeight.w700,
+
                     color:
                         const Color(
                       0xFF006D37,
@@ -70,7 +81,7 @@ class _LoginPageState
                   ),
                 ),
 
-                SizedBox(height: 40.h),
+                SizedBox(height: 38.h),
 
                 // ================= TITLE =================
                 Align(
@@ -78,13 +89,14 @@ class _LoginPageState
                       Alignment.centerLeft,
 
                   child: Text(
-                    "Login",
+                    "Buat Akun",
 
                     style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 32.sp,
+                      fontSize: 28.sp,
                       fontWeight:
                           FontWeight.w900,
+
                       color:
                           const Color(
                         0xFF006D37,
@@ -93,7 +105,60 @@ class _LoginPageState
                   ),
                 ),
 
-                SizedBox(height: 30.h),
+                SizedBox(height: 28.h),
+
+                // ================= NAME =================
+                TextField(
+                  controller:
+                      nameController,
+
+                  decoration:
+                      InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.person_outline,
+                      color:
+                          Color(
+                        0xFF006D37,
+                      ),
+                    ),
+
+                    hintText: "Name",
+
+                    hintStyle: TextStyle(
+                      fontSize: 15.sp,
+                      color:
+                          const Color(
+                        0xFF006D37,
+                      ),
+                    ),
+
+                    enabledBorder:
+                        UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(
+                        color:
+                            const Color(
+                          0xFF06A881,
+                        ).withOpacity(
+                          0.32,
+                        ),
+                      ),
+                    ),
+
+                    focusedBorder:
+                        const UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(
+                        color:
+                            Color(
+                          0xFF06A881,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 24.h),
 
                 // ================= EMAIL =================
                 TextField(
@@ -146,7 +211,7 @@ class _LoginPageState
                   ),
                 ),
 
-                SizedBox(height: 26.h),
+                SizedBox(height: 24.h),
 
                 // ================= PASSWORD =================
                 TextField(
@@ -188,6 +253,88 @@ class _LoginPageState
 
                       icon: Icon(
                         obscurePassword
+                            ? Icons
+                                .visibility_off_outlined
+                            : Icons
+                                .visibility_outlined,
+
+                        size: 18,
+
+                        color:
+                            const Color(
+                          0xFF006D37,
+                        ),
+                      ),
+                    ),
+
+                    enabledBorder:
+                        UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(
+                        color:
+                            const Color(
+                          0xFF06A881,
+                        ).withOpacity(
+                          0.32,
+                        ),
+                      ),
+                    ),
+
+                    focusedBorder:
+                        const UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(
+                        color:
+                            Color(
+                          0xFF06A881,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 24.h),
+
+                // ================= CONFIRM PASSWORD =================
+                TextField(
+                  controller:
+                      confirmPasswordController,
+
+                  obscureText:
+                      obscureConfirmPassword,
+
+                  decoration:
+                      InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color:
+                          Color(
+                        0xFF006D37,
+                      ),
+                    ),
+
+                    hintText:
+                        "Confirm Password",
+
+                    hintStyle: TextStyle(
+                      fontSize: 15.sp,
+                      color:
+                          const Color(
+                        0xFF006D37,
+                      ),
+                    ),
+
+                    suffixIcon:
+                        IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscureConfirmPassword =
+                              !obscureConfirmPassword;
+                        });
+                      },
+
+                      icon: Icon(
+                        obscureConfirmPassword
                             ? Icons
                                 .visibility_off_outlined
                             : Icons
@@ -308,7 +455,7 @@ class _LoginPageState
                   child: ElevatedButton(
                     onPressed: () {
                       context.go(
-                        '/home-patient',
+                        '/home-healthcare',
                       );
                     },
 
@@ -331,7 +478,7 @@ class _LoginPageState
                     ),
 
                     child: Text(
-                      "Login",
+                      "Sign Up",
 
                       style: TextStyle(
                         fontFamily:
@@ -347,9 +494,9 @@ class _LoginPageState
                   ),
                 ),
 
-                SizedBox(height: 18.h),
+                SizedBox(height: 16.h),
 
-                // ================= SIGN UP =================
+                // ================= LOGIN =================
                 Row(
                   mainAxisAlignment:
                       MainAxisAlignment
@@ -357,7 +504,7 @@ class _LoginPageState
 
                   children: [
                     Text(
-                      "Belum punya akun ? ",
+                      "Sudah punya akun ? ",
 
                       style: TextStyle(
                         fontSize: 12.sp,
@@ -370,11 +517,13 @@ class _LoginPageState
 
                     GestureDetector(
                       onTap: () {
-                        context.go('/register');
+                        context.go(
+                          '/login',
+                        );
                       },
 
                       child: Text(
-                        "Sign Up",
+                        "Login",
 
                         style: TextStyle(
                           fontSize: 12.sp,

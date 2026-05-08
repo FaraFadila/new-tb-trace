@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 // ================= AUTH =================
 import '../features/auth/start_page.dart';
 import '../features/auth/login_page.dart';
+import '../features/auth/register_page.dart';
 
 // ================= HOME =================
 import '../features/home/home_patient_page.dart';
@@ -29,6 +30,13 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const LoginPage(),
     ),
+
+    // ================= REGISTER  =================
+    GoRoute(
+    path: '/register',
+    builder: (context, state) =>
+        const RegisterPage(),
+  ),
 
     // ================= HOME PATIENT =================
     GoRoute(
