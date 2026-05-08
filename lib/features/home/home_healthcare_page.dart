@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeHealthcarePage extends StatelessWidget {
   const HomeHealthcarePage({super.key});
@@ -37,9 +38,15 @@ class HomeHealthcarePage extends StatelessWidget {
               icon: Iconsax.document_text_15,
               label: "News",
             ),
-            _navItem(
-              icon: Iconsax.profile_2user,
-              label: "Patients",
+            GestureDetector(
+              onTap: () {
+                context.go('/patient-management');
+              },
+
+              child: _navItem(
+                icon: Iconsax.profile_2user,
+                label: "Patients",
+              ),
             ),
           ],
         ),
