@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tb_trace/features/profile/edit_profile_page.dart';
+import 'edit_profile_page.dart';
 
 class ProfileSidebar extends StatefulWidget {
   const ProfileSidebar({super.key});
@@ -13,19 +13,21 @@ class ProfileSidebar extends StatefulWidget {
 class _ProfileSidebarState
     extends State<ProfileSidebar> {
   bool notificationOn = true;
-  bool darkModeOn = true;
+  bool darkModeOn = false;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       width: 300,
 
-      backgroundColor: Colors.white,
+      backgroundColor:
+          const Color(0xFFF8FCF9),
 
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          bottomRight: Radius.circular(50),
+          topRight: Radius.circular(32),
+          bottomRight:
+              Radius.circular(32),
         ),
       ),
 
@@ -39,21 +41,26 @@ class _ProfileSidebarState
 
             padding: const EdgeInsets.only(
               top: 60,
-              bottom: 30,
+              bottom: 32,
             ),
 
             decoration: const BoxDecoration(
               gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+
                 colors: [
                   Color(0xFF006D37),
-                  Color(0xFF00D36A),
+                  Color(0xFF27AE60),
                 ],
               ),
 
               borderRadius:
                   BorderRadius.only(
                 bottomRight:
-                    Radius.circular(50),
+                    Radius.circular(
+                  32,
+                ),
               ),
             ),
 
@@ -61,8 +68,8 @@ class _ProfileSidebarState
               children: [
                 // PROFILE IMAGE
                 Container(
-                  width: 88,
-                  height: 88,
+                  width: 92,
+                  height: 92,
 
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -81,49 +88,61 @@ class _ProfileSidebarState
                       fit: BoxFit.cover,
                     ),
 
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
-                        blurRadius: 10,
-                        color:
-                            Color.fromRGBO(
+                        blurRadius: 14,
+                        offset:
+                            const Offset(
                           0,
-                          0,
-                          0,
-                          0.1,
+                          6,
                         ),
-
-                        offset: Offset(0, 5),
+                        color: Colors.black
+                            .withOpacity(
+                          0.12,
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
 
+                // NAME
                 const Text(
                   "Larry Davis",
 
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight:
-                        FontWeight.w600,
+                        FontWeight.w700,
 
                     color: Colors.white,
                   ),
                 ),
 
-                const SizedBox(height: 14),
+                const SizedBox(height: 6),
 
-                // =========================
+                // EMAIL
+                const Text(
+                  "larrydavis@gmail.com",
+
+                  style: TextStyle(
+                    fontSize: 13,
+                    color:
+                        Color(0xFFE8F8F1),
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
                 // EDIT PROFILE BUTTON
-                // =========================
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
 
                       MaterialPageRoute(
-                        builder: (context) =>
+                        builder: (_) =>
                             const EditProfilePage(),
                       ),
                     );
@@ -132,8 +151,8 @@ class _ProfileSidebarState
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: 18,
+                      vertical: 10,
                     ),
 
                     decoration: BoxDecoration(
@@ -141,8 +160,19 @@ class _ProfileSidebarState
 
                       borderRadius:
                           BorderRadius.circular(
-                        20,
+                        30,
                       ),
+
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 10,
+                          color: Colors
+                              .black
+                              .withOpacity(
+                            0.08,
+                          ),
+                        ),
+                      ],
                     ),
 
                     child: const Row(
@@ -154,23 +184,28 @@ class _ProfileSidebarState
                           "Edit Profile",
 
                           style: TextStyle(
-                            fontSize: 12,
-
+                            fontSize: 13,
                             fontWeight:
                                 FontWeight
-                                    .w500,
+                                    .w600,
 
                             color:
-                                Colors.black,
+                                Color(
+                              0xFF171D17,
+                            ),
                           ),
                         ),
 
-                        SizedBox(width: 6),
+                        SizedBox(width: 8),
 
                         Icon(
                           Icons
                               .arrow_forward_ios,
-                          size: 12,
+                          size: 13,
+                          color:
+                              Color(
+                            0xFF006D37,
+                          ),
                         ),
                       ],
                     ),
@@ -186,7 +221,9 @@ class _ProfileSidebarState
           Expanded(
             child: SingleChildScrollView(
               padding:
-                  const EdgeInsets.all(20),
+                  const EdgeInsets.all(
+                20,
+              ),
 
               child: Column(
                 crossAxisAlignment:
@@ -211,11 +248,13 @@ class _ProfileSidebarState
                   ),
 
                   _locationTile(
-                    title: "Zona Rawan",
+                    title:
+                        "Zona Rawan",
+
                     value: "Wonokromo",
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
                   // =========================
                   // CONTENT
@@ -237,11 +276,15 @@ class _ProfileSidebarState
                     icon:
                         Icons.notifications,
 
-                    title: "Notification",
+                    title:
+                        "Notification",
 
-                    value: notificationOn,
+                    value:
+                        notificationOn,
 
-                    onChanged: (value) {
+                    onChanged: (
+                      value,
+                    ) {
                       setState(() {
                         notificationOn =
                             value;
@@ -249,7 +292,7 @@ class _ProfileSidebarState
                     },
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
                   // =========================
                   // PREFERENCES
@@ -261,22 +304,25 @@ class _ProfileSidebarState
                   const SizedBox(height: 14),
 
                   _menuTile(
-                    icon: Icons.language,
+                    icon:
+                        Icons.language,
 
                     title: "Language",
 
-                    trailing: "In",
+                    trailing: "EN",
                   ),
 
                   _switchTile(
-                    icon:
-                        Icons.dark_mode_outlined,
+                    icon: Icons
+                        .dark_mode_outlined,
 
-                    title: "Darkmode",
+                    title: "Dark Mode",
 
                     value: darkModeOn,
 
-                    onChanged: (value) {
+                    onChanged: (
+                      value,
+                    ) {
                       setState(() {
                         darkModeOn =
                             value;
@@ -284,11 +330,67 @@ class _ProfileSidebarState
                     },
                   ),
 
-                  _menuTile(
-                    icon: Icons.logout,
+                  const SizedBox(height: 30),
 
-                    title: "Log out",
+                  // =========================
+                  // LOGOUT
+                  // =========================
+                  GestureDetector(
+                    onTap: () {},
+
+                    child: Container(
+                      width: double.infinity,
+
+                      padding:
+                          const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 16,
+                      ),
+
+                      decoration:
+                          BoxDecoration(
+                        color:
+                            const Color(
+                          0xFFFFF1F1,
+                        ),
+
+                        borderRadius:
+                            BorderRadius.circular(
+                          16,
+                        ),
+                      ),
+
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.logout,
+                            color: Color(
+                              0xFFD32F2F,
+                            ),
+                          ),
+
+                          SizedBox(width: 14),
+
+                          Text(
+                            "Log Out",
+
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight:
+                                  FontWeight
+                                      .w600,
+
+                              color: Color(
+                                0xFFD32F2F,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -308,17 +410,25 @@ class _ProfileSidebarState
       padding:
           const EdgeInsets.symmetric(
         horizontal: 14,
-        vertical: 6,
+        vertical: 8,
       ),
 
-      color: const Color(0xFFF6F6F6),
+      decoration: BoxDecoration(
+        color: const Color(
+          0xFFEFF6EC,
+        ),
+
+        borderRadius:
+            BorderRadius.circular(10),
+      ),
 
       child: Text(
         text,
 
         style: const TextStyle(
           fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF53615C),
         ),
       ),
     );
@@ -331,9 +441,33 @@ class _ProfileSidebarState
     required String title,
     required String value,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 12,
+      ),
+
+      padding:
+          const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 14,
+      ),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(16),
+
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            color:
+                Colors.black.withOpacity(
+              0.03,
+            ),
+          ),
+        ],
       ),
 
       child: Row(
@@ -343,9 +477,9 @@ class _ProfileSidebarState
               title,
 
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight:
-                    FontWeight.w500,
+                    FontWeight.w600,
               ),
             ),
           ),
@@ -355,15 +489,20 @@ class _ProfileSidebarState
 
             style: const TextStyle(
               fontSize: 13,
-              color: Colors.black54,
+              color: Color(
+                0xFF53615C,
+              ),
             ),
           ),
 
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
 
           const Icon(
             Icons.arrow_forward_ios,
             size: 14,
+            color: Color(
+              0xFF006D37,
+            ),
           ),
         ],
       ),
@@ -378,14 +517,43 @@ class _ProfileSidebarState
     required String title,
     String? trailing,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 12,
+      ),
+
+      padding:
+          const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 14,
+      ),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(16),
+
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            color:
+                Colors.black.withOpacity(
+              0.03,
+            ),
+          ),
+        ],
       ),
 
       child: Row(
         children: [
-          Icon(icon, size: 22),
+          Icon(
+            icon,
+            size: 22,
+            color:
+                const Color(0xFF006D37),
+          ),
 
           const SizedBox(width: 14),
 
@@ -396,7 +564,7 @@ class _ProfileSidebarState
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight:
-                    FontWeight.w500,
+                    FontWeight.w600,
               ),
             ),
           ),
@@ -407,6 +575,9 @@ class _ProfileSidebarState
 
               style: const TextStyle(
                 fontSize: 13,
+                color: Color(
+                  0xFF53615C,
+                ),
               ),
             ),
         ],
@@ -424,14 +595,43 @@ class _ProfileSidebarState
     required Function(bool)
         onChanged,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 12,
+      ),
+
+      padding:
+          const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 10,
+      ),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+
+        borderRadius:
+            BorderRadius.circular(16),
+
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            color:
+                Colors.black.withOpacity(
+              0.03,
+            ),
+          ),
+        ],
       ),
 
       child: Row(
         children: [
-          Icon(icon, size: 22),
+          Icon(
+            icon,
+            size: 22,
+            color:
+                const Color(0xFF006D37),
+          ),
 
           const SizedBox(width: 14),
 
@@ -442,7 +642,7 @@ class _ProfileSidebarState
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight:
-                    FontWeight.w500,
+                    FontWeight.w600,
               ),
             ),
           ),
@@ -453,7 +653,9 @@ class _ProfileSidebarState
             activeColor: Colors.white,
 
             activeTrackColor:
-                const Color(0xFF00C853),
+                const Color(
+              0xFF27AE60,
+            ),
 
             onChanged: onChanged,
           ),
