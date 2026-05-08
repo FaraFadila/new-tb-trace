@@ -13,6 +13,9 @@ import '../features/home/home_healthcare_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
 
+// ================= PATIENT =================
+import '../features/patient/report_symptom_page.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
 
@@ -64,6 +67,13 @@ final GoRouter appRouter = GoRouter(
       path: '/edit-profile',
       builder: (context, state) =>
           const EditProfilePage(),
+    ),
+
+    // ================= REPORT SYMPTOM =================
+    GoRoute(
+    path: '/report-symptom',
+    builder: (context, state) =>
+        const ReportSymptomPage(),
     ),
   ],
 );
