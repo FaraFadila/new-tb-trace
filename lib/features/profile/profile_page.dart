@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/widgets/patient_bottom_navbar.dart';
 import 'edit_profile_page.dart';
 import 'profile_sidebar.dart';
 
@@ -55,9 +56,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
 
-            // =========================
-            // PROFILE IMAGE
-            // =========================
+            // ================= PROFILE IMAGE =================
             Container(
               width: 130,
               height: 130,
@@ -66,9 +65,7 @@ class ProfilePage extends StatelessWidget {
                 shape: BoxShape.circle,
 
                 border: Border.all(
-                  color: const Color(
-                    0xFF006D37,
-                  ),
+                  color: const Color(0xFF006D37),
                   width: 3,
                 ),
 
@@ -76,20 +73,14 @@ class ProfilePage extends StatelessWidget {
                   image: AssetImage(
                     "assets/images/profile.png",
                   ),
-
                   fit: BoxFit.cover,
                 ),
 
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 14,
-                    color: Colors.black
-                        .withOpacity(0.08),
-
-                    offset: const Offset(
-                      0,
-                      6,
-                    ),
+                    color: Colors.black.withOpacity(0.08),
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
@@ -97,17 +88,13 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // =========================
-            // NAME
-            // =========================
+            // ================= NAME =================
             const Text(
               "Larry Davis",
 
               style: TextStyle(
                 fontSize: 26,
-                fontWeight:
-                    FontWeight.w700,
-
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF171D17),
               ),
             ),
@@ -125,9 +112,7 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // =========================
-            // EDIT BUTTON
-            // =========================
+            // ================= EDIT BUTTON =================
             SizedBox(
               width: double.infinity,
               height: 54,
@@ -144,21 +129,15 @@ class ProfilePage extends StatelessWidget {
                   );
                 },
 
-                style:
-                    ElevatedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   elevation: 0,
 
                   backgroundColor:
-                      const Color(
-                    0xFF006D37,
-                  ),
+                      const Color(0xFF006D37),
 
-                  shape:
-                      RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(
-                      14,
-                    ),
+                        BorderRadius.circular(14),
                   ),
                 ),
 
@@ -167,9 +146,7 @@ class ProfilePage extends StatelessWidget {
 
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight:
-                        FontWeight.w600,
-
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
@@ -178,9 +155,7 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            // =========================
-            // INFO CARD
-            // =========================
+            // ================= INFO CARD =================
             _infoCard(
               icon: Icons.location_on_outlined,
               title: "Current Location",
@@ -207,9 +182,7 @@ class ProfilePage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // =========================
-            // LOGOUT BUTTON
-            // =========================
+            // ================= LOGOUT BUTTON =================
             SizedBox(
               width: double.infinity,
               height: 54,
@@ -217,20 +190,14 @@ class ProfilePage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () {},
 
-                style:
-                    OutlinedButton.styleFrom(
+                style: OutlinedButton.styleFrom(
                   side: const BorderSide(
-                    color: Color(
-                      0xFF006D37,
-                    ),
+                    color: Color(0xFF006D37),
                   ),
 
-                  shape:
-                      RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(
-                      14,
-                    ),
+                        BorderRadius.circular(14),
                   ),
                 ),
 
@@ -239,9 +206,7 @@ class ProfilePage extends StatelessWidget {
 
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight:
-                        FontWeight.w600,
-
+                    fontWeight: FontWeight.w600,
                     color: Color(0xFF006D37),
                   ),
                 ),
@@ -252,12 +217,16 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ),
+
+      // ================= BOTTOM NAVBAR =================
+      bottomNavigationBar:
+          const PatientBottomNavbar(
+        currentIndex: 3,
+      ),
     );
   }
 
-  // =========================
-  // INFO CARD
-  // =========================
+  // ================= INFO CARD =================
   Widget _infoCard({
     required IconData icon,
     required String title,
@@ -268,9 +237,7 @@ class ProfilePage extends StatelessWidget {
         bottom: 16,
       ),
 
-      padding: const EdgeInsets.all(
-        18,
-      ),
+      padding: const EdgeInsets.all(18),
 
       decoration: BoxDecoration(
         color: Colors.white,
@@ -279,9 +246,7 @@ class ProfilePage extends StatelessWidget {
             BorderRadius.circular(16),
 
         border: Border.all(
-          color: const Color(
-            0xFFE8F8F1,
-          ),
+          color: const Color(0xFFE8F8F1),
         ),
 
         boxShadow: [
@@ -289,9 +254,7 @@ class ProfilePage extends StatelessWidget {
             blurRadius: 10,
             offset: const Offset(0, 4),
             color:
-                Colors.black.withOpacity(
-              0.03,
-            ),
+                Colors.black.withOpacity(0.03),
           ),
         ],
       ),
@@ -308,16 +271,12 @@ class ProfilePage extends StatelessWidget {
               ).withOpacity(0.1),
 
               borderRadius:
-                  BorderRadius.circular(
-                12,
-              ),
+                  BorderRadius.circular(12),
             ),
 
             child: Icon(
               icon,
-              color: const Color(
-                0xFF006D37,
-              ),
+              color: const Color(0xFF006D37),
             ),
           ),
 
@@ -334,9 +293,7 @@ class ProfilePage extends StatelessWidget {
 
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(
-                      0xFF53615C,
-                    ),
+                    color: Color(0xFF53615C),
                   ),
                 ),
 
@@ -347,12 +304,8 @@ class ProfilePage extends StatelessWidget {
 
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight:
-                        FontWeight.w600,
-
-                    color: Color(
-                      0xFF171D17,
-                    ),
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF171D17),
                   ),
                 ),
               ],
