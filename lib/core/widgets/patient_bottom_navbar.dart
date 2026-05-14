@@ -15,7 +15,6 @@ class PatientBottomNavbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-
       child: Container(
         height: 80.h,
 
@@ -88,35 +87,31 @@ class PatientBottomNavbar extends StatelessWidget {
     required int index,
     required String route,
   }) {
-    final bool isActive =
-        currentIndex == index;
+    final bool isActive = currentIndex == index;
 
     return Expanded(
       child: InkWell(
         onTap: () {
-          context.go(route);
+          // Prevent navigating to same page repeatedly
+          if (!isActive) {
+            context.go(route);
+          }
         },
 
         child: SizedBox(
           height: double.infinity,
 
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
               Icon(
                 icon,
                 size: 20.sp,
 
-                color:
-                    isActive
-                        ? const Color(
-                            0xFF059669,
-                          )
-                        : const Color(
-                            0xFF94A3B8,
-                          ),
+                color: isActive
+                    ? const Color(0xFF059669)
+                    : const Color(0xFF94A3B8),
               ),
 
               SizedBox(height: 6.h),
@@ -127,18 +122,11 @@ class PatientBottomNavbar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10.sp,
                   letterSpacing: 1,
+                  fontWeight: FontWeight.w600,
 
-                  fontWeight:
-                      FontWeight.w600,
-
-                  color:
-                      isActive
-                          ? const Color(
-                              0xFF059669,
-                            )
-                          : const Color(
-                              0xFF94A3B8,
-                            ),
+                  color: isActive
+                      ? const Color(0xFF059669)
+                      : const Color(0xFF94A3B8),
                 ),
               ),
 
@@ -149,14 +137,11 @@ class PatientBottomNavbar extends StatelessWidget {
                   width: 24.w,
                   height: 4.h,
 
-                  decoration:
-                      BoxDecoration(
-                    color: const Color(
-                      0xFF10B981,
-                    ).withOpacity(0.2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10B981)
+                        .withOpacity(0.2),
 
-                    borderRadius:
-                        BorderRadius.circular(
+                    borderRadius: BorderRadius.circular(
                       999.r,
                     ),
                   ),

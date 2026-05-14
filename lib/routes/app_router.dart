@@ -15,20 +15,15 @@ import '../features/map/patient_map_page.dart';
 import '../features/news/news_page.dart';
 import '../features/news/news_patient.dart';
 import '../features/news/patient_news_detail_page.dart';
+import '../features/news/add_news_page.dart';
 
 // ================= PROFILE =================
 import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
 
-<<<<<<< Updated upstream
-// ================= NEWS =================
-import '../features/news/news_page.dart';
-import '../features/news/add_news_page.dart';
 // ================= PATIENT =================
 import '../features/patient/report_symptom_page.dart';
 
-=======
->>>>>>> Stashed changes
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
@@ -81,6 +76,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const PatientNewsDetailPage(),
     ),
 
+    // ================= ADD NEWS =================
+    GoRoute(
+      path: '/add-news',
+      builder: (context, state) => const TambahBeritaScreen(),
+    ),
+
     // ================= PROFILE =================
     GoRoute(
       path: '/profile',
@@ -92,29 +93,11 @@ final GoRouter appRouter = GoRouter(
       path: '/edit-profile',
       builder: (context, state) => const EditProfilePage(),
     ),
-<<<<<<< Updated upstream
 
-    GoRoute(
-      path: '/news',
-      builder: (context, state) => const NewsPage(),
-    ),
-
-    GoRoute(
-      path: '/add-news',
-      builder: (context, state) => const TambahBeritaScreen(),
-    ),
-    GoRoute(
-      path: '/add-news',
-      builder: (context, state) => const TambahBeritaScreen(),
-    ),
     // ================= REPORT SYMPTOM =================
     GoRoute(
       path: '/report-symptom',
-      builder: (context, state) =>
-          const ReportSymptomPage(),
-      ),
-  ]
-=======
+      builder: (context, state) => const ReportSymptomPage(),
+    ),
   ],
->>>>>>> Stashed changes
 );
