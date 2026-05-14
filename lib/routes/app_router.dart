@@ -17,8 +17,13 @@ import '../features/profile/edit_profile_page.dart';
 // ================= NEWS =================
 import '../features/news/news_page.dart';
 import '../features/news/add_news_page.dart';
+
 // ================= PATIENT =================
 import '../features/patient/report_symptom_page.dart';
+
+// ================= MAP =================
+import '../features/map/map_page.dart';
+
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -92,5 +97,11 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const ReportSymptomPage(),
       ),
-  ]
+      
+      GoRoute(
+      path: '/map',
+      builder: (context, state) => const MapPage(),
+    ),
+
+  ],
 );
