@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeHealthcarePage extends StatelessWidget {
   const HomeHealthcarePage({super.key});
@@ -12,8 +13,48 @@ class HomeHealthcarePage extends StatelessWidget {
       backgroundColor: const Color(0xFFF4FBF1),
 
       // ================= BOTTOM NAVBAR =================
-      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 0),
+     // bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 0),
       
+      bottomNavigationBar: Container(
+        height: 70.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(
+              color: Color(0xFFE2E8F0),
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _navItem(
+              icon: Iconsax.home_15,
+              label: "Home",
+              active: true,
+            ),
+            _navItem(
+              icon: Iconsax.map_15,
+              label: "Map",
+            ),
+            _navItem(
+              icon: Iconsax.document_text_15,
+              label: "News",
+            ),
+            GestureDetector(
+              onTap: () {
+                context.go('/patient-management');
+              },
+
+              child: _navItem(
+                icon: Iconsax.profile_2user,
+                label: "Patients",
+              ),
+            ),
+          ],
+        ),
+      ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
