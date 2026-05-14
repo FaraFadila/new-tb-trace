@@ -9,6 +9,7 @@ import '../features/home/home_patient_page.dart';
 import '../features/home/home_healthcare_page.dart';
 
 // ================= MAP =================
+import '../features/map/map_page.dart';
 import '../features/map/patient_map_page.dart';
 
 // ================= NEWS =================
@@ -22,82 +23,110 @@ import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
 
 // ================= PATIENT =================
+import '../features/patient/patient_page.dart';
 import '../features/patient/report_symptom_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+
   routes: [
 
     // ================= START =================
     GoRoute(
       path: '/',
-      builder: (context, state) => const StartPage(),
+      builder: (context, state) =>
+          const StartPage(),
     ),
 
     // ================= LOGIN =================
     GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginPage(),
+      builder: (context, state) =>
+          const LoginPage(),
     ),
 
     // ================= HOME PATIENT =================
     GoRoute(
       path: '/home-patient',
-      builder: (context, state) => const HomePatientPage(),
+      builder: (context, state) =>
+          const HomePatientPage(),
     ),
 
     // ================= HOME HEALTHCARE =================
     GoRoute(
       path: '/home-healthcare',
-      builder: (context, state) => const HomeHealthcarePage(),
+      builder: (context, state) =>
+          const HomeHealthcarePage(),
     ),
 
-    // ================= PATIENT MAP =================
+    // ================= MAP HEALTHCARE =================
+    GoRoute(
+      path: '/map',
+      builder: (context, state) =>
+          const MapPage(),
+    ),
+
+    // ================= MAP PATIENT =================
     GoRoute(
       path: '/patient-map',
-      builder: (context, state) => const PatientMapPage(),
+      builder: (context, state) =>
+          const PatientMapPage(),
     ),
 
     // ================= NEWS HEALTHCARE =================
     GoRoute(
       path: '/news-healthcare',
-      builder: (context, state) => const NewsPage(),
+      builder: (context, state) =>
+          const NewsPage(),
     ),
 
     // ================= NEWS PATIENT =================
     GoRoute(
       path: '/news-patient',
-      builder: (context, state) => const NewsPatientPage(),
+      builder: (context, state) =>
+          const NewsPatientPage(),
     ),
 
     // ================= NEWS DETAIL =================
     GoRoute(
       path: '/patient-news-detail',
-      builder: (context, state) => const PatientNewsDetailPage(),
+      builder: (context, state) =>
+          const PatientNewsDetailPage(),
     ),
 
     // ================= ADD NEWS =================
     GoRoute(
       path: '/add-news',
-      builder: (context, state) => const TambahBeritaScreen(),
+      builder: (context, state) =>
+          const TambahBeritaScreen(),
     ),
 
     // ================= PROFILE =================
     GoRoute(
       path: '/profile',
-      builder: (context, state) => const ProfilePage(),
+      builder: (context, state) =>
+          const ProfilePage(),
     ),
 
     // ================= EDIT PROFILE =================
     GoRoute(
       path: '/edit-profile',
-      builder: (context, state) => const EditProfilePage(),
+      builder: (context, state) =>
+          const EditProfilePage(),
+    ),
+
+    // ================= PATIENT MANAGEMENT =================
+    GoRoute(
+      path: '/patients',
+      builder: (context, state) =>
+          const PatientPage(),
     ),
 
     // ================= REPORT SYMPTOM =================
     GoRoute(
       path: '/report-symptom',
-      builder: (context, state) => const ReportSymptomPage(),
+      builder: (context, state) =>
+          const ReportSymptomPage(),
     ),
   ],
 );
