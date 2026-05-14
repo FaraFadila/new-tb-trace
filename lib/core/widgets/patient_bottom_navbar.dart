@@ -1,127 +1,170 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
+import 'package:go_router/go_router.dart';
 
 class PatientBottomNavbar extends StatelessWidget {
   final int currentIndex;
 
   const PatientBottomNavbar({
     super.key,
-    this.currentIndex = 0,a
+    this.currentIndex = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80.h,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+    return SafeArea(
+      top: false,
 
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16.r),
-          topRight: Radius.circular(16.r),
+      child: Container(
+        height: 80.h,
+
+        decoration: BoxDecoration(
+          color: Colors.white,
+
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.r),
+            topRight: Radius.circular(16.r),
+          ),
+
+          border: const Border(
+            top: BorderSide(
+              color: Color(0xFFE8F8F1),
+            ),
+          ),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 24,
+              offset: const Offset(0, -4),
+            ),
+          ],
         ),
 
-        border: const Border(
-          top: BorderSide(
-            color: Color(0xFFE8F8F1),
-          ),
+        child: Row(
+          children: [
+            _navButton(
+              context,
+              icon: Iconsax.home_15,
+              label: "HOME",
+              index: 0,
+              route: '/home-patient',
+            ),
+
+            _navButton(
+              context,
+              icon: Iconsax.map_15,
+              label: "MAP",
+              index: 1,
+              route: '/patient-map',
+            ),
+
+            _navButton(
+              context,
+              icon: Iconsax.document_text_15,
+              label: "NEWS",
+              index: 2,
+              route: '/news-patient',
+            ),
+
+            _navButton(
+              context,
+              icon: Iconsax.profile_circle,
+              label: "PROFILE",
+              index: 3,
+              route: '/profile',
+            ),
+          ],
         ),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-
-      child: Row(
-        mainAxisAlignment:
-            MainAxisAlignment.spaceAround,
-        children: [
-          _navItem(
-            icon: Iconsax.home_15,
-            label: "HOME",
-            index: 0,
-          ),
-
-          _navItem(
-            icon: Iconsax.map_15,
-            label: "MAP",
-            index: 1,
-          ),
-
-          _navItem(
-            icon: Iconsax.document_text_15,
-            label: "NEWS",
-            index: 2,
-          ),
-
-          _navItem(
-            icon: Iconsax.profile_circle,
-            label: "PROFILE",
-            index: 3,
-          ),
-        ],
       ),
     );
   }
 
-  Widget _navItem({
+  Widget _navButton(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required int index,
+    required String route,
   }) {
     final bool isActive =
         currentIndex == index;
 
-    return Column(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 20.sp,
-          color: isActive
-              ? const Color(0xFF059669)
-              : const Color(0xFF94A3B8),
-        ),
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          context.go(route);
+        },
 
-        SizedBox(height: 6.h),
+        child: SizedBox(
+          height: double.infinity,
 
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10.sp,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w600,
-            color: isActive
-                ? const Color(0xFF059669)
-                : const Color(0xFF94A3B8),
-          ),
-        ),
+          child: Column(
+            mainAxisAlignment:
+                MainAxisAlignment.center,
 
-        SizedBox(height: 4.h),
+            children: [
+              Icon(
+                icon,
+                size: 20.sp,
 
-        if (isActive)
-          Container(
-            width: 24.w,
-            height: 4.h,
-            decoration: BoxDecoration(
-              color: const Color(
-                0xFF10B981,
-              ).withOpacity(0.2),
-
-              borderRadius:
-                  BorderRadius.circular(
-                999.r,
+                color:
+                    isActive
+                        ? const Color(
+                            0xFF059669,
+                          )
+                        : const Color(
+                            0xFF94A3B8,
+                          ),
               ),
-            ),
+
+              SizedBox(height: 6.h),
+
+              Text(
+                label,
+
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  letterSpacing: 1,
+
+                  fontWeight:
+                      FontWeight.w600,
+
+                  color:
+                      isActive
+                          ? const Color(
+                              0xFF059669,
+                            )
+                          : const Color(
+                              0xFF94A3B8,
+                            ),
+                ),
+              ),
+
+              SizedBox(height: 4.h),
+
+              if (isActive)
+                Container(
+                  width: 24.w,
+                  height: 4.h,
+
+                  decoration:
+                      BoxDecoration(
+                    color: const Color(
+                      0xFF10B981,
+                    ).withOpacity(0.2),
+
+                    borderRadius:
+                        BorderRadius.circular(
+                      999.r,
+                    ),
+                  ),
+                ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }
