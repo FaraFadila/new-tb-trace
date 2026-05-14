@@ -17,6 +17,8 @@ import '../features/profile/edit_profile_page.dart';
 // ================= NEWS =================
 import '../features/news/news_page.dart';
 import '../features/news/add_news_page.dart';
+// ================= PATIENT =================
+import '../features/patient/report_symptom_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -41,7 +43,7 @@ final GoRouter appRouter = GoRouter(
     path: '/register',
     builder: (context, state) =>
         const RegisterPage(),
-  ),
+    ),
 
     // ================= HOME PATIENT =================
     GoRoute(
@@ -84,5 +86,11 @@ final GoRouter appRouter = GoRouter(
       path: '/add-news',
       builder: (context, state) => const TambahBeritaScreen(),
     ),
-  ],
+    // ================= REPORT SYMPTOM =================
+    GoRoute(
+      path: '/report-symptom',
+      builder: (context, state) =>
+          const ReportSymptomPage(),
+      ),
+  ]
 );
