@@ -159,7 +159,7 @@ class NewsPage extends StatelessWidget {
     return Column(
       children: [
         _buildNewsCard(
-          tag: 'Research',
+          tag: 'Pencegahan',
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
           description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
           footerContent: Row(
@@ -174,43 +174,35 @@ class NewsPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         _buildNewsCard(
-          tag: 'Prevention',
-          showVerifiedBadge: true,
-          title: 'Updated Guidelines for Contact Tracing in High-Density Areas',
-          description: 'WHO releases revised guidelines emphasizing digital contact tracing tools and community health worker engagement in urban settings.',
+          tag: 'Nutrisi',
+          title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
+          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
           footerContent: Row(
-            children: [
-              const Icon(Icons.person_outline, size: 14, color: Color(0xFF3D4A3F)),
-              const SizedBox(width: 4),
-              const Expanded(child: Text('Dr. Sarah Chen,\nWHO', style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)))),
-              Container(width: 1, height: 24, color: const Color(0xFFBCCABC)),
-              const SizedBox(width: 8),
-              const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF3D4A3F)),
-              const SizedBox(width: 4),
-              const Expanded(child: Text('WHO\nOffice', style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)))),
-              const Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
+            children: const [
+              Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
+              SizedBox(width: 4),
+              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Spacer(),
+              Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
           ),
         ),
         const SizedBox(height: 16),
         _buildNewsCard(
-          tag: 'Treatment',
-          title: 'Managing Liver Toxicity in First-Line Anti-TB Regimens',
-          description: 'A practical guide for clinicians on monitoring liver function tests and adjusting dosages for patients experiencing drug-induced...',
+          tag: 'Pencegahan',
+          title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
+          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
           footerContent: Row(
-            children: [
-              const Icon(Icons.book_outlined, size: 14, color: Color(0xFF3D4A3F)),
-              const SizedBox(width: 4),
-              const Expanded(child: Text('Medical Journal\nArchive', style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)))),
-              Container(width: 1, height: 24, color: const Color(0xFFBCCABC)),
-              const SizedBox(width: 8),
-              const Icon(Icons.local_hospital_outlined, size: 14, color: Color(0xFF3D4A3F)),
-              const SizedBox(width: 4),
-              const Expanded(child: Text('Puskesmas\nGambir', style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)))),
+            children: const [
+              Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
+              SizedBox(width: 4),
+              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Spacer(),
+              Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
           ),
         ),
-        const SizedBox(height: 100), 
+        const SizedBox(height: 16),
       ],
     );
   }
