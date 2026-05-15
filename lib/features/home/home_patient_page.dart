@@ -13,7 +13,9 @@ class HomePatientPage extends StatelessWidget {
 
       // ================= BOTTOM NAV =================
       bottomNavigationBar:
-      const PatientBottomNavbar(),
+      const PatientBottomNavbar(
+        currentIndex: 0,
+      ),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -329,12 +331,13 @@ class HomePatientPage extends StatelessWidget {
               SizedBox(height: 16.h),
 
               SizedBox(
-                height: 240.h,
+                height: 260.h,
                 child: ListView(
                   scrollDirection:
                       Axis.horizontal,
                   children: [
                     _articleCard(
+                      imagePath: "assets/images/tbc1.png",
                       category: "Pencegahan",
                       title:
                           "Atasi Stigma Pasien TBC",
@@ -344,6 +347,7 @@ class HomePatientPage extends StatelessWidget {
                     SizedBox(width: 16.w),
 
                     _articleCard(
+                      imagePath: "assets/images/tbc1.png",
                       category: "Kesehatan",
                       title:
                           "Tips Menjaga Imunitas",
@@ -368,8 +372,8 @@ class HomePatientPage extends StatelessWidget {
     required bool isPrimary,
   }) {
     return Container(
-      height: 140.h,
-      padding: EdgeInsets.all(16.w),
+      //height: 140.h,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
       decoration: BoxDecoration(
         gradient: isPrimary
             ? const LinearGradient(
@@ -440,6 +444,7 @@ class HomePatientPage extends StatelessWidget {
 
   // ================= ARTICLE CARD =================
   Widget _articleCard({
+    required String imagePath,
     required String category,
     required String title,
     required String author,
@@ -470,11 +475,12 @@ class HomePatientPage extends StatelessWidget {
                 ),
               ),
             ),
-            child: const Center(
-              child: Icon(
-                Icons.image,
-                size: 40,
-                color: Colors.grey,
+            child: Center(
+              child: Image.asset(
+                imagePath , 
+                height: 120.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
           ),

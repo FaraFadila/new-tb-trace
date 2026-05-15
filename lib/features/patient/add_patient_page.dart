@@ -240,7 +240,9 @@ class AddPatientPage extends StatelessWidget {
               height: 52,
 
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/add-patient');
+                },
 
                 style:
                     ElevatedButton.styleFrom(

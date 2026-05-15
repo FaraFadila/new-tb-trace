@@ -24,6 +24,8 @@ import '../features/profile/edit_profile_page.dart';
 
 // ================= PATIENT =================
 import '../features/patient/patient_page.dart';
+import '../features/patient/patient_management_page.dart';
+import '../features/patient/add_patient_page.dart';
 import '../features/patient/report_symptom_page.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -101,6 +103,27 @@ final GoRouter appRouter = GoRouter(
           const TambahBeritaScreen(),
     ),
 
+    // ================= PATIENT MANAGEMENT =================
+    GoRoute(
+      path: '/patient-management',
+      builder: (context, state) =>
+          const PatientManagementPage(),
+    ),
+
+    // ================= ADD PATIENT =================
+    GoRoute(
+      path: '/add-patient',
+      builder: (context, state) =>
+          const AddPatientPage(),
+    ),
+
+    // ================= PATIENT PAGE =================
+    GoRoute(
+      path: '/patients',
+      builder: (context, state) =>
+          const PatientPage(),
+    ),
+
     // ================= PROFILE =================
     GoRoute(
       path: '/profile',
@@ -113,13 +136,6 @@ final GoRouter appRouter = GoRouter(
       path: '/edit-profile',
       builder: (context, state) =>
           const EditProfilePage(),
-    ),
-
-    // ================= PATIENT MANAGEMENT =================
-    GoRoute(
-      path: '/patients',
-      builder: (context, state) =>
-          const PatientPage(),
     ),
 
     // ================= REPORT SYMPTOM =================

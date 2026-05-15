@@ -52,3 +52,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  #assets
+  assets:
+    - assets/images/start_illustration.png
+    - assets/images/tbc1.png
+

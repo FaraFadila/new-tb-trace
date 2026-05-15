@@ -77,6 +77,7 @@ class HealthcareBottomNavbar extends StatelessWidget {
           context.go(routePath);
         }
       },
+      
       behavior: HitTestBehavior.opaque, // Pastikan seluruh area teks & ikon bisa diklik
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

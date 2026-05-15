@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeHealthcarePage extends StatelessWidget {
   const HomeHealthcarePage({super.key});
@@ -12,8 +13,10 @@ class HomeHealthcarePage extends StatelessWidget {
       backgroundColor: const Color(0xFFF4FBF1),
 
       // ================= BOTTOM NAVBAR =================
-      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 0),
-      
+        bottomNavigationBar:
+          const HealthcareBottomNavbar(
+        currentIndex: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -43,7 +46,7 @@ class HomeHealthcarePage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Jade West",
+                            "Dr. Sarah",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -54,12 +57,19 @@ class HomeHealthcarePage extends StatelessWidget {
 
                       SizedBox(width: 10.w),
 
-                      CircleAvatar(
-                        radius: 22.r,
-                        backgroundColor: const Color(0xFFEEF2F3),
-                        child: Icon(
-                          Icons.person,
-                          size: 24.sp,
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/profile');
+                        },
+
+                        child: CircleAvatar(
+                          radius: 22.r,
+                          backgroundColor: const Color(0xFFEEF2F3),
+
+                          child: Icon(
+                            Icons.person,
+                            size: 24.sp,
+                          ),
                         ),
                       ),
                     ],
