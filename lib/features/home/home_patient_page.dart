@@ -52,7 +52,7 @@ class HomePatientPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Jade West",
+                            "Sarah",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight:
