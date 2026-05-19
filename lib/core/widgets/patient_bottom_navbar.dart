@@ -6,10 +6,7 @@ import 'package:go_router/go_router.dart';
 class PatientBottomNavbar extends StatelessWidget {
   final int currentIndex;
 
-  const PatientBottomNavbar({
-    super.key,
-    this.currentIndex = 0,
-  });
+  const PatientBottomNavbar({super.key, this.currentIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +23,7 @@ class PatientBottomNavbar extends StatelessWidget {
             topRight: Radius.circular(16.r),
           ),
 
-          border: const Border(
-            top: BorderSide(
-              color: Color(0xFFE8F8F1),
-            ),
-          ),
+          border: const Border(top: BorderSide(color: Color(0xFFE8F8F1))),
 
           boxShadow: [
             BoxShadow(
@@ -109,9 +102,10 @@ class PatientBottomNavbar extends StatelessWidget {
                 icon,
                 size: 20.sp,
 
-                color: isActive
-                    ? const Color(0xFF059669)
-                    : const Color(0xFF94A3B8),
+                color:
+                    isActive
+                        ? const Color(0xFF059669)
+                        : const Color(0xFF94A3B8),
               ),
 
               SizedBox(height: 6.h),
@@ -124,9 +118,10 @@ class PatientBottomNavbar extends StatelessWidget {
                   letterSpacing: 1,
                   fontWeight: FontWeight.w600,
 
-                  color: isActive
-                      ? const Color(0xFF059669)
-                      : const Color(0xFF94A3B8),
+                  color:
+                      isActive
+                          ? const Color(0xFF059669)
+                          : const Color(0xFF94A3B8),
                 ),
               ),
 
@@ -138,12 +133,9 @@ class PatientBottomNavbar extends StatelessWidget {
                   height: 4.h,
 
                   decoration: BoxDecoration(
-                    color: const Color(0xFF10B981)
-                        .withOpacity(0.2),
+                    color: const Color(0xFF10B981).withOpacity(0.2),
 
-                    borderRadius: BorderRadius.circular(
-                      999.r,
-                    ),
+                    borderRadius: BorderRadius.circular(999.r),
                   ),
                 ),
             ],

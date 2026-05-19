@@ -3,14 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart'; // Jangan lupa import ini!
 import 'package:iconsax/iconsax.dart';
 
-
 class HealthcareBottomNavbar extends StatelessWidget {
   final int currentIndex;
 
-  const HealthcareBottomNavbar({
-    super.key,
-    this.currentIndex = 0,
-  });
+  const HealthcareBottomNavbar({super.key, this.currentIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +14,7 @@ class HealthcareBottomNavbar extends StatelessWidget {
       height: 64.h,
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Color(0xFFE2E8F0),
-          ),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -77,8 +69,10 @@ class HealthcareBottomNavbar extends StatelessWidget {
           context.go(routePath);
         }
       },
-      
-      behavior: HitTestBehavior.opaque, // Pastikan seluruh area teks & ikon bisa diklik
+
+      behavior:
+          HitTestBehavior
+              .opaque, // Pastikan seluruh area teks & ikon bisa diklik
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -93,7 +87,8 @@ class HealthcareBottomNavbar extends StatelessWidget {
             style: TextStyle(
               fontSize: 11.sp,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-              color: isActive ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
+              color:
+                  isActive ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
             ),
           ),
         ],

@@ -17,14 +17,10 @@ class NewsPage extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 16.0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
 
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               _buildSearchBar(),
@@ -41,41 +37,29 @@ class NewsPage extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar:
-          const HealthcareBottomNavbar(
-        currentIndex: 2,
-      ),
+      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 2),
 
       floatingActionButton: Container(
         height: 56,
         width: 56,
 
         decoration: BoxDecoration(
-          borderRadius:
-              BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16),
 
           gradient: const LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
 
-            colors: [
-              Color(0xFF006D37),
-              Color(0xFF61DE8A),
-            ],
+            colors: [Color(0xFF006D37), Color(0xFF61DE8A)],
           ),
 
           boxShadow: [
             BoxShadow(
-              color: const Color(
-                0xFF006D37,
-              ).withOpacity(0.3),
+              color: const Color(0xFF006D37).withOpacity(0.3),
 
               blurRadius: 15,
 
-              offset: const Offset(
-                0,
-                10,
-              ),
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -85,15 +69,11 @@ class NewsPage extends StatelessWidget {
             context.push('/add-news');
           },
 
-          backgroundColor:
-              Colors.transparent,
+          backgroundColor: Colors.transparent,
 
           elevation: 0,
 
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
     );
@@ -102,32 +82,20 @@ class NewsPage extends StatelessWidget {
   // ================= APP BAR =================
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor:
-          Colors.white.withOpacity(0.9),
+      backgroundColor: Colors.white.withOpacity(0.9),
 
       elevation: 0,
 
-      surfaceTintColor:
-          Colors.transparent,
+      surfaceTintColor: Colors.transparent,
 
       bottom: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(1),
+        preferredSize: const Size.fromHeight(1),
 
-        child: Container(
-          color: const Color(
-            0xFFE8F8F1,
-          ),
-
-          height: 1,
-        ),
+        child: Container(color: const Color(0xFFE8F8F1), height: 1),
       ),
 
       leading: IconButton(
-        icon: const Icon(
-          Icons.notifications_none,
-          color: Color(0xFF1C274C),
-        ),
+        icon: const Icon(Icons.notifications_none, color: Color(0xFF1C274C)),
 
         onPressed: () {},
       ),
@@ -140,8 +108,7 @@ class NewsPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               color: Color(0xFF1E1E1E),
-              fontWeight:
-                  FontWeight.w400,
+              fontWeight: FontWeight.w400,
             ),
           ),
 
@@ -151,8 +118,7 @@ class NewsPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               color: Color(0xFF1E1E1E),
-              fontWeight:
-                  FontWeight.w600,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -162,23 +128,14 @@ class NewsPage extends StatelessWidget {
 
       actions: [
         Padding(
-          padding:
-              const EdgeInsets.only(
-            right: 16.0,
-          ),
+          padding: const EdgeInsets.only(right: 16.0),
 
           child: CircleAvatar(
-            backgroundColor:
-                const Color(
-              0xFFEEF2F3,
-            ),
+            backgroundColor: const Color(0xFFEEF2F3),
 
             radius: 20,
 
-            child: Icon(
-              Icons.person,
-              color: Colors.blue[300],
-            ),
+            child: Icon(Icons.person, color: Colors.blue[300]),
           ),
         ),
       ],
@@ -191,53 +148,32 @@ class NewsPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius:
-            BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12),
 
-        border: Border.all(
-          color: const Color(
-            0xFFBCCABC,
-          ),
-        ),
+        border: Border.all(color: const Color(0xFFBCCABC)),
 
         boxShadow: [
           BoxShadow(
-            color:
-                Colors.black.withOpacity(
-              0.04,
-            ),
+            color: Colors.black.withOpacity(0.04),
 
             blurRadius: 20,
 
-            offset: const Offset(
-              0,
-              4,
-            ),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
 
       child: const TextField(
         decoration: InputDecoration(
-          hintText:
-              'Search medical news...',
+          hintText: 'Search medical news...',
 
-          hintStyle: TextStyle(
-            color: Color(0xFF3D4A3F),
-            fontSize: 16,
-          ),
+          hintStyle: TextStyle(color: Color(0xFF3D4A3F), fontSize: 16),
 
-          prefixIcon: Icon(
-            Icons.search,
-            color: Color(0xFF3D4A3F),
-          ),
+          prefixIcon: Icon(Icons.search, color: Color(0xFF3D4A3F)),
 
           border: InputBorder.none,
 
-          contentPadding:
-              EdgeInsets.symmetric(
-            vertical: 14,
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 14),
         ),
       ),
     );
@@ -250,10 +186,7 @@ class NewsPage extends StatelessWidget {
 
       child: Row(
         children: [
-          _buildChip(
-            'All',
-            isActive: true,
-          ),
+          _buildChip('All', isActive: true),
 
           _buildChip('Pencegahan'),
 
@@ -265,52 +198,26 @@ class NewsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChip(
-    String label, {
-    bool isActive = false,
-  }) {
+  Widget _buildChip(String label, {bool isActive = false}) {
     return Padding(
-      padding:
-          const EdgeInsets.only(
-        right: 8.0,
-      ),
+      padding: const EdgeInsets.only(right: 8.0),
 
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
 
         decoration: BoxDecoration(
-          color:
-              isActive
-                  ? const Color(
-                      0xFF006D37,
-                    )
-                  : const Color(
-                      0xFFDDE5DB,
-                    ),
+          color: isActive ? const Color(0xFF006D37) : const Color(0xFFDDE5DB),
 
-          borderRadius:
-              BorderRadius.circular(
-            8,
-          ),
+          borderRadius: BorderRadius.circular(8),
         ),
 
         child: Text(
           label,
 
           style: TextStyle(
-            color:
-                isActive
-                    ? Colors.white
-                    : const Color(
-                        0xFF3D4A3F,
-                      ),
+            color: isActive ? Colors.white : const Color(0xFF3D4A3F),
 
-            fontWeight:
-                FontWeight.bold,
+            fontWeight: FontWeight.bold,
 
             fontSize: 12,
           ),
@@ -330,13 +237,7 @@ class NewsPage extends StatelessWidget {
               'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-resistant TB.',
           footerContent: Row(
             children: const [
-              Icon(
-                Icons.check_circle,
-                size: 12,
-                color: Color(
-                  0xFF006D37,
-                ),
-              ),
+              Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
 
               SizedBox(width: 4),
 
@@ -345,23 +246,14 @@ class NewsPage extends StatelessWidget {
 
                 style: TextStyle(
                   fontSize: 10,
-                  color: Color(
-                    0xFF006D37,
-                  ),
-                  fontWeight:
-                      FontWeight.bold,
+                  color: Color(0xFF006D37),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
 
               Spacer(),
 
-              Icon(
-                Icons.open_in_new,
-                size: 18,
-                color: Color(
-                  0xFF006D37,
-                ),
-              ),
+              Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
           ),
         ),
@@ -373,8 +265,7 @@ class NewsPage extends StatelessWidget {
 
           showVerifiedBadge: true,
 
-          title:
-              'Updated Guidelines for Contact Tracing in High-Density Areas',
+          title: 'Updated Guidelines for Contact Tracing in High-Density Areas',
 
           description:
               'WHO releases revised guidelines emphasizing digital contact tracing tools.',
@@ -384,9 +275,7 @@ class NewsPage extends StatelessWidget {
               const Icon(
                 Icons.person_outline,
                 size: 14,
-                color: Color(
-                  0xFF3D4A3F,
-                ),
+                color: Color(0xFF3D4A3F),
               ),
 
               const SizedBox(width: 4),
@@ -395,31 +284,18 @@ class NewsPage extends StatelessWidget {
                 child: Text(
                   'Dr. Sarah Chen,\nWHO',
 
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(
-                      0xFF3D4A3F,
-                    ),
-                  ),
+                  style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)),
                 ),
               ),
 
-              Container(
-                width: 1,
-                height: 24,
-                color: const Color(
-                  0xFFBCCABC,
-                ),
-              ),
+              Container(width: 1, height: 24, color: const Color(0xFFBCCABC)),
 
               const SizedBox(width: 8),
 
               const Icon(
                 Icons.location_on_outlined,
                 size: 14,
-                color: Color(
-                  0xFF3D4A3F,
-                ),
+                color: Color(0xFF3D4A3F),
               ),
 
               const SizedBox(width: 4),
@@ -428,22 +304,11 @@ class NewsPage extends StatelessWidget {
                 child: Text(
                   'WHO\nOffice',
 
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(
-                      0xFF3D4A3F,
-                    ),
-                  ),
+                  style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)),
                 ),
               ),
 
-              const Icon(
-                Icons.open_in_new,
-                size: 18,
-                color: Color(
-                  0xFF006D37,
-                ),
-              ),
+              const Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
           ),
         ),
@@ -453,12 +318,20 @@ class NewsPage extends StatelessWidget {
         _buildNewsCard(
           tag: 'Nutrisi',
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
-          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          description:
+              'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
           footerContent: Row(
             children: const [
               Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
               SizedBox(width: 4),
-              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Text(
+                'VERIFIED BY DR. ZORO',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF006D37),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Spacer(),
               Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
@@ -468,12 +341,20 @@ class NewsPage extends StatelessWidget {
         _buildNewsCard(
           tag: 'Pencegahan',
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
-          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          description:
+              'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
           footerContent: Row(
             children: const [
               Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
               SizedBox(width: 4),
-              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Text(
+                'VERIFIED BY DR. ZORO',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF006D37),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Spacer(),
               Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
             ],
@@ -496,149 +377,95 @@ class NewsPage extends StatelessWidget {
       builder: (context) {
         return GestureDetector(
           onTap: () {
-            context.push(
-              '/patient-news-detail',
-            );
+            context.push('/patient-news-detail');
           },
 
           child: Container(
-            padding:
-                const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
 
             decoration: BoxDecoration(
               color: Colors.white,
 
-              borderRadius:
-                  BorderRadius.circular(
-                12,
-              ),
+              borderRadius: BorderRadius.circular(12),
 
-              border: Border.all(
-                color: const Color(
-                  0xFFBCCABC,
-                ),
-              ),
+              border: Border.all(color: const Color(0xFFBCCABC)),
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black
-                      .withOpacity(0.04),
+                  color: Colors.black.withOpacity(0.04),
 
                   blurRadius: 20,
 
-                  offset:
-                      const Offset(
-                    0,
-                    4,
-                  ),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                   children: [
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 4,
                       ),
 
-                      decoration:
-                          BoxDecoration(
-                        color:
-                            const Color(
-                          0xFFD6E6DF,
-                        ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD6E6DF),
 
-                        borderRadius:
-                            BorderRadius.circular(
-                          6,
-                        ),
+                        borderRadius: BorderRadius.circular(6),
                       ),
 
                       child: Text(
                         tag,
 
-                        style:
-                            const TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
 
-                          fontWeight:
-                              FontWeight
-                                  .bold,
+                          fontWeight: FontWeight.bold,
 
-                          color: Color(
-                            0xFF596862,
-                          ),
+                          color: Color(0xFF596862),
                         ),
                       ),
                     ),
 
                     if (showVerifiedBadge)
                       Container(
-                        padding:
-                            const EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 2,
                         ),
 
-                        decoration:
-                            BoxDecoration(
-                          color:
-                              const Color(
-                            0xFF006D37,
-                          ).withOpacity(
-                            0.1,
-                          ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF006D37).withOpacity(0.1),
 
-                          borderRadius:
-                              BorderRadius.circular(
-                            20,
-                          ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
 
                         child: Row(
                           children: const [
                             Icon(
-                              Icons
-                                  .check_circle,
+                              Icons.check_circle,
                               size: 12,
-                              color: Color(
-                                0xFF006D37,
-                              ),
+                              color: Color(0xFF006D37),
                             ),
 
-                            SizedBox(
-                              width: 4,
-                            ),
+                            SizedBox(width: 4),
 
                             Text(
                               'Verified',
 
-                              style:
-                                  TextStyle(
-                                fontSize:
-                                    12,
+                              style: TextStyle(
+                                fontSize: 12,
 
-                                fontWeight:
-                                    FontWeight
-                                        .bold,
+                                fontWeight: FontWeight.bold,
 
-                                color:
-                                    Color(
-                                  0xFF006D37,
-                                ),
+                                color: Color(0xFF006D37),
                               ),
                             ),
                           ],
@@ -652,16 +479,12 @@ class NewsPage extends StatelessWidget {
                 Text(
                   title,
 
-                  style:
-                      const TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
 
-                    fontWeight:
-                        FontWeight.w600,
+                    fontWeight: FontWeight.w600,
 
-                    color: Color(
-                      0xFF171D17,
-                    ),
+                    color: Color(0xFF171D17),
 
                     height: 1.4,
                   ),
@@ -672,13 +495,10 @@ class NewsPage extends StatelessWidget {
                 Text(
                   description,
 
-                  style:
-                      const TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
 
-                    color: Color(
-                      0xFF3D4A3F,
-                    ),
+                    color: Color(0xFF3D4A3F),
 
                     height: 1.5,
                   ),
@@ -686,10 +506,7 @@ class NewsPage extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                const Divider(
-                  color:
-                      Color(0xFFDDE5DB),
-                ),
+                const Divider(color: Color(0xFFDDE5DB)),
 
                 const SizedBox(height: 8),
 

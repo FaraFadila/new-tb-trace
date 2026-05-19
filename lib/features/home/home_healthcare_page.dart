@@ -25,10 +25,7 @@ class HomeHealthcarePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    size: 26,
-                  ),
+                  const Icon(Icons.notifications_none_rounded, size: 26),
 
                   Row(
                     children: [
@@ -63,10 +60,7 @@ class HomeHealthcarePage extends StatelessWidget {
                           radius: 22.r,
                           backgroundColor: const Color(0xFFEEF2F3),
 
-                          child: Icon(
-                            Icons.person,
-                            size: 24.sp,
-                          ),
+                          child: Icon(Icons.person, size: 24.sp),
                         ),
                       ),
                     ],
@@ -113,14 +107,9 @@ class HomeHealthcarePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.r),
                   gradient: const LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Color(0xFFEFF6EC),
-                    ],
+                    colors: [Colors.white, Color(0xFFEFF6EC)],
                   ),
-                  border: Border.all(
-                    color: const Color(0xFFE2E8E0),
-                  ),
+                  border: Border.all(color: const Color(0xFFE2E8E0)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,15 +220,12 @@ class HomeHealthcarePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(
-                    color: const Color(0xFFE2E8E0),
-                  ),
+                  border: Border.all(color: const Color(0xFFE2E8E0)),
                 ),
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Symptom Trends",
@@ -262,31 +248,19 @@ class HomeHealthcarePage extends StatelessWidget {
 
                     SizedBox(height: 24.h),
 
-                    _progressItem(
-                      "Batuk Terus Menerus",
-                      0.85,
-                    ),
+                    _progressItem("Batuk Terus Menerus", 0.85),
 
                     SizedBox(height: 16.h),
 
-                    _progressItem(
-                      "Demam",
-                      0.62,
-                    ),
+                    _progressItem("Demam", 0.62),
 
                     SizedBox(height: 16.h),
 
-                    _progressItem(
-                      "Berkeringat Malam",
-                      0.45,
-                    ),
+                    _progressItem("Berkeringat Malam", 0.45),
 
                     SizedBox(height: 16.h),
 
-                    _progressItem(
-                      "Kepatuhan Minum Obat",
-                      0.92,
-                    ),
+                    _progressItem("Kepatuhan Minum Obat", 0.92),
                   ],
                 ),
               ),
@@ -312,14 +286,9 @@ class HomeHealthcarePage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
         gradient: LinearGradient(
-          colors: [
-            Colors.white,
-            color.withOpacity(0.08),
-          ],
+          colors: [Colors.white, color.withOpacity(0.08)],
         ),
-        border: Border.all(
-          color: color.withOpacity(0.15),
-        ),
+        border: Border.all(color: color.withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,20 +312,14 @@ class HomeHealthcarePage extends StatelessWidget {
 
           Text(
             value,
-            style: TextStyle(
-              fontSize: 30.sp,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w700),
           ),
 
           SizedBox(height: 4.h),
 
           Text(
             subtitle,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: Colors.black54,
-            ),
+            style: TextStyle(fontSize: 13.sp, color: Colors.black54),
           ),
         ],
       ),
@@ -364,22 +327,13 @@ class HomeHealthcarePage extends StatelessWidget {
   }
 
   // ================= PROGRESS ITEM =================
-  Widget _progressItem(
-    String title,
-    double value,
-  ) {
+  Widget _progressItem(String title, double value) {
     return Column(
       children: [
         Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14.sp,
-              ),
-            ),
+            Text(title, style: TextStyle(fontSize: 14.sp)),
 
             Text(
               "${(value * 100).toInt()}%",
@@ -400,9 +354,7 @@ class HomeHealthcarePage extends StatelessWidget {
             value: value,
             minHeight: 8.h,
             backgroundColor: const Color(0xFFDDE5DB),
-            valueColor: const AlwaysStoppedAnimation(
-              Color(0xFF006D37),
-            ),
+            valueColor: const AlwaysStoppedAnimation(Color(0xFF006D37)),
           ),
         ),
       ],
@@ -421,9 +373,7 @@ class HomeHealthcarePage extends StatelessWidget {
         Icon(
           icon,
           size: 20,
-          color: active
-              ? const Color(0xFF006E1C)
-              : const Color(0xFF94A3B8),
+          color: active ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
         ),
 
         SizedBox(height: 4.h),
@@ -432,11 +382,8 @@ class HomeHealthcarePage extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11.sp,
-            fontWeight:
-                active ? FontWeight.w600 : FontWeight.w500,
-            color: active
-                ? const Color(0xFF006E1C)
-                : const Color(0xFF94A3B8),
+            fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+            color: active ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
           ),
         ),
       ],

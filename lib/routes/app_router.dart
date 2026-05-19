@@ -33,16 +33,10 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     // ================= START =================
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const StartPage(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const StartPage()),
 
     // ================= LOGIN =================
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginPage(),
-    ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
 
     // ================= REGISTER =================
     GoRoute(
@@ -61,20 +55,14 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // ================= MAP =================
-    GoRoute(
-      path: '/map',
-      builder: (context, state) => const MapPage(),
-    ),
+    GoRoute(path: '/map', builder: (context, state) => const MapPage()),
     GoRoute(
       path: '/patient-map',
       builder: (context, state) => const PatientMapPage(),
     ),
 
     // ================= NEWS =================
-    GoRoute(
-      path: '/news',
-      builder: (context, state) => const NewsPage(),
-    ),
+    GoRoute(path: '/news', builder: (context, state) => const NewsPage()),
     GoRoute(
       path: '/news-healthcare',
       builder: (context, state) => const NewsPage(),
@@ -111,10 +99,7 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // ================= PROFILE =================
-    GoRoute(
-      path: '/profile',
-      builder: (context, state) => const ProfilePage(),
-    ),
+    GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
     GoRoute(
       path: '/edit-profile',
       builder: (context, state) => const EditProfilePage(),
