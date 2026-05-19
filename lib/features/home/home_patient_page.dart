@@ -13,7 +13,9 @@ class HomePatientPage extends StatelessWidget {
 
       // ================= BOTTOM NAV =================
       bottomNavigationBar:
-      const PatientBottomNavbar(),
+      const PatientBottomNavbar(
+        currentIndex: 0,
+      ),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -50,7 +52,7 @@ class HomePatientPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Jade West",
+                            "Sarah",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight:

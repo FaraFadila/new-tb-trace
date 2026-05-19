@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
@@ -42,7 +43,7 @@ class HomeHealthcarePage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Jade West",
+                            "Dr. Sarah",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -53,12 +54,19 @@ class HomeHealthcarePage extends StatelessWidget {
 
                       SizedBox(width: 10.w),
 
-                      CircleAvatar(
-                        radius: 22.r,
-                        backgroundColor: const Color(0xFFEEF2F3),
-                        child: Icon(
-                          Icons.person,
-                          size: 24.sp,
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/profile');
+                        },
+
+                        child: CircleAvatar(
+                          radius: 22.r,
+                          backgroundColor: const Color(0xFFEEF2F3),
+
+                          child: Icon(
+                            Icons.person,
+                            size: 24.sp,
+                          ),
                         ),
                       ),
                     ],

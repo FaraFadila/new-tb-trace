@@ -10,6 +10,7 @@ class PatientMapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: false,
       backgroundColor: const Color(0xFFF8FAFA),
 
       bottomNavigationBar:

@@ -448,6 +448,37 @@ class NewsPage extends StatelessWidget {
           ),
         ),
 
+        const SizedBox(height: 16),
+
+        _buildNewsCard(
+          tag: 'Nutrisi',
+          title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
+          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          footerContent: Row(
+            children: const [
+              Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
+              SizedBox(width: 4),
+              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Spacer(),
+              Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildNewsCard(
+          tag: 'Pencegahan',
+          title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
+          description: 'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          footerContent: Row(
+            children: const [
+              Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
+              SizedBox(width: 4),
+              Text('VERIFIED BY DR. ZORO', style: TextStyle(fontSize: 10, color: Color(0xFF006D37), fontWeight: FontWeight.bold)),
+              Spacer(),
+              Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
+            ],
+          ),
+        ),
         const SizedBox(height: 100),
       ],
     );

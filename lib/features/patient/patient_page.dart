@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../core/widgets/healthcare_bottom_navbar.dart';
 import 'package:tb_trace/features/profile/profile_sidebar.dart';
 import 'package:tb_trace/features/patient/add_patient_page.dart';
 import 'package:tb_trace/features/patient/update_patient_status_bottomsheet.dart';
-
 
 class PatientPage extends StatelessWidget {
   const PatientPage({super.key});
@@ -46,6 +46,7 @@ class PatientPage extends StatelessWidget {
             children: const [
               Text(
                 "Hello,",
+
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.black54,
@@ -54,6 +55,7 @@ class PatientPage extends StatelessWidget {
 
               Text(
                 "Jade West",
+
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight:
@@ -107,6 +109,7 @@ class PatientPage extends StatelessWidget {
 
               child: Text(
                 "Manajemen Pasien",
+
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight:
@@ -301,6 +304,14 @@ class PatientPage extends StatelessWidget {
           child: const Icon(Icons.add),
         ),
       ),
+
+      // =========================
+      // BOTTOM NAVBAR
+      // =========================
+      bottomNavigationBar:
+          const HealthcareBottomNavbar(
+        currentIndex: 3,
+      ),
     );
   }
 
@@ -412,7 +423,6 @@ class PatientCard extends StatelessWidget {
 
       child: Row(
         children: [
-          // LEFT INDICATOR
           Container(
             width: 4,
 
@@ -431,7 +441,6 @@ class PatientCard extends StatelessWidget {
             ),
           ),
 
-          // CONTENT
           Expanded(
             child: Padding(
               padding:
@@ -439,7 +448,6 @@ class PatientCard extends StatelessWidget {
 
               child: Column(
                 children: [
-                  // TOP
                   Row(
                     crossAxisAlignment:
                         CrossAxisAlignment
@@ -493,7 +501,6 @@ class PatientCard extends StatelessWidget {
                         ),
                       ),
 
-                      // RISK CHIP
                       Container(
                         padding:
                             const EdgeInsets.symmetric(
@@ -545,7 +552,6 @@ class PatientCard extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
-                  // PROGRESS
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment
@@ -601,7 +607,6 @@ class PatientCard extends StatelessWidget {
 
                   const Spacer(),
 
-                  // BOTTOM
                   Row(
                     mainAxisAlignment:
                         MainAxisAlignment
@@ -640,7 +645,6 @@ class PatientCard extends StatelessWidget {
                         ],
                       ),
 
-                      // UPDATE BUTTON
                       GestureDetector(
                         onTap: () {
                           showModalBottomSheet(

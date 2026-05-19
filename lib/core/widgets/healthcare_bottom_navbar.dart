@@ -46,7 +46,7 @@ class HealthcareBottomNavbar extends StatelessWidget {
             icon: Iconsax.document_text_15,
             label: "News",
             index: 2,
-            routePath: '/news', // Rute menuju halaman beritamu!
+            routePath: '/news-healthcare', // Rute menuju halaman beritamu!
           ),
           _navItem(
             context: context,
