@@ -1,37 +1,108 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tb_trace/core/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() =>
-      _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState
-    extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final AuthService _authService = AuthService();
   bool rememberMe = false;
 
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  bool isLoading = false;
 
-  final TextEditingController
-      nameController =
+  final TextEditingController nameController = TextEditingController();
+
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  final TextEditingController
-      emailController =
-      TextEditingController();
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
-  final TextEditingController
-      passwordController =
-      TextEditingController();
+  Future<void> _signUp() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
 
-  final TextEditingController
-      confirmPasswordController =
-      TextEditingController();
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      _showMessage('Semua field wajib diisi.');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showMessage('Password dan confirm password tidak sama.');
+      return;
+    }
+
+    if (password.length < 6) {
+      _showMessage('Password minimal 6 karakter.');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final hasActiveSession = await _authService.signUp(
+        fullName: name,
+        email: email,
+        password: password,
+        role: AppUserRole.healthcare,
+      );
+
+      if (!mounted) return;
+
+      if (hasActiveSession) {
+        context.go('/home-healthcare');
+      } else {
+        _showMessage(
+          'Registrasi berhasil. Cek email kamu untuk verifikasi, lalu login.',
+        );
+        context.go('/login');
+      }
+    } on AuthException catch (error) {
+      _showMessage(error.message);
+    } catch (_) {
+      _showMessage('Registrasi gagal. Periksa koneksi internet kamu.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +112,7 @@ class _RegisterPageState
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                EdgeInsets.symmetric(
-              horizontal: 40.w,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 40.w),
 
             child: Column(
               children: [
@@ -57,13 +125,9 @@ class _RegisterPageState
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 25.sp,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
 
-                    color:
-                        const Color(
-                      0xFF006D37,
-                    ),
+                    color: const Color(0xFF006D37),
                   ),
                 ),
 
@@ -85,8 +149,7 @@ class _RegisterPageState
 
                 // ================= TITLE =================
                 Align(
-                  alignment:
-                      Alignment.centerLeft,
+                  alignment: Alignment.centerLeft,
 
                   child: Text(
                     "Buat Akun",
@@ -94,13 +157,9 @@ class _RegisterPageState
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 28.sp,
-                      fontWeight:
-                          FontWeight.w900,
+                      fontWeight: FontWeight.w900,
 
-                      color:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      color: const Color(0xFF006D37),
                     ),
                   ),
                 ),
@@ -109,51 +168,29 @@ class _RegisterPageState
 
                 // ================= NAME =================
                 TextField(
-                  controller:
-                      nameController,
+                  controller: nameController,
 
-                  decoration:
-                      InputDecoration(
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.person_outline,
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
                     hintText: "Name",
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
-                      color:
-                          const Color(
-                        0xFF006D37,
+                      color: const Color(0xFF006D37),
+                    ),
+
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
-                      ),
-                    ),
-
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -162,51 +199,29 @@ class _RegisterPageState
 
                 // ================= EMAIL =================
                 TextField(
-                  controller:
-                      emailController,
+                  controller: emailController,
 
-                  decoration:
-                      InputDecoration(
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.email_outlined,
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
                     hintText: "Email",
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
-                      color:
-                          const Color(
-                        0xFF006D37,
+                      color: const Color(0xFF006D37),
+                    ),
+
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
-                      ),
-                    ),
-
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -215,80 +230,49 @@ class _RegisterPageState
 
                 // ================= PASSWORD =================
                 TextField(
-                  controller:
-                      passwordController,
+                  controller: passwordController,
 
-                  obscureText:
-                      obscurePassword,
+                  obscureText: obscurePassword,
 
-                  decoration:
-                      InputDecoration(
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.lock_outline,
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
-                    hintText:
-                        "Password",
+                    hintText: "Password",
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
-                      color:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      color: const Color(0xFF006D37),
                     ),
 
-                    suffixIcon:
-                        IconButton(
+                    suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          obscurePassword =
-                              !obscurePassword;
+                          obscurePassword = !obscurePassword;
                         });
                       },
 
                       icon: Icon(
                         obscurePassword
-                            ? Icons
-                                .visibility_off_outlined
-                            : Icons
-                                .visibility_outlined,
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
 
                         size: 18,
 
-                        color:
-                            const Color(
-                          0xFF006D37,
-                        ),
+                        color: const Color(0xFF006D37),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -297,80 +281,49 @@ class _RegisterPageState
 
                 // ================= CONFIRM PASSWORD =================
                 TextField(
-                  controller:
-                      confirmPasswordController,
+                  controller: confirmPasswordController,
 
-                  obscureText:
-                      obscureConfirmPassword,
+                  obscureText: obscureConfirmPassword,
 
-                  decoration:
-                      InputDecoration(
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.lock_outline,
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
-                    hintText:
-                        "Confirm Password",
+                    hintText: "Confirm Password",
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
-                      color:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      color: const Color(0xFF006D37),
                     ),
 
-                    suffixIcon:
-                        IconButton(
+                    suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          obscureConfirmPassword =
-                              !obscureConfirmPassword;
+                          obscureConfirmPassword = !obscureConfirmPassword;
                         });
                       },
 
                       icon: Icon(
                         obscureConfirmPassword
-                            ? Icons
-                                .visibility_off_outlined
-                            : Icons
-                                .visibility_outlined,
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
 
                         size: 18,
 
-                        color:
-                            const Color(
-                          0xFF006D37,
-                        ),
+                        color: const Color(0xFF006D37),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -386,26 +339,13 @@ class _RegisterPageState
 
                       child: Checkbox(
                         value: rememberMe,
-
-                        activeColor:
-                            const Color(
-                          0xFF006D37,
-                        ),
-
-                        side:
-                            const BorderSide(
-                          color: Color(
-                            0xFFAEC4BF,
-                          ),
-                        ),
-
-                        onChanged: (
-                          value,
-                        ) {
+                        activeColor: const Color(0xFF006D37),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                        side: const BorderSide(color: Color(0xFFAEC4BF)),
+                        onChanged: (value) {
                           setState(() {
-                            rememberMe =
-                                value ??
-                                    false;
+                            rememberMe = value ?? false;
                           });
                         },
                       ),
@@ -413,14 +353,21 @@ class _RegisterPageState
 
                     SizedBox(width: 8.w),
 
-                    Text(
-                      "Remember me",
-
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        color:
-                            const Color(
-                          0xFF04624B,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          rememberMe = !rememberMe;
+                        });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        child: Text(
+                          "Remember me",
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: const Color(0xFF04624B),
+                          ),
                         ),
                       ),
                     ),
@@ -435,10 +382,7 @@ class _RegisterPageState
 
                         style: TextStyle(
                           fontSize: 10.sp,
-                          color:
-                              const Color(
-                            0xFF04624B,
-                          ),
+                          color: const Color(0xFF04624B),
                         ),
                       ),
                     ),
@@ -453,44 +397,38 @@ class _RegisterPageState
                   height: 48.h,
 
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.go(
-                        '/home-healthcare',
-                      );
-                    },
+                    onPressed: isLoading ? null : _signUp,
 
-                    style:
-                        ElevatedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       elevation: 2,
 
-                      backgroundColor:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      backgroundColor: const Color(0xFF006D37),
 
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(
-                          12.r,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
 
-                    child: Text(
-                      "Sign Up",
+                    child:
+                        isLoading
+                            ? SizedBox(
+                              width: 20.w,
+                              height: 20.h,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                            : Text(
+                              "Sign Up",
 
-                      style: TextStyle(
-                        fontFamily:
-                            'Inter',
-                        fontSize: 16.sp,
-                        fontWeight:
-                            FontWeight
-                                .w600,
-                        color:
-                            Colors.white,
-                      ),
-                    ),
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                   ),
                 ),
 
@@ -498,9 +436,7 @@ class _RegisterPageState
 
                 // ================= LOGIN =================
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment
-                          .center,
+                  mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
                     Text(
@@ -508,18 +444,14 @@ class _RegisterPageState
 
                       style: TextStyle(
                         fontSize: 12.sp,
-                        fontWeight:
-                            FontWeight.w500,
-                        color:
-                            Colors.black,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
                       ),
                     ),
 
                     GestureDetector(
                       onTap: () {
-                        context.go(
-                          '/login',
-                        );
+                        context.go('/login');
                       },
 
                       child: Text(
@@ -527,13 +459,8 @@ class _RegisterPageState
 
                         style: TextStyle(
                           fontSize: 12.sp,
-                          fontWeight:
-                              FontWeight
-                                  .w700,
-                          color:
-                              const Color(
-                            0xFF006D37,
-                          ),
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF006D37),
                         ),
                       ),
                     ),

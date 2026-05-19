@@ -1,9 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tb_trace/core/services/patient_service.dart';
+import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
-class PatientManagementPage extends StatelessWidget {
+enum _PatientFilter { all, highRisk, recentUpdate }
+
+class PatientManagementPage extends StatefulWidget {
   const PatientManagementPage({super.key});
+
+  @override
+  State<PatientManagementPage> createState() => _PatientManagementPageState();
+}
+
+class _PatientManagementPageState extends State<PatientManagementPage> {
+  final PatientService _patientService = PatientService();
+  final TextEditingController _searchController = TextEditingController();
+  late Future<List<PatientSummary>> _patientsFuture;
+  _PatientFilter _selectedFilter = _PatientFilter.all;
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _patientsFuture = _patientService.listPatients();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refreshPatients() async {
+    setState(() {
+      _patientsFuture = _patientService.listPatients();
+    });
+
+    await _patientsFuture;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,138 +46,65 @@ class PatientManagementPage extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFA),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.go('/add-patient');
+        },
 
         elevation: 10,
 
         backgroundColor: const Color(0xFF006D37),
 
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16.r),
         ),
 
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
 
-      bottomNavigationBar: Container(
-        height: 70.h,
-
-        decoration: const BoxDecoration(
-          color: Colors.white,
-
-          border: Border(
-            top: BorderSide(
-              color: Color(0xFFE2E8F0),
-            ),
-          ),
-        ),
-
-        child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceAround,
-
-          children: [
-            _navItem(
-              icon: Iconsax.home_15,
-              label: "Home",
-            ),
-
-            _navItem(
-              icon: Iconsax.map_15,
-              label: "Map",
-            ),
-
-            _navItem(
-              icon:
-                  Iconsax.document_text_15,
-              label: "News",
-            ),
-
-            _navItem(
-              icon:
-                  Iconsax.profile_2user,
-              label: "Patients",
-              active: true,
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 3),
 
       body: SafeArea(
         child: Column(
           children: [
             // ================= HEADER =================
             Container(
-              padding:
-                  EdgeInsets.symmetric(
-                horizontal: 20.w,
-                vertical: 12.h,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
 
               decoration: BoxDecoration(
-                color:
-                    Colors.white.withOpacity(
-                  0.9,
-                ),
+                color: Colors.white.withValues(alpha: 0.9),
 
                 border: const Border(
-                  bottom: BorderSide(
-                    color: Color(
-                      0xFFE8F8F1,
-                    ),
-                  ),
+                  bottom: BorderSide(color: Color(0xFFE8F8F1)),
                 ),
 
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 20,
-                    offset: const Offset(
-                      0,
-                      4,
-                    ),
-                    color: Colors.black
-                        .withOpacity(
-                      0.04,
-                    ),
+                    offset: const Offset(0, 4),
+                    color: Colors.black.withValues(alpha: 0.04),
                   ),
                 ],
               ),
 
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                 children: [
-                  const Icon(
-                    Icons
-                        .notifications_none_rounded,
-
-                    size: 26,
-                  ),
+                  const Icon(Icons.notifications_none_rounded, size: 26),
 
                   Row(
                     children: [
                       Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
 
                         children: [
                           Text(
                             "Hello,",
 
                             style: TextStyle(
-                              fontSize:
-                                  12.sp,
+                              fontSize: 12.sp,
 
-                              color:
-                                  Colors
-                                      .black54,
+                              color: Colors.black54,
                             ),
                           ),
 
@@ -150,36 +112,25 @@ class PatientManagementPage extends StatelessWidget {
                             "Jade West",
 
                             style: TextStyle(
-                              fontSize:
-                                  15.sp,
+                              fontSize: 15.sp,
 
-                              fontWeight:
-                                  FontWeight
-                                      .w600,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(
-                        width: 10.w,
-                      ),
+                      SizedBox(width: 10.w),
 
                       CircleAvatar(
                         radius: 22.r,
 
-                        backgroundColor:
-                            const Color(
-                          0xFFEEF2F3,
-                        ),
+                        backgroundColor: const Color(0xFFEEF2F3),
 
                         child: Icon(
                           Icons.person,
                           size: 24.sp,
-                          color:
-                              const Color(
-                            0xFF2EB5FA,
-                          ),
+                          color: const Color(0xFF2EB5FA),
                         ),
                       ),
                     ],
@@ -190,209 +141,194 @@ class PatientManagementPage extends StatelessWidget {
 
             // ================= BODY =================
             Expanded(
-              child:
-                  SingleChildScrollView(
-                padding:
-                    EdgeInsets.all(16.w),
+              child: RefreshIndicator(
+                onRefresh: _refreshPatients,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(16.w),
 
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                  children: [
-                    // ================= TITLE =================
-                    Text(
-                      "Manajemen Pasien",
+                    children: [
+                      // ================= TITLE =================
+                      Text(
+                        "Manajemen Pasien",
 
-                      style: TextStyle(
-                        fontSize: 34.sp,
+                        style: TextStyle(
+                          fontSize: 34.sp,
 
-                        fontWeight:
-                            FontWeight
-                                .w700,
+                          fontWeight: FontWeight.w700,
 
-                        color:
-                            const Color(
-                          0xFF191C1D,
+                          color: const Color(0xFF191C1D),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: 20.h),
+                      SizedBox(height: 20.h),
 
-                    // ================= SEARCH =================
-                    Container(
-                      height: 52.h,
+                      // ================= SEARCH =================
+                      Container(
+                        height: 52.h,
 
-                      padding:
-                          EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                      ),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
 
-                      decoration:
-                          BoxDecoration(
-                        color:
-                            Colors.white,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
 
-                        borderRadius:
-                            BorderRadius.circular(
-                          12.r,
+                          borderRadius: BorderRadius.circular(12.r),
+
+                          border: Border.all(color: const Color(0xFFE1E3E3)),
+
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 2,
+                              offset: const Offset(0, 1),
+                              color: Colors.black.withValues(alpha: 0.05),
+                            ),
+                          ],
                         ),
 
-                        border: Border.all(
-                          color:
-                              const Color(
-                            0xFFE1E3E3,
-                          ),
-                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.search, color: Color(0xFFBECAB9)),
 
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 2,
-                            offset:
-                                const Offset(
-                              0,
-                              1,
-                            ),
-                            color: Colors
-                                .black
-                                .withOpacity(
-                              0.05,
-                            ),
-                          ),
-                        ],
-                      ),
+                            SizedBox(width: 12.w),
 
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.search,
-                            color: Color(
-                              0xFFBECAB9,
-                            ),
-                          ),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _searchQuery = value;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Cari Pasien...",
 
-                          SizedBox(
-                            width: 12.w,
-                          ),
+                                  hintStyle: TextStyle(
+                                    color: const Color(0xFF6B7280),
 
-                          Expanded(
-                            child: TextField(
-                              decoration:
-                                  InputDecoration(
-                                hintText:
-                                    "Cari Pasien...",
-
-                                hintStyle:
-                                    TextStyle(
-                                  color:
-                                      const Color(
-                                    0xFF6B7280,
+                                    fontSize: 16.sp,
                                   ),
 
-                                  fontSize:
-                                      16.sp,
+                                  border: InputBorder.none,
+                                  suffixIcon:
+                                      _searchQuery.trim().isEmpty
+                                          ? null
+                                          : IconButton(
+                                            onPressed: () {
+                                              _searchController.clear();
+                                              setState(() {
+                                                _searchQuery = '';
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Color(0xFF6B7280),
+                                            ),
+                                          ),
                                 ),
-
-                                border:
-                                    InputBorder
-                                        .none,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 20.h),
-
-                    // ================= FILTER =================
-                    Row(
-                      children: [
-                        _filterChip(
-                          "All Patients",
-                          active: true,
+                          ],
                         ),
+                      ),
 
-                        SizedBox(
-                          width: 8.w,
+                      SizedBox(height: 20.h),
+
+                      // ================= FILTER =================
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _filterChip("All Patients", _PatientFilter.all),
+
+                            SizedBox(width: 8.w),
+
+                            _filterChip("High Risk", _PatientFilter.highRisk),
+
+                            SizedBox(width: 8.w),
+
+                            _filterChip(
+                              "Update Terbaru",
+                              _PatientFilter.recentUpdate,
+                            ),
+                          ],
                         ),
-
-                        _filterChip(
-                          "High Risk",
-                        ),
-
-                        SizedBox(
-                          width: 8.w,
-                        ),
-
-                        _filterChip(
-                          "Update Terbaru",
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 24.h),
-
-                    // ================= PATIENT LIST =================
-                    _patientCard(
-                      name: "Jane Cooper",
-                      id: "PT-8472",
-                      risk: "High Risk",
-                      riskColor:
-                          const Color(
-                        0xFFBA1A1A,
                       ),
-                      riskBg:
-                          const Color(
-                        0xFFFFDAD6,
-                      ),
-                      progress: 0.45,
-                      day: "Day 45 of 90",
-                      updated: "Today",
-                    ),
 
-                    SizedBox(height: 16.h),
+                      SizedBox(height: 24.h),
 
-                    _patientCard(
-                      name: "Robert Fox",
-                      id: "PT-3921",
-                      risk: "Medium Risk",
-                      riskColor:
-                          const Color(
-                        0xFFEAB308,
-                      ),
-                      riskBg:
-                          const Color(
-                        0xFFFEF9C3,
-                      ),
-                      progress: 0.13,
-                      day: "Day 12 of 90",
-                      updated: "2 days ago",
-                    ),
+                      FutureBuilder<List<PatientSummary>>(
+                        future: _patientsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(32),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
 
-                    SizedBox(height: 16.h),
+                          if (snapshot.hasError) {
+                            return _messageState(
+                              title: 'Gagal memuat pasien',
+                              subtitle:
+                                  'Tarik layar ke bawah untuk mencoba lagi.',
+                            );
+                          }
 
-                    _patientCard(
-                      name: "Esther Howard",
-                      id: "PT-1049",
-                      risk: "Low Risk",
-                      riskColor:
-                          const Color(
-                        0xFF5DAC5B,
-                      ),
-                      riskBg:
-                          const Color(
-                        0xFFD9E6DA,
-                      ),
-                      progress: 0.94,
-                      day: "Day 85 of 90",
-                      updated: "1 week ago",
-                    ),
+                          final patients = snapshot.data ?? [];
+                          final visiblePatients = _visiblePatients(patients);
 
-                    SizedBox(height: 100.h),
-                  ],
+                          if (patients.isEmpty) {
+                            return _messageState(
+                              title: 'Belum ada pasien',
+                              subtitle:
+                                  'Tekan tombol + untuk menambahkan pasien pertama.',
+                            );
+                          }
+
+                          if (visiblePatients.isEmpty) {
+                            return _messageState(
+                              title: 'Pasien tidak ditemukan',
+                              subtitle:
+                                  'Coba ubah kata pencarian atau pilih filter lain.',
+                            );
+                          }
+
+                          return Column(
+                            children: [
+                              for (final patient in visiblePatients) ...[
+                                _patientCard(
+                                  patientId: patient.id,
+                                  name: patient.fullName,
+                                  id: patient.patientCode,
+                                  risk: _riskLabel(
+                                    _normalizeRiskLevel(patient.riskLevel),
+                                  ),
+                                  riskColor: _riskColor(
+                                    _normalizeRiskLevel(patient.riskLevel),
+                                  ),
+                                  riskBg: _riskBg(
+                                    _normalizeRiskLevel(patient.riskLevel),
+                                  ),
+                                  progress: patient.treatmentProgress,
+                                  day:
+                                      "${(patient.treatmentProgress * 90).round()} of 90 days",
+                                  updated: _updatedLabel(patient.lastUpdatedAt),
+                                ),
+                                SizedBox(height: 16.h),
+                              ],
+                              SizedBox(height: 84.h),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -403,65 +339,135 @@ class PatientManagementPage extends StatelessWidget {
   }
 
   // ================= FILTER CHIP =================
-  Widget _filterChip(
-    String label, {
-    bool active = false,
-  }) {
-    return Container(
-      padding:
-          EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 8.h,
-      ),
+  Widget _filterChip(String label, _PatientFilter filter) {
+    final bool active = _selectedFilter == filter;
 
-      decoration: BoxDecoration(
-        color:
-            active
-                ? const Color(
-                    0xFF4CAF50,
-                  )
-                : Colors.white,
-
-        borderRadius:
-            BorderRadius.circular(
-          999.r,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          _selectedFilter = filter;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: active ? const Color(0xFF4CAF50) : Colors.white,
+          borderRadius: BorderRadius.circular(999.r),
+          border: active ? null : Border.all(color: const Color(0xFFBECAB9)),
         ),
-
-        border:
-            active
-                ? null
-                : Border.all(
-                    color:
-                        const Color(
-                      0xFFBECAB9,
-                    ),
-                  ),
-      ),
-
-      child: Text(
-        label,
-
-        style: TextStyle(
-          fontSize: 12.sp,
-
-          fontWeight:
-              FontWeight.w700,
-
-          color:
-              active
-                  ? const Color(
-                      0xFF003C0B,
-                    )
-                  : const Color(
-                      0xFF3F4A3C,
-                    ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: active ? const Color(0xFF003C0B) : const Color(0xFF3F4A3C),
+          ),
         ),
       ),
     );
   }
 
+  List<PatientSummary> _visiblePatients(List<PatientSummary> patients) {
+    final query = _searchQuery.trim().toLowerCase();
+    final filtered =
+        patients.where((patient) {
+          final riskLevel = _normalizeRiskLevel(patient.riskLevel);
+          final matchesFilter =
+              _selectedFilter != _PatientFilter.highRisk || riskLevel == 'high';
+          final matchesSearch =
+              query.isEmpty ||
+              patient.fullName.toLowerCase().contains(query) ||
+              patient.patientCode.toLowerCase().contains(query) ||
+              _riskLabel(riskLevel).toLowerCase().contains(query);
+
+          return matchesFilter && matchesSearch;
+        }).toList();
+
+    if (_selectedFilter == _PatientFilter.recentUpdate) {
+      filtered.sort((a, b) {
+        final dateA = a.lastUpdatedAt ?? a.createdAt;
+        final dateB = b.lastUpdatedAt ?? b.createdAt;
+        return dateB.compareTo(dateA);
+      });
+    }
+
+    return filtered;
+  }
+
+  String _normalizeRiskLevel(String riskLevel) {
+    return riskLevel.trim().toLowerCase();
+  }
+
+  Widget _messageState({required String title, required String subtitle}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: const Color(0xFFE1E3E3)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF191C1D),
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14.sp, color: const Color(0xFF3F4A3C)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _riskLabel(String riskLevel) {
+    return switch (riskLevel) {
+      'high' => 'High Risk',
+      'low' => 'Low Risk',
+      _ => 'Medium Risk',
+    };
+  }
+
+  Color _riskColor(String riskLevel) {
+    return switch (riskLevel) {
+      'high' => const Color(0xFFBA1A1A),
+      'low' => const Color(0xFF5DAC5B),
+      _ => const Color(0xFFEAB308),
+    };
+  }
+
+  Color _riskBg(String riskLevel) {
+    return switch (riskLevel) {
+      'high' => const Color(0xFFFFDAD6),
+      'low' => const Color(0xFFD9E6DA),
+      _ => const Color(0xFFFEF9C3),
+    };
+  }
+
+  String _updatedLabel(DateTime? updatedAt) {
+    if (updatedAt == null) return 'Just now';
+
+    final difference = DateTime.now().difference(updatedAt.toLocal());
+
+    if (difference.inMinutes < 1) return 'Just now';
+    if (difference.inHours < 1) return '${difference.inMinutes} min ago';
+    if (difference.inDays < 1) return '${difference.inHours} hours ago';
+    if (difference.inDays == 1) return 'Yesterday';
+    return '${difference.inDays} days ago';
+  }
+
   // ================= PATIENT CARD =================
   Widget _patientCard({
+    required String patientId,
     required String name,
     required String id,
     required String risk,
@@ -471,352 +477,124 @@ class PatientManagementPage extends StatelessWidget {
     required String day,
     required String updated,
   }) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        context.push('/patient-detail/$patientId');
+      },
+      child: Container(
+        padding: EdgeInsets.all(16.w),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
 
-        borderRadius:
-            BorderRadius.circular(
-          12.r,
+          borderRadius: BorderRadius.circular(12.r),
+
+          border: Border.all(color: const Color(0xFFF2F4F4)),
+
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: 0.04),
+            ),
+          ],
         ),
 
-        border: Border.all(
-          color:
-              const Color(
-            0xFFF2F4F4,
-          ),
-        ),
+        child: Column(
+          children: [
+            // ================= TOP =================
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
 
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 20,
-            offset: const Offset(
-              0,
-              4,
-            ),
-            color:
-                Colors.black.withOpacity(
-              0.04,
-            ),
-          ),
-        ],
-      ),
-
-      child: Column(
-        children: [
-          // ================= TOP =================
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-
-            mainAxisAlignment:
-                MainAxisAlignment
-                    .spaceBetween,
-
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 24.r,
-
-                    backgroundColor:
-                        const Color(
-                      0xFFECEEEE,
-                    ),
-
-                    child: Text(
-                      name[0],
-
-                      style: TextStyle(
-                        fontSize: 20.sp,
-
-                        fontWeight:
-                            FontWeight
-                                .w700,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 12.w),
-
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
-
-                    children: [
-                      Text(
-                        name,
-
-                        style:
-                            TextStyle(
-                          fontSize:
-                              22.sp,
-
-                          fontWeight:
-                              FontWeight
-                                  .w500,
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 2.h,
-                      ),
-
-                      Text(
-                        "ID: $id",
-
-                        style:
-                            TextStyle(
-                          fontSize:
-                              14.sp,
-
-                          color:
-                              const Color(
-                            0xFF3F4A3C,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              Container(
-                padding:
-                    EdgeInsets.symmetric(
-                  horizontal:
-                      10.w,
-                  vertical: 5.h,
-                ),
-
-                decoration:
-                    BoxDecoration(
-                  color: riskBg,
-
-                  borderRadius:
-                      BorderRadius.circular(
-                    999.r,
-                  ),
-                ),
-
-                child: Row(
-                  children: [
-                    Container(
-                      width: 6.w,
-                      height: 6.h,
-
-                      decoration:
-                          BoxDecoration(
-                        color: riskColor,
-                        shape:
-                            BoxShape.circle,
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 6.w,
-                    ),
-
-                    Text(
-                      risk,
-
-                      style:
-                          TextStyle(
-                        fontSize:
-                            12.sp,
-
-                        fontWeight:
-                            FontWeight
-                                .w700,
-
-                        color:
-                            riskColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 18.h),
-
-          // ================= PROGRESS =================
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
-
-                children: [
-                  Text(
-                    "Progres Pengobatan",
-
-                    style: TextStyle(
-                      fontSize: 14.sp,
-
-                      color:
-                          const Color(
-                        0xFF3F4A3C,
-                      ),
-                    ),
-                  ),
-
-                  Text(
-                    day,
-
-                    style: TextStyle(
-                      fontSize: 12.sp,
-
-                      fontWeight:
-                          FontWeight
-                              .w700,
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 8.h),
-
-              ClipRRect(
-                borderRadius:
-                    BorderRadius.circular(
-                  999.r,
-                ),
-
-                child:
-                    LinearProgressIndicator(
-                  value: progress,
-
-                  minHeight: 6.h,
-
-                  backgroundColor:
-                      const Color(
-                    0xFFD9E6DA,
-                  ),
-
-                  valueColor:
-                      const AlwaysStoppedAnimation(
-                    Color(0xFF006E1C),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 18.h),
-
-          // ================= BOTTOM =================
-          Container(
-            padding:
-                EdgeInsets.only(
-              top: 16.h,
-            ),
-
-            decoration:
-                const BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: Color(
-                    0xFFE1E3E3,
-                  ),
-                ),
-              ),
-            ),
-
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons
-                          .calendar_today_outlined,
+                    CircleAvatar(
+                      radius: 24.r,
 
-                      size: 14,
+                      backgroundColor: const Color(0xFFECEEEE),
 
-                      color:
-                          Color(
-                        0xFF3F4A3C,
+                      child: Text(
+                        name[0],
+
+                        style: TextStyle(
+                          fontSize: 20.sp,
+
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
 
-                    SizedBox(width: 6.w),
+                    SizedBox(width: 12.w),
 
-                    Text(
-                      "Last updated: $updated",
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                      style: TextStyle(
-                        fontSize: 14.sp,
+                      children: [
+                        Text(
+                          name,
 
-                        color:
-                            const Color(
-                          0xFF3F4A3C,
+                          style: TextStyle(
+                            fontSize: 22.sp,
+
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
+
+                        SizedBox(height: 2.h),
+
+                        Text(
+                          "ID: $id",
+
+                          style: TextStyle(
+                            fontSize: 14.sp,
+
+                            color: const Color(0xFF3F4A3C),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
 
                 Container(
-                  padding:
-                      EdgeInsets.symmetric(
-                    horizontal:
-                        12.w,
-                    vertical: 6.h,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 5.h,
                   ),
 
-                  decoration:
-                      BoxDecoration(
-                    color:
-                        const Color(
-                      0xFFECEEEE,
-                    ),
+                  decoration: BoxDecoration(
+                    color: riskBg,
 
-                    borderRadius:
-                        BorderRadius.circular(
-                      8.r,
-                    ),
+                    borderRadius: BorderRadius.circular(999.r),
                   ),
 
                   child: Row(
                     children: [
-                      const Icon(
-                        Icons.edit,
-                        size: 12,
-                        color:
-                            Color(
-                          0xFF006E1C,
+                      Container(
+                        width: 6.w,
+                        height: 6.h,
+
+                        decoration: BoxDecoration(
+                          color: riskColor,
+                          shape: BoxShape.circle,
                         ),
                       ),
 
-                      SizedBox(
-                        width: 6.w,
-                      ),
+                      SizedBox(width: 6.w),
 
                       Text(
-                        "Update",
+                        risk,
 
-                        style:
-                            TextStyle(
-                          fontSize:
-                              12.sp,
+                        style: TextStyle(
+                          fontSize: 12.sp,
 
-                          fontWeight:
-                              FontWeight
-                                  .w700,
+                          fontWeight: FontWeight.w700,
 
-                          color:
-                              const Color(
-                            0xFF006E1C,
-                          ),
+                          color: riskColor,
                         ),
                       ),
                     ],
@@ -824,61 +602,136 @@ class PatientManagementPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  // ================= NAV ITEM =================
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    bool active = false,
-  }) {
-    return Column(
-      mainAxisAlignment:
-          MainAxisAlignment.center,
+            SizedBox(height: 18.h),
 
-      children: [
-        Icon(
-          icon,
-          size: 20,
+            // ================= PROGRESS =================
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-          color:
-              active
-                  ? const Color(
-                      0xFF006E1C,
-                    )
-                  : const Color(
-                      0xFF94A3B8,
-                    ),
-        ),
+                  children: [
+                    Text(
+                      "Progres Pengobatan",
 
-        SizedBox(height: 4.h),
+                      style: TextStyle(
+                        fontSize: 14.sp,
 
-        Text(
-          label,
-
-          style: TextStyle(
-            fontSize: 11.sp,
-
-            fontWeight:
-                active
-                    ? FontWeight.w700
-                    : FontWeight.w500,
-
-            color:
-                active
-                    ? const Color(
-                        0xFF006E1C,
-                      )
-                    : const Color(
-                        0xFF94A3B8,
+                        color: const Color(0xFF3F4A3C),
                       ),
-          ),
+                    ),
+
+                    Text(
+                      day,
+
+                      style: TextStyle(
+                        fontSize: 12.sp,
+
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 8.h),
+
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999.r),
+
+                  child: LinearProgressIndicator(
+                    value: progress,
+
+                    minHeight: 6.h,
+
+                    backgroundColor: const Color(0xFFD9E6DA),
+
+                    valueColor: const AlwaysStoppedAnimation(Color(0xFF006E1C)),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 18.h),
+
+            // ================= BOTTOM =================
+            Container(
+              padding: EdgeInsets.only(top: 16.h),
+
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: Color(0xFFE1E3E3))),
+              ),
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+
+                        size: 14,
+
+                        color: Color(0xFF3F4A3C),
+                      ),
+
+                      SizedBox(width: 6.w),
+
+                      Text(
+                        "Last updated: $updated",
+
+                        style: TextStyle(
+                          fontSize: 14.sp,
+
+                          color: const Color(0xFF3F4A3C),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 6.h,
+                    ),
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFECEEEE),
+
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.visibility_outlined,
+                          size: 12,
+                          color: Color(0xFF006E1C),
+                        ),
+
+                        SizedBox(width: 6.w),
+
+                        Text(
+                          "Detail",
+
+                          style: TextStyle(
+                            fontSize: 12.sp,
+
+                            fontWeight: FontWeight.w700,
+
+                            color: const Color(0xFF006E1C),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

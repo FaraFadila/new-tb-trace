@@ -21,6 +21,7 @@ import '../features/news/patient_news_detail_page.dart';
 
 // ================= PATIENT =================
 import '../features/patient/add_patient_page.dart';
+import '../features/patient/patient_detail_page.dart';
 import '../features/patient/patient_management_page.dart';
 import '../features/patient/patient_page.dart';
 import '../features/patient/report_symptom_page.dart';
@@ -88,6 +89,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/add-patient',
       builder: (context, state) => const AddPatientPage(),
+    ),
+    GoRoute(
+      path: '/patient-detail/:id',
+      builder:
+          (context, state) =>
+              PatientDetailPage(patientId: state.pathParameters['id'] ?? ''),
     ),
     GoRoute(
       path: '/patients',

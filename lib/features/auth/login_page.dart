@@ -1,28 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tb_trace/core/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() =>
-      _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState
-    extends State<LoginPage> {
-
+class _LoginPageState extends State<LoginPage> {
+  final AuthService _authService = AuthService();
   bool rememberMe = false;
   bool obscurePassword = true;
+  bool isLoading = false;
 
-  final TextEditingController
-      emailController =
-      TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController
-      passwordController =
-      TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Email dan password wajib diisi.');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final role = await _authService.signIn(email: email, password: password);
+
+      if (!mounted) return;
+      context.go(AuthService.homeRouteFor(role));
+    } on AuthException catch (error) {
+      _showMessage(error.message);
+    } catch (_) {
+      _showMessage('Login gagal. Periksa koneksi internet kamu.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +75,10 @@ class _LoginPageState
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                EdgeInsets.symmetric(
-              horizontal: 40.w,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 40.w),
 
             child: Column(
               children: [
-
                 SizedBox(height: 90.h),
 
                 // ================= LOGO =================
@@ -49,13 +88,9 @@ class _LoginPageState
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 25.sp,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
 
-                    color:
-                        const Color(
-                      0xFF006D37,
-                    ),
+                    color: const Color(0xFF006D37),
                   ),
                 ),
 
@@ -76,8 +111,7 @@ class _LoginPageState
 
                 // ================= TITLE =================
                 Align(
-                  alignment:
-                      Alignment.centerLeft,
+                  alignment: Alignment.centerLeft,
 
                   child: Text(
                     "Login",
@@ -85,13 +119,9 @@ class _LoginPageState
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 32.sp,
-                      fontWeight:
-                          FontWeight.w900,
+                      fontWeight: FontWeight.w900,
 
-                      color:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      color: const Color(0xFF006D37),
                     ),
                   ),
                 ),
@@ -100,19 +130,13 @@ class _LoginPageState
 
                 // ================= EMAIL =================
                 TextField(
-                  controller:
-                      emailController,
+                  controller: emailController,
 
-                  decoration:
-                      InputDecoration(
-
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.email_outlined,
 
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
                     hintText: "Email",
@@ -120,35 +144,17 @@ class _LoginPageState
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
 
-                      color:
-                          const Color(
-                        0xFF006D37,
+                      color: const Color(0xFF006D37),
+                    ),
+
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
-                      ),
-                    ),
-
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -157,84 +163,51 @@ class _LoginPageState
 
                 // ================= PASSWORD =================
                 TextField(
-                  controller:
-                      passwordController,
+                  controller: passwordController,
 
-                  obscureText:
-                      obscurePassword,
+                  obscureText: obscurePassword,
 
-                  decoration:
-                      InputDecoration(
-
+                  decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.lock_outline,
 
-                      color:
-                          Color(
-                        0xFF006D37,
-                      ),
+                      color: Color(0xFF006D37),
                     ),
 
-                    hintText:
-                        "Password",
+                    hintText: "Password",
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
 
-                      color:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      color: const Color(0xFF006D37),
                     ),
 
-                    suffixIcon:
-                        IconButton(
+                    suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          obscurePassword =
-                              !obscurePassword;
+                          obscurePassword = !obscurePassword;
                         });
                       },
 
                       icon: Icon(
                         obscurePassword
-                            ? Icons
-                                .visibility_off_outlined
-                            : Icons
-                                .visibility_outlined,
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
 
                         size: 18,
 
-                        color:
-                            const Color(
-                          0xFF006D37,
-                        ),
+                        color: const Color(0xFF006D37),
                       ),
                     ),
 
-                    enabledBorder:
-                        UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-
-                        color:
-                            const Color(
-                          0xFF06A881,
-                        ).withOpacity(
-                          0.32,
-                        ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color(0xFF06A881).withValues(alpha: 0.32),
                       ),
                     ),
 
-                    focusedBorder:
-                        const UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(
-                        color:
-                            Color(
-                          0xFF06A881,
-                        ),
-                      ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF06A881)),
                     ),
                   ),
                 ),
@@ -244,33 +217,19 @@ class _LoginPageState
                 // ================= REMEMBER =================
                 Row(
                   children: [
-
                     SizedBox(
                       width: 16.w,
                       height: 16.h,
 
                       child: Checkbox(
                         value: rememberMe,
-
-                        activeColor:
-                            const Color(
-                          0xFF006D37,
-                        ),
-
-                        side:
-                            const BorderSide(
-                          color: Color(
-                            0xFFAEC4BF,
-                          ),
-                        ),
-
-                        onChanged: (
-                          value,
-                        ) {
+                        activeColor: const Color(0xFF006D37),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                        side: const BorderSide(color: Color(0xFFAEC4BF)),
+                        onChanged: (value) {
                           setState(() {
-                            rememberMe =
-                                value ??
-                                    false;
+                            rememberMe = value ?? false;
                           });
                         },
                       ),
@@ -278,15 +237,21 @@ class _LoginPageState
 
                     SizedBox(width: 8.w),
 
-                    Text(
-                      "Remember me",
-
-                      style: TextStyle(
-                        fontSize: 10.sp,
-
-                        color:
-                            const Color(
-                          0xFF04624B,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          rememberMe = !rememberMe;
+                        });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        child: Text(
+                          "Remember me",
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: const Color(0xFF04624B),
+                          ),
                         ),
                       ),
                     ),
@@ -302,10 +267,7 @@ class _LoginPageState
                         style: TextStyle(
                           fontSize: 10.sp,
 
-                          color:
-                              const Color(
-                            0xFF04624B,
-                          ),
+                          color: const Color(0xFF04624B),
                         ),
                       ),
                     ),
@@ -320,69 +282,41 @@ class _LoginPageState
                   height: 48.h,
 
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: isLoading ? null : _login,
 
-                      final email =
-                          emailController.text
-                              .trim();
-
-                      final password =
-                          passwordController.text
-                              .trim();
-
-                      // ================= HEALTHCARE LOGIN =================
-                      if (email ==
-                              'healthcare@gmail.com' &&
-                          password ==
-                              '123456') {
-
-                        context.go(
-                          '/home-healthcare',
-                        );
-
-                      } else {
-
-                        // ================= PATIENT LOGIN =================
-                        context.go(
-                          '/home-patient',
-                        );
-                      }
-                    },
-
-                    style:
-                        ElevatedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       elevation: 2,
 
-                      backgroundColor:
-                          const Color(
-                        0xFF006D37,
-                      ),
+                      backgroundColor: const Color(0xFF006D37),
 
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(
-                          12.r,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
 
-                    child: Text(
-                      "Login",
+                    child:
+                        isLoading
+                            ? SizedBox(
+                              width: 20.w,
+                              height: 20.h,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                            : Text(
+                              "Login",
 
-                      style: TextStyle(
-                        fontFamily:
-                            'Inter',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
 
-                        fontSize: 16.sp,
+                                fontSize: 16.sp,
 
-                        fontWeight:
-                            FontWeight.w600,
+                                fontWeight: FontWeight.w600,
 
-                        color:
-                            Colors.white,
-                      ),
-                    ),
+                                color: Colors.white,
+                              ),
+                            ),
                   ),
                 ),
 
@@ -390,22 +324,18 @@ class _LoginPageState
 
                 // ================= SIGN UP =================
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
 
                   children: [
-
                     Text(
                       "Belum punya akun ? ",
 
                       style: TextStyle(
                         fontSize: 12.sp,
 
-                        fontWeight:
-                            FontWeight.w500,
+                        fontWeight: FontWeight.w500,
 
-                        color:
-                            Colors.black,
+                        color: Colors.black,
                       ),
                     ),
 
@@ -420,13 +350,9 @@ class _LoginPageState
                         style: TextStyle(
                           fontSize: 12.sp,
 
-                          fontWeight:
-                              FontWeight.w700,
+                          fontWeight: FontWeight.w700,
 
-                          color:
-                              const Color(
-                            0xFF006D37,
-                          ),
+                          color: const Color(0xFF006D37),
                         ),
                       ),
                     ),
