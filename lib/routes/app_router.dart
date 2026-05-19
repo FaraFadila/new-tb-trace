@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 // ================= AUTH =================
 import '../features/auth/start_page.dart';
 import '../features/auth/login_page.dart';
+import '../features/auth/register_page.dart';
 
 // ================= HOME =================
 import '../features/home/home_patient_page.dart';
@@ -15,6 +16,7 @@ import '../features/profile/edit_profile_page.dart';
 // ================= PATIENT =================
 import '../features/patient/patient_management_page.dart';
 import '../features/patient/add_patient_page.dart';
+import '../features/patient/report_symptom_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -33,6 +35,13 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const LoginPage(),
     ),
+
+    // ================= REGISTER  =================
+    GoRoute(
+    path: '/register',
+    builder: (context, state) =>
+        const RegisterPage(),
+  ),
 
     // ================= HOME PATIENT =================
     GoRoute(
@@ -74,6 +83,13 @@ final GoRouter appRouter = GoRouter(
       path: '/edit-profile',
       builder: (context, state) =>
           const EditProfilePage(),
+    ),
+
+    // ================= REPORT SYMPTOM =================
+    GoRoute(
+    path: '/report-symptom',
+    builder: (context, state) =>
+        const ReportSymptomPage(),
     ),
   ],
 );
