@@ -17,7 +17,7 @@ class AddPatientPage extends StatelessWidget {
 
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,

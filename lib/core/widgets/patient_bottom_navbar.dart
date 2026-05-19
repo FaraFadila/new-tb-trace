@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 class PatientBottomNavbar extends StatelessWidget {
   final int currentIndex;

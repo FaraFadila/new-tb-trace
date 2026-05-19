@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -23,7 +24,6 @@ class _MapPageState extends State<MapPage> {
             height: double.infinity,
             decoration: const BoxDecoration(
               color: Color(0xFFF8FAFA),
-              // TODO: Ganti dengan asset peta aslimu atau implementasi peta interaktif
               image: DecorationImage(
                 image: AssetImage('assets/images/map_placeholder.png'), // Sesuaikan path
                 fit: BoxFit.cover,

@@ -13,10 +13,17 @@ import '../features/home/home_healthcare_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
 
+// ================= NEWS =================
+import '../features/news/news_page.dart';
+import '../features/news/add_news_page.dart';
+
 // ================= PATIENT =================
 import '../features/patient/patient_management_page.dart';
 import '../features/patient/add_patient_page.dart';
 import '../features/patient/report_symptom_page.dart';
+
+// ================= MAP =================
+import '../features/map/map_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -38,10 +45,10 @@ final GoRouter appRouter = GoRouter(
 
     // ================= REGISTER  =================
     GoRoute(
-    path: '/register',
-    builder: (context, state) =>
-        const RegisterPage(),
-  ),
+      path: '/register',
+      builder: (context, state) =>
+          const RegisterPage(),
+    ),
 
     // ================= HOME PATIENT =================
     GoRoute(
@@ -59,17 +66,17 @@ final GoRouter appRouter = GoRouter(
 
     // ================= PATIENT MANAGEMENT =================    
     GoRoute(
-    path: '/patient-management',
-    builder: (context, state) =>
-        const PatientManagementPage(),
-  ),
+      path: '/patient-management',
+      builder: (context, state) =>
+          const PatientManagementPage(),
+    ),
 
     // ================= ADD PATIENT =================
     GoRoute(
-    path: '/add-patient',
-    builder: (context, state) =>
-        const AddPatientPage(),
-  ),
+      path: '/add-patient',
+      builder: (context, state) =>
+          const AddPatientPage(),
+    ),
 
     // ================= PROFILE =================
     GoRoute(
@@ -85,11 +92,26 @@ final GoRouter appRouter = GoRouter(
           const EditProfilePage(),
     ),
 
+    GoRoute(
+      path: '/news',
+      builder: (context, state) => const NewsPage(),
+    ),
+
+    GoRoute(
+      path: '/add-news',
+      builder: (context, state) => const TambahBeritaScreen(),
+    ),
+
     // ================= REPORT SYMPTOM =================
     GoRoute(
-    path: '/report-symptom',
-    builder: (context, state) =>
-        const ReportSymptomPage(),
+      path: '/report-symptom',
+      builder: (context, state) =>
+          const ReportSymptomPage(),
+    ),
+
+    GoRoute(
+      path: '/map',
+      builder: (context, state) => const MapPage(),
     ),
   ],
 );
