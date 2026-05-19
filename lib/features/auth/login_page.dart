@@ -12,6 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState
     extends State<LoginPage> {
+
   bool rememberMe = false;
   bool obscurePassword = true;
 
@@ -38,6 +39,7 @@ class _LoginPageState
 
             child: Column(
               children: [
+
                 SizedBox(height: 90.h),
 
                 // ================= LOGO =================
@@ -49,6 +51,7 @@ class _LoginPageState
                     fontSize: 25.sp,
                     fontWeight:
                         FontWeight.w700,
+
                     color:
                         const Color(
                       0xFF006D37,
@@ -65,7 +68,6 @@ class _LoginPageState
 
                   child: Image.asset(
                     "assets/images/start_illustration.png",
-
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -85,6 +87,7 @@ class _LoginPageState
                       fontSize: 32.sp,
                       fontWeight:
                           FontWeight.w900,
+
                       color:
                           const Color(
                         0xFF006D37,
@@ -102,8 +105,10 @@ class _LoginPageState
 
                   decoration:
                       InputDecoration(
+
                     prefixIcon: const Icon(
                       Icons.email_outlined,
+
                       color:
                           Color(
                         0xFF006D37,
@@ -114,6 +119,7 @@ class _LoginPageState
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
+
                       color:
                           const Color(
                         0xFF006D37,
@@ -124,6 +130,7 @@ class _LoginPageState
                         UnderlineInputBorder(
                       borderSide:
                           BorderSide(
+
                         color:
                             const Color(
                           0xFF06A881,
@@ -158,8 +165,10 @@ class _LoginPageState
 
                   decoration:
                       InputDecoration(
+
                     prefixIcon: const Icon(
                       Icons.lock_outline,
+
                       color:
                           Color(
                         0xFF006D37,
@@ -171,6 +180,7 @@ class _LoginPageState
 
                     hintStyle: TextStyle(
                       fontSize: 15.sp,
+
                       color:
                           const Color(
                         0xFF006D37,
@@ -206,6 +216,7 @@ class _LoginPageState
                         UnderlineInputBorder(
                       borderSide:
                           BorderSide(
+
                         color:
                             const Color(
                           0xFF06A881,
@@ -233,6 +244,7 @@ class _LoginPageState
                 // ================= REMEMBER =================
                 Row(
                   children: [
+
                     SizedBox(
                       width: 16.w,
                       height: 16.h,
@@ -271,6 +283,7 @@ class _LoginPageState
 
                       style: TextStyle(
                         fontSize: 10.sp,
+
                         color:
                             const Color(
                           0xFF04624B,
@@ -288,6 +301,7 @@ class _LoginPageState
 
                         style: TextStyle(
                           fontSize: 10.sp,
+
                           color:
                               const Color(
                             0xFF04624B,
@@ -300,16 +314,39 @@ class _LoginPageState
 
                 SizedBox(height: 20.h),
 
-                // ================= BUTTON =================
+                // ================= LOGIN BUTTON =================
                 SizedBox(
                   width: double.infinity,
                   height: 48.h,
 
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go(
-                        '/home-patient',
-                      );
+
+                      final email =
+                          emailController.text
+                              .trim();
+
+                      final password =
+                          passwordController.text
+                              .trim();
+
+                      // ================= HEALTHCARE LOGIN =================
+                      if (email ==
+                              'healthcare@gmail.com' &&
+                          password ==
+                              '123456') {
+
+                        context.go(
+                          '/home-healthcare',
+                        );
+
+                      } else {
+
+                        // ================= PATIENT LOGIN =================
+                        context.go(
+                          '/home-patient',
+                        );
+                      }
                     },
 
                     style:
@@ -336,10 +373,12 @@ class _LoginPageState
                       style: TextStyle(
                         fontFamily:
                             'Inter',
+
                         fontSize: 16.sp,
+
                         fontWeight:
-                            FontWeight
-                                .w600,
+                            FontWeight.w600,
+
                         color:
                             Colors.white,
                       ),
@@ -352,17 +391,19 @@ class _LoginPageState
                 // ================= SIGN UP =================
                 Row(
                   mainAxisAlignment:
-                      MainAxisAlignment
-                          .center,
+                      MainAxisAlignment.center,
 
                   children: [
+
                     Text(
                       "Belum punya akun ? ",
 
                       style: TextStyle(
                         fontSize: 12.sp,
+
                         fontWeight:
                             FontWeight.w500,
+
                         color:
                             Colors.black,
                       ),
@@ -378,9 +419,10 @@ class _LoginPageState
 
                         style: TextStyle(
                           fontSize: 12.sp,
+
                           fontWeight:
-                              FontWeight
-                                  .w700,
+                              FontWeight.w700,
+
                           color:
                               const Color(
                             0xFF006D37,

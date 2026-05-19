@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../../core/widgets/patient_bottom_navbar.dart';
+import '../../core/widgets/patient_bottom_navbar.dart';
 
 class PatientMapPage extends StatelessWidget {
   const PatientMapPage({super.key});
