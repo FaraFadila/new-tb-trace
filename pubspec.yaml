@@ -43,6 +43,7 @@ dependencies:
 
   # Images
   cached_network_image: ^3.4.1
+  supabase_flutter: ^2.12.4
 
 dev_dependencies:
   flutter_test:

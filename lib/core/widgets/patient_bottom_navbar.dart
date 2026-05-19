@@ -27,7 +27,7 @@ class PatientBottomNavbar extends StatelessWidget {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 24,
               offset: const Offset(0, -4),
             ),
@@ -83,58 +83,44 @@ class PatientBottomNavbar extends StatelessWidget {
     final bool isActive = currentIndex == index;
 
     return Expanded(
-      child: InkWell(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
-          // Prevent navigating to same page repeatedly
-          if (!isActive) {
-            context.go(route);
-          }
+          context.go(route);
         },
-
         child: SizedBox(
           height: double.infinity,
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-
             children: [
               Icon(
                 icon,
                 size: 20.sp,
-
                 color:
                     isActive
                         ? const Color(0xFF059669)
                         : const Color(0xFF94A3B8),
               ),
-
               SizedBox(height: 6.h),
-
               Text(
                 label,
-
                 style: TextStyle(
                   fontSize: 10.sp,
                   letterSpacing: 1,
                   fontWeight: FontWeight.w600,
-
                   color:
                       isActive
                           ? const Color(0xFF059669)
                           : const Color(0xFF94A3B8),
                 ),
               ),
-
               SizedBox(height: 4.h),
-
               if (isActive)
                 Container(
                   width: 24.w,
                   height: 4.h,
-
                   decoration: BoxDecoration(
-                    color: const Color(0xFF10B981).withOpacity(0.2),
-
+                    color: const Color(0xFF10B981).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(999.r),
                   ),
                 ),

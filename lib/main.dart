@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tb_trace/core/config/supabase_config.dart';
 import 'package:tb_trace/routes/app_router.dart'; // Sesuaikan lokasi file-nya
 
 void main() async {
   // 1. Pastikan pondasi inti Flutter sudah siap
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: SupabaseConfig.url,
+    anonKey: SupabaseConfig.publishableKey,
+  );
 
   // 2. JURUS PAMUNGKAS: Paksa sistem membaca ukuran layar browser sampai dapat!
-  await ScreenUtil.ensureScreenSize(); 
+  await ScreenUtil.ensureScreenSize();
 
   // 3. Setelah aman, baru jalankan aplikasinya
   runApp(const MyApp());
