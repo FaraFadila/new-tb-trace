@@ -12,6 +12,10 @@ import '../features/home/home_healthcare_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/profile/edit_profile_page.dart';
 
+// ================= PATIENT =================
+import '../features/patient/patient_management_page.dart';
+import '../features/patient/add_patient_page.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
 
@@ -43,6 +47,20 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) =>
           const HomeHealthcarePage(),
     ),
+
+    // ================= PATIENT MANAGEMENT =================    
+    GoRoute(
+    path: '/patient-management',
+    builder: (context, state) =>
+        const PatientManagementPage(),
+  ),
+
+    // ================= ADD PATIENT =================
+    GoRoute(
+    path: '/add-patient',
+    builder: (context, state) =>
+        const AddPatientPage(),
+  ),
 
     // ================= PROFILE =================
     GoRoute(

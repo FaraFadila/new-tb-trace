@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AddPatientPage extends StatelessWidget {
   const AddPatientPage({super.key});
@@ -239,7 +240,9 @@ class AddPatientPage extends StatelessWidget {
               height: 52,
 
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/add-patient');
+                },
 
                 style:
                     ElevatedButton.styleFrom(
