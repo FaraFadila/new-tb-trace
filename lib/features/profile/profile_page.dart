@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/patient_bottom_navbar.dart';
+import '../../features/auth/login_page.dart';
 import 'edit_profile_page.dart';
 import 'profile_sidebar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -188,7 +190,32 @@ class ProfilePage extends StatelessWidget {
               height: 54,
 
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    // 1. Proses sign out dari Supabase
+                    await Supabase.instance.client.auth.signOut();
+                    
+                    // 2. Cek apakah widget masih aktif sebelum pindah halaman (Best Practice Flutter)
+                    if (!context.mounted) return;
+
+                    // 3. Arahkan kembali ke halaman Login dan hapus semua history halaman sebelumnya
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        // Ganti 'LoginPage()' dengan nama class halaman login/auth kamu yang sebenarnya
+                        builder: (context) => const LoginPage(), 
+                      ),
+                      (route) => false, // false berarti semua tumpukan routing sebelumnya dihapus
+                    );
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    // Tampilkan pesan error jika terjadi kegagalan jaringan/sistem
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Gagal log out: $e")),
+                    );
+                  }
+                },
+
 
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(

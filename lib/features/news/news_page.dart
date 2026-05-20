@@ -261,61 +261,6 @@ class NewsPage extends StatelessWidget {
         const SizedBox(height: 16),
 
         _buildNewsCard(
-          tag: 'Prevention',
-
-          showVerifiedBadge: true,
-
-          title: 'Updated Guidelines for Contact Tracing in High-Density Areas',
-
-          description:
-              'WHO releases revised guidelines emphasizing digital contact tracing tools.',
-
-          footerContent: Row(
-            children: [
-              const Icon(
-                Icons.person_outline,
-                size: 14,
-                color: Color(0xFF3D4A3F),
-              ),
-
-              const SizedBox(width: 4),
-
-              const Expanded(
-                child: Text(
-                  'Dr. Sarah Chen,\nWHO',
-
-                  style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)),
-                ),
-              ),
-
-              Container(width: 1, height: 24, color: const Color(0xFFBCCABC)),
-
-              const SizedBox(width: 8),
-
-              const Icon(
-                Icons.location_on_outlined,
-                size: 14,
-                color: Color(0xFF3D4A3F),
-              ),
-
-              const SizedBox(width: 4),
-
-              const Expanded(
-                child: Text(
-                  'WHO\nOffice',
-
-                  style: TextStyle(fontSize: 12, color: Color(0xFF3D4A3F)),
-                ),
-              ),
-
-              const Icon(Icons.open_in_new, size: 18, color: Color(0xFF006D37)),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
-        _buildNewsCard(
           tag: 'Nutrisi',
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
           description:
