@@ -1,106 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:tb_trace/core/services/user_profile_service.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  const EditProfilePage({super.key, this.fallbackRoute = '/profile-patient'});
+
+  final String fallbackRoute;
 
   @override
-  State<EditProfilePage> createState() =>
-      _EditProfilePageState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditProfilePageState
-    extends State<EditProfilePage> {
-  final TextEditingController nameController =
-      TextEditingController(
-    text: "Melissa Peters",
-  );
+class _EditProfilePageState extends State<EditProfilePage> {
+  final UserProfileService _profileService = UserProfileService();
 
-  final TextEditingController emailController =
-      TextEditingController(
-    text: "melpeters@gmail.com",
-  );
+  final TextEditingController nameController = TextEditingController();
 
-  final TextEditingController passwordController =
-      TextEditingController(
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController(
     text: "************",
   );
 
-  final TextEditingController changePasswordController =
-      TextEditingController(
+  final TextEditingController changePasswordController = TextEditingController(
     text: "************",
   );
 
   String selectedCountry = "Indonesia";
 
-  DateTime selectedDate =
-      DateTime(1995, 5, 23);
+  DateTime selectedDate = DateTime(1995, 5, 23);
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = _profileService.currentEmail();
+    _loadProfileName();
+  }
+
+  Future<void> _loadProfileName() async {
+    final displayName = await _profileService.currentDisplayName();
+
+    if (!mounted) return;
+
+    nameController.text = displayName;
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    changePasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFFF4FBF1,
+      backgroundColor: const Color(0xFFF4FBF1),
+      appBar: AppPageHeader(
+        title: 'Edit Profile',
+        centerTitle: true,
+        fallbackRoute: widget.fallbackRoute,
       ),
 
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 18,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
 
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-              // =========================
-              // HEADER
-              // =========================
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(
-                        context,
-                      );
-                    },
-
-                    icon: const Icon(
-                      Icons
-                          .arrow_back_ios_new,
-                      size: 20,
-                      color: Color(
-                        0xFF171D17,
-                      ),
-                    ),
-                  ),
-
-                  const Expanded(
-                    child: Center(
-                      child: Text(
-                        "Edit Profile",
-
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight:
-                              FontWeight
-                                  .w700,
-
-                          color: Color(
-                            0xFF006D37,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 48),
-                ],
-              ),
-
-              const SizedBox(height: 30),
+              const SizedBox(height: 12),
 
               // =========================
               // PROFILE IMAGE
@@ -112,24 +84,16 @@ class _EditProfilePageState
                       width: 140,
                       height: 140,
 
-                      decoration:
-                          BoxDecoration(
-                        shape:
-                            BoxShape.circle,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
 
-                        border:
-                            Border.all(
-                          color: const Color(
-                            0xFF006D37,
-                          ),
+                        border: Border.all(
+                          color: const Color(0xFF006D37),
                           width: 3,
                         ),
 
-                        image:
-                            const DecorationImage(
-                          image: AssetImage(
-                            "assets/images/profile.png",
-                          ),
+                        image: const DecorationImage(
+                          image: AssetImage("assets/images/profile.png"),
 
                           fit: BoxFit.cover,
                         ),
@@ -137,16 +101,8 @@ class _EditProfilePageState
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 16,
-                            offset:
-                                const Offset(
-                              0,
-                              6,
-                            ),
-                            color: Colors
-                                .black
-                                .withOpacity(
-                              0.08,
-                            ),
+                            offset: const Offset(0, 6),
+                            color: Colors.black.withOpacity(0.08),
                           ),
                         ],
                       ),
@@ -157,27 +113,17 @@ class _EditProfilePageState
                       right: 6,
 
                       child: Container(
-                        padding:
-                            const EdgeInsets.all(
-                          8,
-                        ),
+                        padding: const EdgeInsets.all(8),
 
-                        decoration:
-                            BoxDecoration(
-                          color:
-                              Colors.white,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
 
-                          shape:
-                              BoxShape.circle,
+                          shape: BoxShape.circle,
 
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 8,
-                              color: Colors
-                                  .black
-                                  .withOpacity(
-                                0.08,
-                              ),
+                              color: Colors.black.withOpacity(0.08),
                             ),
                           ],
                         ),
@@ -185,9 +131,7 @@ class _EditProfilePageState
                         child: const Icon(
                           Icons.camera_alt,
                           size: 20,
-                          color: Color(
-                            0xFF006D37,
-                          ),
+                          color: Color(0xFF006D37),
                         ),
                       ),
                     ),
@@ -204,10 +148,7 @@ class _EditProfilePageState
 
               const SizedBox(height: 10),
 
-              _inputField(
-                controller:
-                    nameController,
-              ),
+              _inputField(controller: nameController),
 
               const SizedBox(height: 24),
 
@@ -218,10 +159,7 @@ class _EditProfilePageState
 
               const SizedBox(height: 10),
 
-              _inputField(
-                controller:
-                    emailController,
-              ),
+              _inputField(controller: emailController),
 
               const SizedBox(height: 24),
 
@@ -232,11 +170,7 @@ class _EditProfilePageState
 
               const SizedBox(height: 10),
 
-              _inputField(
-                controller:
-                    passwordController,
-                obscure: true,
-              ),
+              _inputField(controller: passwordController, obscure: true),
 
               const SizedBox(height: 24),
 
@@ -247,11 +181,7 @@ class _EditProfilePageState
 
               const SizedBox(height: 10),
 
-              _inputField(
-                controller:
-                    changePasswordController,
-                obscure: true,
-              ),
+              _inputField(controller: changePasswordController, obscure: true),
 
               const SizedBox(height: 24),
 
@@ -264,26 +194,19 @@ class _EditProfilePageState
 
               GestureDetector(
                 onTap: () async {
-                  DateTime?
-                      pickedDate =
-                      await showDatePicker(
+                  DateTime? pickedDate = await showDatePicker(
                     context: context,
 
-                    initialDate:
-                        selectedDate,
+                    initialDate: selectedDate,
 
-                    firstDate:
-                        DateTime(1950),
+                    firstDate: DateTime(1950),
 
-                    lastDate:
-                        DateTime.now(),
+                    lastDate: DateTime.now(),
                   );
 
-                  if (pickedDate !=
-                      null) {
+                  if (pickedDate != null) {
                     setState(() {
-                      selectedDate =
-                          pickedDate;
+                      selectedDate = pickedDate;
                     });
                   }
                 },
@@ -303,84 +226,53 @@ class _EditProfilePageState
               const SizedBox(height: 10),
 
               Container(
-                padding:
-                    const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
 
                 decoration: BoxDecoration(
                   color: Colors.white,
 
-                  border: Border.all(
-                    color: const Color(
-                      0xFFE8F8F1,
-                    ),
-                  ),
+                  border: Border.all(color: const Color(0xFFE8F8F1)),
 
-                  borderRadius:
-                      BorderRadius.circular(
-                    14,
-                  ),
+                  borderRadius: BorderRadius.circular(14),
 
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 10,
-                      offset:
-                          const Offset(
-                        0,
-                        4,
-                      ),
-                      color: Colors
-                          .black
-                          .withOpacity(
-                        0.02,
-                      ),
+                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.02),
                     ),
                   ],
                 ),
 
-                child:
-                    DropdownButtonHideUnderline(
-                  child: DropdownButton<
-                      String>(
-                    value:
-                        selectedCountry,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedCountry,
 
                     isExpanded: true,
 
                     items: const [
                       DropdownMenuItem(
-                        value:
-                            "Indonesia",
+                        value: "Indonesia",
 
-                        child: Text(
-                          "Indonesia",
-                        ),
+                        child: Text("Indonesia"),
                       ),
 
                       DropdownMenuItem(
-                        value:
-                            "Malaysia",
+                        value: "Malaysia",
 
-                        child: Text(
-                          "Malaysia",
-                        ),
+                        child: Text("Malaysia"),
                       ),
 
                       DropdownMenuItem(
-                        value:
-                            "Singapore",
+                        value: "Singapore",
 
-                        child: Text(
-                          "Singapore",
-                        ),
+                        child: Text("Singapore"),
                       ),
                     ],
 
                     onChanged: (value) {
                       setState(() {
-                        selectedCountry =
-                            value!;
+                        selectedCountry = value!;
                       });
                     },
                   ),
@@ -399,21 +291,13 @@ class _EditProfilePageState
                 child: ElevatedButton(
                   onPressed: () {},
 
-                  style:
-                      ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
                     elevation: 0,
 
-                    backgroundColor:
-                        const Color(
-                      0xFF006D37,
-                    ),
+                    backgroundColor: const Color(0xFF006D37),
 
-                    shape:
-                        RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(
-                        16,
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
 
@@ -422,8 +306,7 @@ class _EditProfilePageState
 
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight:
-                          FontWeight.w600,
+                      fontWeight: FontWeight.w600,
 
                       color: Colors.white,
                     ),
@@ -458,8 +341,7 @@ class _EditProfilePageState
   // INPUT FIELD
   // =========================
   Widget _inputField({
-    required TextEditingController
-        controller,
+    required TextEditingController controller,
     bool obscure = false,
   }) {
     return TextField(
@@ -470,52 +352,27 @@ class _EditProfilePageState
         filled: true,
         fillColor: Colors.white,
 
-        contentPadding:
-            const EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
         ),
 
         border: OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            14,
-          ),
+          borderRadius: BorderRadius.circular(14),
 
-          borderSide: const BorderSide(
-            color: Color(
-              0xFFE8F8F1,
-            ),
-          ),
+          borderSide: const BorderSide(color: Color(0xFFE8F8F1)),
         ),
 
-        enabledBorder:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            14,
-          ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
 
-          borderSide: const BorderSide(
-            color: Color(
-              0xFFE8F8F1,
-            ),
-          ),
+          borderSide: const BorderSide(color: Color(0xFFE8F8F1)),
         ),
 
-        focusedBorder:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            14,
-          ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
 
-          borderSide: const BorderSide(
-            color: Color(
-              0xFF006D37,
-            ),
-            width: 1.5,
-          ),
+          borderSide: const BorderSide(color: Color(0xFF006D37), width: 1.5),
         ),
       ),
     );
@@ -528,35 +385,20 @@ class _EditProfilePageState
     return Container(
       width: double.infinity,
 
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 16,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
 
       decoration: BoxDecoration(
         color: Colors.white,
 
-        border: Border.all(
-          color: const Color(
-            0xFFE8F8F1,
-          ),
-        ),
+        border: Border.all(color: const Color(0xFFE8F8F1)),
 
-        borderRadius:
-            BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14),
 
         boxShadow: [
           BoxShadow(
             blurRadius: 10,
-            offset: const Offset(
-              0,
-              4,
-            ),
-            color:
-                Colors.black.withOpacity(
-              0.02,
-            ),
+            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.02),
           ),
         ],
       ),
@@ -567,21 +409,11 @@ class _EditProfilePageState
             child: Text(
               text,
 
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(
-                  0xFF544C4C,
-                ),
-              ),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF544C4C)),
             ),
           ),
 
-          const Icon(
-            Icons.keyboard_arrow_down,
-            color: Color(
-              0xFF006D37,
-            ),
-          ),
+          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF006D37)),
         ],
       ),
     );
