@@ -15,6 +15,7 @@ import '../features/map/patient_map_page.dart';
 
 // ================= NEWS =================
 import '../features/news/add_news_page.dart';
+import '../features/news/healthcare_news_detail_page.dart';
 import '../features/news/news_page.dart';
 import '../features/news/news_patient.dart';
 import '../features/news/patient_news_detail_page.dart';
@@ -74,6 +75,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/patient-news-detail',
       builder: (context, state) => const PatientNewsDetailPage(),
+    ),
+    GoRoute(
+      path: '/healthcare-news-detail',
+      builder:
+          (context, state) => HealthcareNewsDetailPage(
+            article:
+                state.extra is HealthcareNewsArticle
+                    ? state.extra as HealthcareNewsArticle
+                    : null,
+          ),
     ),
     GoRoute(
       path: '/add-news',

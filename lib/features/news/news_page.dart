@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
-import 'patient_news_detail_page.dart';
+import 'healthcare_news_detail_page.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({super.key});
@@ -55,7 +54,7 @@ class NewsPage extends StatelessWidget {
 
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF006D37).withOpacity(0.3),
+              color: const Color(0xFF006D37).withValues(alpha: 0.3),
 
               blurRadius: 15,
 
@@ -82,7 +81,7 @@ class NewsPage extends StatelessWidget {
   // ================= APP BAR =================
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white.withOpacity(0.9),
+      backgroundColor: Colors.white.withValues(alpha: 0.9),
 
       elevation: 0,
 
@@ -154,7 +153,7 @@ class NewsPage extends StatelessWidget {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
 
             blurRadius: 20,
 
@@ -235,6 +234,9 @@ class NewsPage extends StatelessWidget {
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
           description:
               'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-resistant TB.',
+          author: 'Dr. Zoro',
+          location: 'Central Hospital',
+          verifiedBy: 'Dr. Zoro',
           footerContent: Row(
             children: const [
               Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
@@ -269,6 +271,9 @@ class NewsPage extends StatelessWidget {
 
           description:
               'WHO releases revised guidelines emphasizing digital contact tracing tools.',
+          author: 'Dr. Sarah Chen',
+          location: 'WHO Office',
+          verifiedBy: 'WHO Clinical Review',
 
           footerContent: Row(
             children: [
@@ -320,6 +325,9 @@ class NewsPage extends StatelessWidget {
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
           description:
               'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          author: 'Dr. Zoro',
+          location: 'TB Trace Medical Team',
+          verifiedBy: 'Dr. Zoro',
           footerContent: Row(
             children: const [
               Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
@@ -343,6 +351,9 @@ class NewsPage extends StatelessWidget {
           title: 'New Protocol for MDR-TB Showing 85% Efficacy in Early...',
           description:
               'Recent clinical trials suggest that combining Bedaquiline with the novel compound shows unprecedented clearance rates in multidrug-...',
+          author: 'Dr. Zoro',
+          location: 'Central Hospital',
+          verifiedBy: 'Dr. Zoro',
           footerContent: Row(
             children: const [
               Icon(Icons.check_circle, size: 12, color: Color(0xFF006D37)),
@@ -371,13 +382,26 @@ class NewsPage extends StatelessWidget {
     bool showVerifiedBadge = false,
     required String title,
     required String description,
+    required String author,
+    required String location,
+    required String verifiedBy,
     required Widget footerContent,
   }) {
     return Builder(
       builder: (context) {
         return GestureDetector(
           onTap: () {
-            context.push('/patient-news-detail');
+            context.push(
+              '/healthcare-news-detail',
+              extra: HealthcareNewsArticle(
+                category: tag,
+                title: title,
+                summary: description,
+                author: author,
+                location: location,
+                verifiedBy: verifiedBy,
+              ),
+            );
           },
 
           child: Container(
@@ -392,7 +416,7 @@ class NewsPage extends StatelessWidget {
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
 
                   blurRadius: 20,
 
@@ -442,7 +466,7 @@ class NewsPage extends StatelessWidget {
                         ),
 
                         decoration: BoxDecoration(
-                          color: const Color(0xFF006D37).withOpacity(0.1),
+                          color: const Color(0xFF006D37).withValues(alpha: 0.1),
 
                           borderRadius: BorderRadius.circular(20),
                         ),
