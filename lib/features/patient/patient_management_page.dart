@@ -47,7 +47,7 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/add-patient');
+          context.push('/add-patient');
         },
 
         elevation: 10,
