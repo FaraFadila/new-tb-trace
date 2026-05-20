@@ -64,6 +64,8 @@ class PatientDetail {
     this.guardianName,
     this.guardianPhone,
     this.guardianAddress,
+    this.loginEmail,
+    this.temporaryPassword,
     this.treatmentStartDate,
     this.treatmentEndDate,
     this.lastUpdatedAt,
@@ -77,6 +79,8 @@ class PatientDetail {
   final String? guardianName;
   final String? guardianPhone;
   final String? guardianAddress;
+  final String? loginEmail;
+  final String? temporaryPassword;
   final String riskLevel;
   final String treatmentStatus;
   final DateTime? treatmentStartDate;
@@ -87,15 +91,26 @@ class PatientDetail {
   final DateTime updatedAt;
 
   factory PatientDetail.fromJson(Map<String, dynamic> json) {
+    final patientCode = json['patient_code'] as String;
+
     return PatientDetail(
       id: json['id'] as String,
-      patientCode: json['patient_code'] as String,
+      patientCode: patientCode,
       fullName: json['full_name'] as String,
       phone: json['phone'] as String?,
       address: json['address'] as String?,
       guardianName: json['guardian_name'] as String?,
       guardianPhone: json['guardian_phone'] as String?,
       guardianAddress: json['guardian_address'] as String?,
+      loginEmail:
+          _stringOrNull(json['login_email']) ??
+          _stringOrNull(json['patient_email']) ??
+          _stringOrNull(json['email']) ??
+          '${patientCode.toLowerCase()}@patients.tb-trace.local',
+      temporaryPassword:
+          _stringOrNull(json['temporary_password']) ??
+          _stringOrNull(json['patient_password']) ??
+          _stringOrNull(json['plain_password']),
       riskLevel:
           (json['risk_level'] as String? ?? 'medium').trim().toLowerCase(),
       treatmentStatus:
@@ -115,6 +130,12 @@ class PatientDetail {
   static DateTime? _parseOptionalDate(dynamic value) {
     if (value == null) return null;
     return DateTime.tryParse(value.toString());
+  }
+
+  static String? _stringOrNull(dynamic value) {
+    if (value == null) return null;
+    final text = value.toString().trim();
+    return text.isEmpty ? null : text;
   }
 }
 
@@ -146,7 +167,12 @@ class PatientService {
       throw const AuthException('Pasien tidak ditemukan.');
     }
 
-    return PatientDetail.fromJson(row);
+    final patientRow = Map<String, dynamic>.from(row);
+    final credentials = await _getStoredPatientCredentials(patientId);
+
+    patientRow.addAll(credentials);
+
+    return PatientDetail.fromJson(patientRow);
   }
 
   Future<CreatedPatientCredentials> createPatient({
@@ -190,5 +216,61 @@ class PatientService {
       email: credentials['email'] as String,
       temporaryPassword: credentials['temporary_password'] as String,
     );
+  }
+
+  Future<Map<String, dynamic>> _getStoredPatientCredentials(
+    String patientId,
+  ) async {
+    final result = <String, dynamic>{};
+
+    final email = await _getOptionalPatientColumn(patientId, [
+      'login_email',
+      'patient_email',
+      'email',
+    ]);
+
+    final password = await _getOptionalPatientColumn(patientId, [
+      'temporary_password',
+      'patient_password',
+      'plain_password',
+    ]);
+
+    if (email != null) {
+      result['login_email'] = email;
+    }
+
+    if (password != null) {
+      result['temporary_password'] = password;
+    }
+
+    return result;
+  }
+
+  Future<String?> _getOptionalPatientColumn(
+    String patientId,
+    List<String> columnNames,
+  ) async {
+    for (final columnName in columnNames) {
+      try {
+        final row =
+            await _client
+                .from('patients')
+                .select(columnName)
+                .eq('id', patientId)
+                .maybeSingle();
+
+        final value = row?[columnName];
+        final text = value?.toString().trim();
+
+        if (text != null && text.isNotEmpty) {
+          return text;
+        }
+      } on PostgrestException {
+        // Some deployments do not store patient credentials in the patients
+        // table. Ignore missing optional columns so the detail page still opens.
+      }
+    }
+
+    return null;
   }
 }

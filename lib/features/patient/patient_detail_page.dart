@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tb_trace/core/services/patient_service.dart';
@@ -92,6 +93,30 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
                             _detailRow('ID Pasien', patient.patientCode),
                             _detailRow('Nomor Telepon', patient.phone),
                             _detailRow('Alamat', patient.address),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
+                        _detailSection(
+                          title: 'Akun Login Pasien',
+                          children: [
+                            _credentialRow(
+                              label: 'Email',
+                              value: patient.loginEmail,
+                            ),
+                            _credentialRow(
+                              label: 'Password',
+                              value: patient.temporaryPassword,
+                              emptyLabel: 'Belum tersimpan',
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              'Password hanya bisa ditampilkan kalau temporary password pasien disimpan saat akun dibuat.',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                height: 1.4,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 16.h),
@@ -342,6 +367,67 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _credentialRow({
+    required String label,
+    required String? value,
+    String emptyLabel = '-',
+  }) {
+    final displayValue =
+        value == null || value.trim().isEmpty ? emptyLabel : value.trim();
+    final canCopy = value != null && value.trim().isNotEmpty;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 7.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 132.w,
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13.sp, color: const Color(0xFF6B7280)),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              displayValue,
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+                color:
+                    canCopy ? const Color(0xFF191C1D) : const Color(0xFF6B7280),
+              ),
+            ),
+          ),
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            onPressed:
+                canCopy
+                    ? () {
+                      Clipboard.setData(ClipboardData(text: displayValue));
+                      _showCopiedMessage('$label berhasil disalin.');
+                    }
+                    : null,
+            icon: Icon(
+              Icons.copy_rounded,
+              size: 18.sp,
+              color:
+                  canCopy ? const Color(0xFF006E1C) : const Color(0xFFCBD5E1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCopiedMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Widget _statusChip({
