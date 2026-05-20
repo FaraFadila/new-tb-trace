@@ -65,7 +65,7 @@ class PatientBottomNavbar extends StatelessWidget {
               icon: Iconsax.profile_circle,
               label: "PROFILE",
               index: 3,
-              route: '/profile',
+              route: '/profile-patient',
             ),
           ],
         ),
