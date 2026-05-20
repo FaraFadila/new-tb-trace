@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/healthcare_bottom_navbar.dart';
 
 class HealthcareNewsArticle {
@@ -47,26 +47,9 @@ class HealthcareNewsDetailPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4FBF1),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF171D17)),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Detail Berita',
-          style: TextStyle(
-            color: Color(0xFF171D17),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        centerTitle: false,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, color: Color(0xFFE8F8F1)),
-        ),
+      appBar: const AppPageHeader(
+        title: 'Detail Berita',
+        fallbackRoute: '/news-healthcare',
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 28.h),

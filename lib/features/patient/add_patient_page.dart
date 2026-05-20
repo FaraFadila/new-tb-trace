@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tb_trace/core/services/patient_service.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 
 class AddPatientPage extends StatefulWidget {
   const AddPatientPage({super.key});
@@ -93,34 +94,10 @@ class _AddPatientPageState extends State<AddPatientPage> {
       backgroundColor: const Color(0xFFF4F8F5),
 
       // APPBAR
-      appBar: AppBar(
-        backgroundColor: Colors.white.withOpacity(0.9),
-        elevation: 0,
+      appBar: const AppPageHeader(
+        title: 'Tambahkan Pasien Baru',
         centerTitle: true,
-
-        leading: IconButton(
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/patient-management');
-            }
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: Color(0xFF047857),
-            size: 18,
-          ),
-        ),
-
-        title: const Text(
-          "Tambahkan Pasien Baru",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        fallbackRoute: '/patient-management',
       ),
 
       // BODY

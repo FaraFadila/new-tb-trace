@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 
 class TambahBeritaScreen extends StatefulWidget {
   const TambahBeritaScreen({super.key});
@@ -16,31 +17,9 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
     return Scaffold(
       // Background utama dari desain: #F4FBF1
       backgroundColor: const Color(0xFFF4FBF1),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
-        // Garis bawah header: border-bottom 1px solid #F3F4F6
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: const Color(0xFFF3F4F6),
-            height: 1,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF111827)),
-          onPressed: () {},
-        ),
-        title: const Text(
-          'Tambah Berita',
-          style: TextStyle(
-            fontFamily: 'Manrope',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-            color: Color(0xFF111827),
-          ),
-        ),
+      appBar: AppPageHeader(
+        title: 'Tambah Berita',
+        fallbackRoute: '/news-healthcare',
         actions: [
           TextButton(
             onPressed: () {},
@@ -91,7 +70,10 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEFF6EC),
                     border: Border.all(color: const Color(0xFFBCCABC)),
@@ -99,16 +81,23 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.person_outline, size: 14, color: Color(0xFF006D37)),
+                      const Icon(
+                        Icons.person_outline,
+                        size: 14,
+                        color: Color(0xFF006D37),
+                      ),
                       const SizedBox(width: 6),
-                      const Text(
-                        'Author: Dr. Sarah',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Color(0xFF171D17),
-                        ),
+                      CurrentUserNameText(
+                        builder:
+                            (context, displayName) => Text(
+                              'Author: $displayName',
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Color(0xFF171D17),
+                              ),
+                            ),
                       ),
                     ],
                   ),
@@ -122,21 +111,27 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: selectedKategori,
-              icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF6B7280)),
+              icon: const Icon(
+                Icons.keyboard_arrow_down,
+                color: Color(0xFF6B7280),
+              ),
               decoration: _inputDecoration(),
-              items: ['Pengobatan', 'Pencegahan', 'Gaya Hidup']
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(
-                          e,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            color: Color(0xFF171D17),
+              items:
+                  ['Pengobatan', 'Pencegahan', 'Gaya Hidup']
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              color: Color(0xFF171D17),
+                            ),
                           ),
                         ),
-                      ))
-                  .toList(),
+                      )
+                      .toList(),
               onChanged: (val) {
                 setState(() => selectedKategori = val);
               },
@@ -149,7 +144,11 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
             TextFormField(
               decoration: _inputDecoration(
                 hintText: 'e.g. Central Hospital',
-                prefixIcon: const Icon(Icons.location_on_outlined, color: Color(0xFF3D4A3F), size: 20),
+                prefixIcon: const Icon(
+                  Icons.location_on_outlined,
+                  color: Color(0xFF3D4A3F),
+                  size: 20,
+                ),
               ),
               style: const TextStyle(fontFamily: 'Inter', fontSize: 16),
             ),
@@ -161,7 +160,11 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
             TextFormField(
               decoration: _inputDecoration(
                 hintText: 'https://...',
-                prefixIcon: const Icon(Icons.link, color: Color(0xFF3D4A3F), size: 20),
+                prefixIcon: const Icon(
+                  Icons.link,
+                  color: Color(0xFF3D4A3F),
+                  size: 20,
+                ),
               ),
               style: const TextStyle(fontFamily: 'Inter', fontSize: 16),
             ),
@@ -210,15 +213,22 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 52),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEFF6EC),
-                      // Catatan: Flutter standar tidak punya dashed border bawaan. 
+                      // Catatan: Flutter standar tidak punya dashed border bawaan.
                       // Untuk hasil persis putus-putus, bisa gunakan package 'dotted_border'
                       // Sementara saya gunakan solid border yang warnanya disamakan.
-                      border: Border.all(color: const Color(0xFFBCCABC), width: 2),
+                      border: Border.all(
+                        color: const Color(0xFFBCCABC),
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
                       children: [
-                        const Icon(Icons.camera_alt_outlined, size: 32, color: Color(0xFFBCCABC)),
+                        const Icon(
+                          Icons.camera_alt_outlined,
+                          size: 32,
+                          color: Color(0xFFBCCABC),
+                        ),
                         const SizedBox(height: 8),
                         const Text(
                           'Upload JPG or PNG',
@@ -241,7 +251,9 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: const Color(0xFF006D37).withOpacity(0.05),
-                border: Border.all(color: const Color(0xFF006D37).withOpacity(0.2)),
+                border: Border.all(
+                  color: const Color(0xFF006D37).withOpacity(0.2),
+                ),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -252,7 +264,11 @@ class _TambahBeritaScreenState extends State<TambahBeritaScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.verified_outlined, color: Color(0xFF006D37), size: 22),
+                          const Icon(
+                            Icons.verified_outlined,
+                            color: Color(0xFF006D37),
+                            size: 22,
+                          ),
                           const SizedBox(height: 8, width: 8),
                           const Text(
                             'Medical Review',

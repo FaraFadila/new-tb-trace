@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 import 'healthcare_news_detail_page.dart';
@@ -12,7 +13,7 @@ class NewsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF4FBF1),
 
-      appBar: _buildAppBar(),
+      appBar: const AppUserHeader(profileRoute: '/profile-healthcare'),
 
       body: SingleChildScrollView(
         child: Padding(
@@ -75,69 +76,6 @@ class NewsPage extends StatelessWidget {
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
-    );
-  }
-
-  // ================= APP BAR =================
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white.withValues(alpha: 0.9),
-
-      elevation: 0,
-
-      surfaceTintColor: Colors.transparent,
-
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-
-        child: Container(color: const Color(0xFFE8F8F1), height: 1),
-      ),
-
-      leading: IconButton(
-        icon: const Icon(Icons.notifications_none, color: Color(0xFF1C274C)),
-
-        onPressed: () {},
-      ),
-
-      title: const Column(
-        children: [
-          Text(
-            'Hello,',
-
-            style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFF1E1E1E),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-
-          Text(
-            'Jade West',
-
-            style: TextStyle(
-              fontSize: 16,
-              color: Color(0xFF1E1E1E),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-
-      centerTitle: true,
-
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-
-          child: CircleAvatar(
-            backgroundColor: const Color(0xFFEEF2F3),
-
-            radius: 20,
-
-            child: Icon(Icons.person, color: Colors.blue[300]),
-          ),
-        ),
-      ],
     );
   }
 
