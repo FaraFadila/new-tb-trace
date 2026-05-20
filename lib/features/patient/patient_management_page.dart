@@ -47,7 +47,7 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.go('/add-patient');
+          context.push('/add-patient');
         },
 
         elevation: 10,
@@ -477,6 +477,8 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
     required String day,
     required String updated,
   }) {
+    final displayName = name.trim().isEmpty ? 'Pasien' : name.trim();
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -518,7 +520,7 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
                       backgroundColor: const Color(0xFFECEEEE),
 
                       child: Text(
-                        name[0],
+                        displayName[0].toUpperCase(),
 
                         style: TextStyle(
                           fontSize: 20.sp,
@@ -535,7 +537,7 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
 
                       children: [
                         Text(
-                          name,
+                          displayName,
 
                           style: TextStyle(
                             fontSize: 22.sp,

@@ -23,7 +23,6 @@ import '../features/news/patient_news_detail_page.dart';
 import '../features/patient/add_patient_page.dart';
 import '../features/patient/patient_detail_page.dart';
 import '../features/patient/patient_management_page.dart';
-import '../features/patient/patient_page.dart';
 import '../features/patient/report_symptom_page.dart';
 
 // ================= PROFILE =================
@@ -98,7 +97,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/patients',
-      builder: (context, state) => const PatientPage(),
+      redirect: (context, state) => '/patient-management',
     ),
     GoRoute(
       path: '/report-symptom',
