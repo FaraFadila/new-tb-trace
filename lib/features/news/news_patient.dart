@@ -224,7 +224,7 @@ class NewsPatientPage extends StatelessWidget {
             // ================= ARTICLES =================
             const ArticleCard(
               image:
-                  "assets/images/article1.jpg",
+                  "assets/images/tbc1.png",
 
               title:
                   "Bahaya Putus Obat (TBC RO)",
