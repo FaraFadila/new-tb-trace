@@ -1117,6 +1117,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.12.4"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: ae6c13a42ea7012963418b8963b1e097592340eeae1c3421aa8adfc095309492
+      url: "https://pub.dev"
+    source: hosted
+    version: "33.2.7"
+  syncfusion_flutter_maps:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_maps
+      sha256: "376341fd29502581f7cde96e527c10cd68d5dfc567ae07423e75c4a64b037c7e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "33.2.7"
   synchronized:
     dependency: transitive
     description:
