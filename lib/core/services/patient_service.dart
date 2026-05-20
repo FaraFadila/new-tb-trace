@@ -158,7 +158,7 @@ class PatientService {
         await _client
             .from('patients')
             .select(
-              'id, patient_code, full_name, phone, address, guardian_name, guardian_phone, guardian_address, risk_level, treatment_status, treatment_start_date, treatment_end_date, treatment_progress, last_updated_at, created_at, updated_at',
+              'id, patient_code, full_name, phone, address, guardian_name, guardian_phone, guardian_address, login_email, temporary_password, risk_level, treatment_status, treatment_start_date, treatment_end_date, treatment_progress, last_updated_at, created_at, updated_at',
             )
             .eq('id', patientId)
             .maybeSingle();
@@ -167,12 +167,7 @@ class PatientService {
       throw const AuthException('Pasien tidak ditemukan.');
     }
 
-    final patientRow = Map<String, dynamic>.from(row);
-    final credentials = await _getStoredPatientCredentials(patientId);
-
-    patientRow.addAll(credentials);
-
-    return PatientDetail.fromJson(patientRow);
+    return PatientDetail.fromJson(row);
   }
 
   Future<CreatedPatientCredentials> createPatient({
@@ -211,66 +206,38 @@ class PatientService {
       throw const AuthException('Credential pasien tidak ditemukan.');
     }
 
-    return CreatedPatientCredentials(
+    final createdCredentials = CreatedPatientCredentials(
       username: credentials['username'] as String,
       email: credentials['email'] as String,
       temporaryPassword: credentials['temporary_password'] as String,
     );
+
+    await _storePatientCredentials(createdCredentials);
+
+    return createdCredentials;
   }
 
-  Future<Map<String, dynamic>> _getStoredPatientCredentials(
-    String patientId,
+  Future<void> _storePatientCredentials(
+    CreatedPatientCredentials credentials,
   ) async {
-    final result = <String, dynamic>{};
+    final patientCode =
+        credentials.username.trim().isNotEmpty
+            ? credentials.username.trim()
+            : credentials.email.split('@').first.trim();
 
-    final email = await _getOptionalPatientColumn(patientId, [
-      'login_email',
-      'patient_email',
-      'email',
-    ]);
-
-    final password = await _getOptionalPatientColumn(patientId, [
-      'temporary_password',
-      'patient_password',
-      'plain_password',
-    ]);
-
-    if (email != null) {
-      result['login_email'] = email;
+    try {
+      await _client.rpc(
+        'set_patient_login_credentials',
+        params: {
+          'p_patient_code': patientCode,
+          'p_login_email': credentials.email,
+          'p_temporary_password': credentials.temporaryPassword,
+        },
+      );
+    } on PostgrestException catch (error) {
+      throw AuthException(
+        'Pasien berhasil dibuat, tapi credential gagal disimpan: ${error.message}',
+      );
     }
-
-    if (password != null) {
-      result['temporary_password'] = password;
-    }
-
-    return result;
-  }
-
-  Future<String?> _getOptionalPatientColumn(
-    String patientId,
-    List<String> columnNames,
-  ) async {
-    for (final columnName in columnNames) {
-      try {
-        final row =
-            await _client
-                .from('patients')
-                .select(columnName)
-                .eq('id', patientId)
-                .maybeSingle();
-
-        final value = row?[columnName];
-        final text = value?.toString().trim();
-
-        if (text != null && text.isNotEmpty) {
-          return text;
-        }
-      } on PostgrestException {
-        // Some deployments do not store patient credentials in the patients
-        // table. Ignore missing optional columns so the detail page still opens.
-      }
-    }
-
-    return null;
   }
 }

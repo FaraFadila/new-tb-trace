@@ -48,7 +48,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
     });
 
     try {
-      final credentials = await _patientService.createPatient(
+      await _patientService.createPatient(
         fullName: fullName,
         phone: _emptyToNull(phoneController.text),
         address: _emptyToNull(addressController.text),
@@ -59,11 +59,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
       if (!mounted) return;
 
-      setState(() {
-        createdCredentials = credentials;
-      });
-
-      _showMessage('Pasien berhasil dibuat.');
+      _showMessage('Pasien berhasil dibuat dan credential tersimpan.');
+      context.go('/patient-management');
     } on AuthException catch (error) {
       _showMessage(error.message);
     } catch (_) {
