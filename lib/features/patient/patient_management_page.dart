@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tb_trace/core/services/patient_service.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 enum _PatientFilter { all, highRisk, recentUpdate }
@@ -67,76 +68,9 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
         child: Column(
           children: [
             // ================= HEADER =================
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
-
-                border: const Border(
-                  bottom: BorderSide(color: Color(0xFFE8F8F1)),
-                ),
-
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                    color: Colors.black.withValues(alpha: 0.04),
-                  ),
-                ],
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  const Icon(Icons.notifications_none_rounded, size: 26),
-
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-
-                        children: [
-                          Text(
-                            "Hello,",
-
-                            style: TextStyle(
-                              fontSize: 12.sp,
-
-                              color: Colors.black54,
-                            ),
-                          ),
-
-                          Text(
-                            "Jade West",
-
-                            style: TextStyle(
-                              fontSize: 15.sp,
-
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(width: 10.w),
-
-                      CircleAvatar(
-                        radius: 22.r,
-
-                        backgroundColor: const Color(0xFFEEF2F3),
-
-                        child: Icon(
-                          Icons.person,
-                          size: 24.sp,
-                          color: const Color(0xFF2EB5FA),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            const AppUserHeader(
+              includeSafeArea: false,
+              profileRoute: '/profile-healthcare',
             ),
 
             // ================= BODY =================

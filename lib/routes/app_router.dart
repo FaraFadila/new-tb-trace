@@ -116,7 +116,15 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // ================= PROFILE =================
-    GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
+    GoRoute(path: '/profile', redirect: (context, state) => '/profile-patient'),
+    GoRoute(
+      path: '/profile-patient',
+      builder: (context, state) => const ProfilePage(),
+    ),
+    GoRoute(
+      path: '/profile-healthcare',
+      builder: (context, state) => const ProfilePage(isHealthcare: true),
+    ),
     GoRoute(
       path: '/edit-profile',
       builder: (context, state) => const EditProfilePage(),

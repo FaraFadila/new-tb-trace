@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/healthcare_bottom_navbar.dart';
 
 class MapPage extends StatelessWidget {
@@ -15,14 +15,10 @@ class MapPage extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFA),
 
       // ================= BOTTOM NAVBAR =================
-      bottomNavigationBar:
-          const HealthcareBottomNavbar(
-        currentIndex: 1,
-      ),
+      bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 1),
 
       body: Stack(
         children: [
-
           // ================= MAP BACKGROUND =================
           Container(
             width: double.infinity,
@@ -32,9 +28,7 @@ class MapPage extends StatelessWidget {
               color: Color(0xFFF8FAFA),
 
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/map_placeholder.png',
-                ),
+                image: AssetImage('assets/images/map_placeholder.png'),
 
                 fit: BoxFit.cover,
               ),
@@ -46,9 +40,7 @@ class MapPage extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
 
-            color: const Color(
-              0xFF064E3B,
-            ).withOpacity(0.05),
+            color: const Color(0xFF064E3B).withOpacity(0.05),
           ),
 
           // ================= MAP PINS =================
@@ -56,27 +48,21 @@ class MapPage extends StatelessWidget {
             left: 68,
             top: 375,
 
-            child: _buildMapPin(
-              const Color(0xFFBF0A0A),
-            ),
+            child: _buildMapPin(const Color(0xFFBF0A0A)),
           ),
 
           Positioned(
             right: 80,
             top: 425,
 
-            child: _buildMapPin(
-              const Color(0xFF878312),
-            ),
+            child: _buildMapPin(const Color(0xFF878312)),
           ),
 
           Positioned(
             left: 121,
             top: 682,
 
-            child: _buildMapPin(
-              const Color(0xFF4D7B4F),
-            ),
+            child: _buildMapPin(const Color(0xFF4D7B4F)),
           ),
 
           // ================= LIVE BADGE =================
@@ -85,10 +71,7 @@ class MapPage extends StatelessWidget {
             top: 100,
 
             child: _buildGlassContainer(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
 
               child: Row(
                 children: [
@@ -125,21 +108,15 @@ class MapPage extends StatelessWidget {
 
             child: Column(
               children: [
-                _buildMapControlButton(
-                  Icons.add,
-                ),
+                _buildMapControlButton(Icons.add),
 
                 const SizedBox(height: 8),
 
-                _buildMapControlButton(
-                  Icons.remove,
-                ),
+                _buildMapControlButton(Icons.remove),
 
                 const SizedBox(height: 8),
 
-                _buildMapControlButton(
-                  Icons.my_location,
-                ),
+                _buildMapControlButton(Icons.my_location),
               ],
             ),
           ),
@@ -149,97 +126,9 @@ class MapPage extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 6,
-                  sigmaY: 6,
-                ),
-
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    top: 40,
-                    bottom: 12,
-                    left: 24,
-                    right: 24,
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(
-                      0.9,
-                    ),
-
-                    border: const Border(
-                      bottom: BorderSide(
-                        color: Color(0xFFD1FAE5),
-                      ),
-                    ),
-
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(
-                          0.04,
-                        ),
-
-                        blurRadius: 20,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.notifications_none,
-                        color: Color(0xFF1C274C),
-                      ),
-
-                      const Spacer(),
-
-                      Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.end,
-
-                        children: const [
-                          Text(
-                            "Hello,",
-
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black54,
-                            ),
-                          ),
-
-                          Text(
-                            "Jade West",
-
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(width: 12),
-
-                      const CircleAvatar(
-                        backgroundColor:
-                            Color(0xFFEEF2F3),
-
-                        radius: 20,
-
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            child: const AppUserHeader(
+              horizontalPadding: 24,
+              profileRoute: '/profile-healthcare',
             ),
           ),
         ],
@@ -256,33 +145,21 @@ class MapPage extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
 
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 6,
-          sigmaY: 6,
-        ),
+        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
 
         child: Container(
           padding: padding,
 
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(
-              0.75,
-            ),
+            color: Colors.white.withOpacity(0.75),
 
-            borderRadius:
-                BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12),
 
-            border: Border.all(
-              color: Colors.white.withOpacity(
-                0.5,
-              ),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.5)),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(
-                  0.05,
-                ),
+                color: Colors.black.withOpacity(0.05),
 
                 blurRadius: 2,
                 offset: const Offset(0, 1),
@@ -297,23 +174,14 @@ class MapPage extends StatelessWidget {
   }
 
   // ================= MAP CONTROL BUTTON =================
-  Widget _buildMapControlButton(
-    IconData icon,
-  ) {
+  Widget _buildMapControlButton(IconData icon) {
     return _buildGlassContainer(
       child: IconButton(
         onPressed: () {},
 
-        icon: Icon(
-          icon,
-          color: const Color(0xFF3F4A3C),
-          size: 20,
-        ),
+        icon: Icon(icon, color: const Color(0xFF3F4A3C), size: 20),
 
-        constraints: const BoxConstraints(
-          minWidth: 40,
-          minHeight: 40,
-        ),
+        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
 
         padding: EdgeInsets.zero,
       ),
@@ -330,16 +198,11 @@ class MapPage extends StatelessWidget {
         color: color,
         shape: BoxShape.circle,
 
-        border: Border.all(
-          color: Colors.white,
-          width: 2,
-        ),
+        border: Border.all(color: Colors.white, width: 2),
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(
-              0.2,
-            ),
+            color: Colors.black.withOpacity(0.2),
 
             blurRadius: 4,
             offset: const Offset(0, 2),
@@ -348,11 +211,7 @@ class MapPage extends StatelessWidget {
       ),
 
       child: const Center(
-        child: Icon(
-          Icons.circle,
-          color: Colors.white,
-          size: 8,
-        ),
+        child: Icon(Icons.circle, color: Colors.white, size: 8),
       ),
     );
   }

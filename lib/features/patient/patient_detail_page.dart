@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tb_trace/core/services/patient_service.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 class PatientDetailPage extends StatefulWidget {
@@ -40,7 +40,10 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
       body: SafeArea(
         child: Column(
           children: [
-            _header(context),
+            const AppPageHeader(
+              title: 'Detail Pasien',
+              fallbackRoute: '/patient-management',
+            ),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refreshPatient,
@@ -159,46 +162,6 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _header(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.95),
-        border: const Border(bottom: BorderSide(color: Color(0xFFE8F8F1))),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-            color: Colors.black.withValues(alpha: 0.04),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/patient-management');
-              }
-            },
-            icon: const Icon(Icons.arrow_back_rounded),
-          ),
-          SizedBox(width: 8.w),
-          Text(
-            'Detail Pasien',
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF191C1D),
-            ),
-          ),
-        ],
       ),
     );
   }

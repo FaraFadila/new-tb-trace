@@ -56,14 +56,24 @@ class AuthService {
       throw const AuthException('User belum login.');
     }
 
-    final row =
-        await _client
-            .from('profiles')
-            .select('role')
-            .eq('id', user.id)
-            .maybeSingle();
+    final Map<String, dynamic>? row;
 
-    final role = row?['role'] as String? ?? AppUserRole.patient.name;
+    try {
+      row =
+          await _client
+              .from('profiles')
+              .select('role')
+              .eq('id', user.id)
+              .maybeSingle();
+    } on PostgrestException {
+      final metadataRole = user.userMetadata?['role'] as String?;
+      return _roleFromString(metadataRole ?? AppUserRole.patient.name);
+    }
+
+    final role =
+        row?['role'] as String? ??
+        user.userMetadata?['role'] as String? ??
+        AppUserRole.patient.name;
     return _roleFromString(role);
   }
 
@@ -75,8 +85,8 @@ class AuthService {
   }
 
   static AppUserRole _roleFromString(String role) {
-    return switch (role) {
-      'healthcare' => AppUserRole.healthcare,
+    return switch (role.trim().toLowerCase()) {
+      'healthcare' || 'doctor' || 'dokter' => AppUserRole.healthcare,
       'admin' => AppUserRole.admin,
       _ => AppUserRole.patient,
     };

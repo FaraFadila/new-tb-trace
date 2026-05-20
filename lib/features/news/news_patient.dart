@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
+
 import '../../core/widgets/patient_bottom_navbar.dart';
 
 class NewsPatientPage extends StatelessWidget {
@@ -10,89 +12,14 @@ class NewsPatientPage extends StatelessWidget {
       backgroundColor: Colors.white,
 
       // ================= APP BAR =================
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
-
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-
-          child: SafeArea(
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.notifications_none_rounded,
-                ),
-
-                const Spacer(),
-
-                Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
-
-                  crossAxisAlignment:
-                      CrossAxisAlignment.end,
-
-                  children: const [
-                    Text(
-                      "Hello,",
-
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.black54,
-                      ),
-                    ),
-
-                    Text(
-                      "Jade West",
-
-                      style: TextStyle(
-                        fontWeight:
-                            FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(width: 12),
-
-                const CircleAvatar(
-                  radius: 22,
-                  backgroundColor:
-                      Color(0xFFEEF2F3),
-
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: const AppUserHeader(profileRoute: '/profile-patient'),
 
       // ================= BODY =================
       body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 24,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
             const SizedBox(height: 24),
@@ -116,59 +43,37 @@ class NewsPatientPage extends StatelessWidget {
             Container(
               height: 55,
 
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
 
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
+                border: Border.all(color: Colors.black),
 
-                borderRadius:
-                    BorderRadius.circular(
-                  30,
-                ),
+                borderRadius: BorderRadius.circular(30),
               ),
 
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
+                  const Icon(Icons.search, color: Colors.grey),
 
                   const SizedBox(width: 10),
 
                   const Expanded(
                     child: TextField(
-                      decoration:
-                          InputDecoration(
-                        hintText:
-                            "Cari Berita",
-                        border:
-                            InputBorder.none,
+                      decoration: InputDecoration(
+                        hintText: "Cari Berita",
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
 
                   Container(
-                    padding:
-                        const EdgeInsets.all(
-                      8,
-                    ),
+                    padding: const EdgeInsets.all(8),
 
-                    decoration:
-                        const BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
 
-                      gradient:
-                          LinearGradient(
-                        colors: [
-                          Color(0xFF006D37),
-                          Color(0xFF27AE60),
-                        ],
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF006D37), Color(0xFF27AE60)],
                       ),
                     ),
 
@@ -189,32 +94,22 @@ class NewsPatientPage extends StatelessWidget {
               height: 38,
 
               child: ListView(
-                scrollDirection:
-                    Axis.horizontal,
+                scrollDirection: Axis.horizontal,
 
                 children: const [
-                  CategoryChip(
-                    title: "All",
-                    isActive: true,
-                  ),
+                  CategoryChip(title: "All", isActive: true),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Pengobatan",
-                  ),
+                  CategoryChip(title: "Pengobatan"),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Pencegahan",
-                  ),
+                  CategoryChip(title: "Pencegahan"),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Nutrisi",
-                  ),
+                  CategoryChip(title: "Nutrisi"),
                 ],
               ),
             ),
@@ -223,11 +118,9 @@ class NewsPatientPage extends StatelessWidget {
 
             // ================= ARTICLES =================
             const ArticleCard(
-              image:
-                  "assets/images/tbc1.png",
+              image: "assets/images/tbc1.png",
 
-              title:
-                  "Bahaya Putus Obat (TBC RO)",
+              title: "Bahaya Putus Obat (TBC RO)",
 
               category: "Pengobatan",
 
@@ -237,11 +130,9 @@ class NewsPatientPage extends StatelessWidget {
             const SizedBox(height: 16),
 
             const ArticleCard(
-              image:
-                  "assets/images/article2.jpg",
+              image: "assets/images/article2.jpg",
 
-              title:
-                  "Waspada TBC pada Anak",
+              title: "Waspada TBC pada Anak",
 
               category: "Pencegahan",
 
@@ -251,11 +142,9 @@ class NewsPatientPage extends StatelessWidget {
             const SizedBox(height: 16),
 
             const ArticleCard(
-              image:
-                  "assets/images/article3.jpg",
+              image: "assets/images/article3.jpg",
 
-              title:
-                  "Mitos dan Fakta Seputar TBC",
+              title: "Mitos dan Fakta Seputar TBC",
 
               category: "Pencegahan",
 
@@ -265,11 +154,9 @@ class NewsPatientPage extends StatelessWidget {
             const SizedBox(height: 16),
 
             const ArticleCard(
-              image:
-                  "assets/images/article4.jpg",
+              image: "assets/images/article4.jpg",
 
-              title:
-                  "Atasi Stigma Pasien TBC",
+              title: "Atasi Stigma Pasien TBC",
 
               category: "Pencegahan",
 
@@ -282,10 +169,7 @@ class NewsPatientPage extends StatelessWidget {
       ),
 
       // ================= BOTTOM NAVBAR =================
-      bottomNavigationBar:
-          const PatientBottomNavbar(
-        currentIndex: 2,
-      ),
+      bottomNavigationBar: const PatientBottomNavbar(currentIndex: 2),
     );
   }
 }
@@ -295,36 +179,24 @@ class CategoryChip extends StatelessWidget {
   final String title;
   final bool isActive;
 
-  const CategoryChip({
-    super.key,
-    required this.title,
-    this.isActive = false,
-  });
+  const CategoryChip({super.key, required this.title, this.isActive = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 18,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18),
 
       decoration: BoxDecoration(
-        gradient: isActive
-            ? const LinearGradient(
-                colors: [
-                  Color(0xFF006D37),
-                  Color(0xFF27AE60),
-                ],
-              )
-            : null,
+        gradient:
+            isActive
+                ? const LinearGradient(
+                  colors: [Color(0xFF006D37), Color(0xFF27AE60)],
+                )
+                : null,
 
-        color: isActive
-            ? null
-            : const Color(0xFF171616),
+        color: isActive ? null : const Color(0xFF171616),
 
-        borderRadius:
-            BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30),
       ),
 
       alignment: Alignment.center,
@@ -333,9 +205,7 @@ class CategoryChip extends StatelessWidget {
         title,
 
         style: TextStyle(
-          color: isActive
-              ? Colors.white
-              : Colors.grey[400],
+          color: isActive ? Colors.white : Colors.grey[400],
 
           fontWeight: FontWeight.bold,
         ),
@@ -367,18 +237,10 @@ class ArticleCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius:
-            BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16),
 
         boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(
-              0.12,
-            ),
-
-            blurRadius: 10,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 10),
         ],
       ),
 
@@ -386,8 +248,7 @@ class ArticleCard extends StatelessWidget {
         children: [
           // ================= IMAGE =================
           ClipRRect(
-            borderRadius:
-                BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16),
 
             child: Image.asset(
               image,
@@ -399,43 +260,31 @@ class ArticleCard extends StatelessWidget {
 
           Expanded(
             child: Padding(
-              padding:
-                  const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(14),
 
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
                   Text(
                     title,
 
                     style: const TextStyle(
-                      fontWeight:
-                          FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),
                   ),
 
                   const SizedBox(height: 8),
 
-                  Text(
-                    category,
-
-                    style: const TextStyle(
-                      fontSize: 11,
-                    ),
-                  ),
+                  Text(category, style: const TextStyle(fontSize: 11)),
 
                   const Spacer(),
 
                   Text(
                     "$author | 5 min read",
 
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 10, color: Colors.grey),
                   ),
                 ],
               ),

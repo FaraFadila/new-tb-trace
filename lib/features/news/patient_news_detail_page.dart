@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/patient_bottom_navbar.dart';
-import 'patient_news_detail_page.dart';
 
 class PatientNewsDetailPage extends StatelessWidget {
   const PatientNewsDetailPage({super.key});
@@ -14,122 +14,14 @@ class PatientNewsDetailPage extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFA),
 
       // ================= APP BAR =================
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(72.h),
-
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 20.w,
-          ),
-
-          decoration: BoxDecoration(
-            color:
-                Colors.white.withOpacity(
-              0.95,
-            ),
-
-            border: const Border(
-              bottom: BorderSide(
-                color: Color(
-                  0xFFE8F8F1,
-                ),
-              ),
-            ),
-
-            boxShadow: [
-              BoxShadow(
-                color:
-                    Colors.black.withOpacity(
-                  0.04,
-                ),
-
-                blurRadius: 20,
-                offset: const Offset(
-                  0,
-                  4,
-                ),
-              ),
-            ],
-          ),
-
-          child: SafeArea(
-            child: Row(
-              children: [
-                Icon(
-                  Icons.notifications,
-                  size: 20.sp,
-                ),
-
-                const Spacer(),
-
-                Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment
-                          .center,
-
-                  crossAxisAlignment:
-                      CrossAxisAlignment.end,
-
-                  children: [
-                    Text(
-                      "Hello,",
-
-                      style: TextStyle(
-                        fontSize: 12.sp,
-
-                        color:
-                            Colors.black54,
-                      ),
-                    ),
-
-                    Text(
-                      "Jade West",
-
-                      style: TextStyle(
-                        fontWeight:
-                            FontWeight.bold,
-
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(width: 12.w),
-
-                Container(
-                  width: 44.w,
-                  height: 44.h,
-
-                  decoration:
-                      const BoxDecoration(
-                    color: Color(
-                      0xFFEEF2F3,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.grey,
-                    size: 22.sp,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: const AppUserHeader(profileRoute: '/profile-patient'),
 
       // ================= BODY =================
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 24.w,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
             SizedBox(height: 24.h),
@@ -142,12 +34,9 @@ class PatientNewsDetailPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28.sp,
 
-                  fontWeight:
-                      FontWeight.bold,
+                  fontWeight: FontWeight.bold,
 
-                  color: const Color(
-                    0xFF019784,
-                  ),
+                  color: const Color(0xFF019784),
                 ),
               ),
             ),
@@ -158,78 +47,46 @@ class PatientNewsDetailPage extends StatelessWidget {
             Container(
               height: 55.h,
 
-              padding:
-                  EdgeInsets.symmetric(
-                horizontal: 16.w,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
 
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                ),
+                border: Border.all(color: Colors.black),
 
-                borderRadius:
-                    BorderRadius.circular(
-                  30.r,
-                ),
+                borderRadius: BorderRadius.circular(30.r),
               ),
 
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
+                  const Icon(Icons.search, color: Colors.grey),
 
                   SizedBox(width: 10.w),
 
                   Expanded(
                     child: TextField(
-                      decoration:
-                          InputDecoration(
-                        hintText:
-                            "Cari Berita",
+                      decoration: InputDecoration(
+                        hintText: "Cari Berita",
 
-                        hintStyle:
-                            TextStyle(
-                          fontSize:
-                              14.sp,
-                        ),
+                        hintStyle: TextStyle(fontSize: 14.sp),
 
-                        border:
-                            InputBorder.none,
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
 
                   Container(
-                    padding:
-                        EdgeInsets.all(
-                      8.w,
-                    ),
+                    padding: EdgeInsets.all(8.w),
 
-                    decoration:
-                        const BoxDecoration(
-                      shape:
-                          BoxShape.circle,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
 
-                      gradient:
-                          LinearGradient(
-                        colors: [
-                          Color(
-                            0xFF006D37,
-                          ),
-                          Color(
-                            0xFF27AE60,
-                          ),
-                        ],
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF006D37), Color(0xFF27AE60)],
                       ),
                     ),
 
                     child: Icon(
                       Icons.arrow_forward,
-                      color:
-                          Colors.white,
+                      color: Colors.white,
                       size: 18.sp,
                     ),
                   ),
@@ -244,32 +101,22 @@ class PatientNewsDetailPage extends StatelessWidget {
               height: 38.h,
 
               child: ListView(
-                scrollDirection:
-                    Axis.horizontal,
+                scrollDirection: Axis.horizontal,
 
                 children: const [
-                  CategoryChip(
-                    title: "All",
-                    isActive: true,
-                  ),
+                  CategoryChip(title: "All", isActive: true),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Pengobatan",
-                  ),
+                  CategoryChip(title: "Pengobatan"),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Pencegahan",
-                  ),
+                  CategoryChip(title: "Pencegahan"),
 
                   SizedBox(width: 10),
 
-                  CategoryChip(
-                    title: "Nutrisi",
-                  ),
+                  CategoryChip(title: "Nutrisi"),
                 ],
               ),
             ),
@@ -278,11 +125,9 @@ class PatientNewsDetailPage extends StatelessWidget {
 
             // ================= ARTICLES =================
             const ArticleCard(
-              image:
-                  "assets/images/article1.jpg",
+              image: "assets/images/article1.jpg",
 
-              title:
-                  "Bahaya Putus Obat (TBC RO)",
+              title: "Bahaya Putus Obat (TBC RO)",
 
               category: "Pengobatan",
 
@@ -292,11 +137,9 @@ class PatientNewsDetailPage extends StatelessWidget {
             SizedBox(height: 16.h),
 
             const ArticleCard(
-              image:
-                  "assets/images/article2.jpg",
+              image: "assets/images/article2.jpg",
 
-              title:
-                  "Waspada TBC pada Anak",
+              title: "Waspada TBC pada Anak",
 
               category: "Pencegahan",
 
@@ -306,11 +149,9 @@ class PatientNewsDetailPage extends StatelessWidget {
             SizedBox(height: 16.h),
 
             const ArticleCard(
-              image:
-                  "assets/images/article3.jpg",
+              image: "assets/images/article3.jpg",
 
-              title:
-                  "Mitos dan Fakta Seputar TBC",
+              title: "Mitos dan Fakta Seputar TBC",
 
               category: "Pencegahan",
 
@@ -320,11 +161,9 @@ class PatientNewsDetailPage extends StatelessWidget {
             SizedBox(height: 16.h),
 
             const ArticleCard(
-              image:
-                  "assets/images/article4.jpg",
+              image: "assets/images/article4.jpg",
 
-              title:
-                  "Atasi Stigma Pasien TBC",
+              title: "Atasi Stigma Pasien TBC",
 
               category: "Pencegahan",
 
@@ -337,10 +176,7 @@ class PatientNewsDetailPage extends StatelessWidget {
       ),
 
       // ================= NAVBAR =================
-      bottomNavigationBar:
-          const PatientBottomNavbar(
-        currentIndex: 2,
-      ),
+      bottomNavigationBar: const PatientBottomNavbar(currentIndex: 2),
     );
   }
 }
@@ -350,46 +186,24 @@ class CategoryChip extends StatelessWidget {
   final String title;
   final bool isActive;
 
-  const CategoryChip({
-    super.key,
-    required this.title,
-    this.isActive = false,
-  });
+  const CategoryChip({super.key, required this.title, this.isActive = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          EdgeInsets.symmetric(
-        horizontal: 18.w,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 18.w),
 
       decoration: BoxDecoration(
         gradient:
             isActive
                 ? const LinearGradient(
-                    colors: [
-                      Color(
-                        0xFF006D37,
-                      ),
-                      Color(
-                        0xFF27AE60,
-                      ),
-                    ],
-                  )
+                  colors: [Color(0xFF006D37), Color(0xFF27AE60)],
+                )
                 : null,
 
-        color:
-            isActive
-                ? null
-                : const Color(
-                    0xFF171616,
-                  ),
+        color: isActive ? null : const Color(0xFF171616),
 
-        borderRadius:
-            BorderRadius.circular(
-          30.r,
-        ),
+        borderRadius: BorderRadius.circular(30.r),
       ),
 
       alignment: Alignment.center,
@@ -398,13 +212,9 @@ class CategoryChip extends StatelessWidget {
         title,
 
         style: TextStyle(
-          color:
-              isActive
-                  ? Colors.white
-                  : Colors.grey[400],
+          color: isActive ? Colors.white : Colors.grey[400],
 
-          fontWeight:
-              FontWeight.bold,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -430,9 +240,7 @@ class ArticleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push(
-          '/patient-news-detail',
-        );
+        context.push('/patient-news-detail');
       },
 
       child: Container(
@@ -441,20 +249,10 @@ class ArticleCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
 
-          borderRadius:
-              BorderRadius.circular(
-            16.r,
-          ),
+          borderRadius: BorderRadius.circular(16.r),
 
           boxShadow: [
-            BoxShadow(
-              color:
-                  Colors.black.withOpacity(
-                0.12,
-              ),
-
-              blurRadius: 10,
-            ),
+            BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 10),
           ],
         ),
 
@@ -462,10 +260,7 @@ class ArticleCard extends StatelessWidget {
           children: [
             // ================= IMAGE =================
             ClipRRect(
-              borderRadius:
-                  BorderRadius.circular(
-                16.r,
-              ),
+              borderRadius: BorderRadius.circular(16.r),
 
               child: Image.asset(
                 image,
@@ -480,23 +275,17 @@ class ArticleCard extends StatelessWidget {
             // ================= CONTENT =================
             Expanded(
               child: Padding(
-                padding:
-                    EdgeInsets.all(
-                  14.w,
-                ),
+                padding: EdgeInsets.all(14.w),
 
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment
-                          .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     Text(
                       title,
 
                       style: TextStyle(
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
 
                         fontSize: 14.sp,
                       ),
@@ -504,24 +293,14 @@ class ArticleCard extends StatelessWidget {
 
                     SizedBox(height: 8.h),
 
-                    Text(
-                      category,
-
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                      ),
-                    ),
+                    Text(category, style: TextStyle(fontSize: 11.sp)),
 
                     const Spacer(),
 
                     Text(
                       "$author | 5 min read",
 
-                      style: TextStyle(
-                        fontSize: 10.sp,
-
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 10.sp, color: Colors.grey),
                     ),
                   ],
                 ),

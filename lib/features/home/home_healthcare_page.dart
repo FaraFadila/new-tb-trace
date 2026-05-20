@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
 class HomeHealthcarePage extends StatelessWidget {
@@ -22,50 +22,14 @@ class HomeHealthcarePage extends StatelessWidget {
               SizedBox(height: 12.h),
 
               // ================= HEADER =================
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Icon(Icons.notifications_none_rounded, size: 26),
-
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Hello,",
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.black54,
-                            ),
-                          ),
-                          Text(
-                            "Dr. Sarah",
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(width: 10.w),
-
-                      GestureDetector(
-                        onTap: () {
-                          context.go('/profile');
-                        },
-
-                        child: CircleAvatar(
-                          radius: 22.r,
-                          backgroundColor: const Color(0xFFEEF2F3),
-
-                          child: Icon(Icons.person, size: 24.sp),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              const AppUserHeader(
+                includeSafeArea: false,
+                showBackground: false,
+                showBorder: false,
+                showShadow: false,
+                horizontalPadding: 0,
+                verticalPadding: 0,
+                profileRoute: '/profile-healthcare',
               ),
 
               SizedBox(height: 24.h),
@@ -76,13 +40,16 @@ class HomeHealthcarePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Selamat Pagi, Dr. Sarah",
-                      style: TextStyle(
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF171D17),
-                      ),
+                    CurrentUserNameText(
+                      builder:
+                          (context, displayName) => Text(
+                            "Selamat Pagi, $displayName",
+                            style: TextStyle(
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF171D17),
+                            ),
+                          ),
                     ),
 
                     SizedBox(height: 4.h),
