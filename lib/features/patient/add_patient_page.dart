@@ -16,6 +16,11 @@ class _AddPatientPageState extends State<AddPatientPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController villageController = TextEditingController();
+  final TextEditingController districtController = TextEditingController();
+  final TextEditingController cityController = TextEditingController(
+    text: 'Surabaya',
+  );
   final TextEditingController guardianNameController = TextEditingController();
   final TextEditingController guardianPhoneController = TextEditingController();
   final TextEditingController guardianAddressController =
@@ -29,6 +34,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
     nameController.dispose();
     phoneController.dispose();
     addressController.dispose();
+    villageController.dispose();
+    districtController.dispose();
+    cityController.dispose();
     guardianNameController.dispose();
     guardianPhoneController.dispose();
     guardianAddressController.dispose();
@@ -54,7 +62,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
       await _patientService.createPatient(
         fullName: fullName,
         phone: _emptyToNull(phoneController.text),
-        address: _emptyToNull(addressController.text),
+        address: _emptyToNull(_patientAddress()),
         guardianName: _emptyToNull(guardianNameController.text),
         guardianPhone: _emptyToNull(guardianPhoneController.text),
         guardianAddress: _emptyToNull(guardianAddressController.text),
@@ -80,6 +88,17 @@ class _AddPatientPageState extends State<AddPatientPage> {
   String? _emptyToNull(String value) {
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
+  }
+
+  String _patientAddress() {
+    return [
+      addressController.text,
+      villageController.text,
+      districtController.text,
+      cityController.text,
+      'Jawa Timur',
+      'Indonesia',
+    ].map((part) => part.trim()).where((part) => part.isNotEmpty).join(', ');
   }
 
   void _showMessage(String message) {
@@ -154,10 +173,37 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
                   _buildInput(
                     controller: addressController,
-                    label: "Address",
-                    hint: "Alamat Jalan, Kota, kode pos",
+                    label: "Alamat Jalan",
+                    hint: "Nama jalan, nomor rumah, RT/RW",
                     icon: Icons.location_on_outlined,
-                    maxLines: 4,
+                    maxLines: 3,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  _buildInput(
+                    controller: villageController,
+                    label: "Kelurahan",
+                    hint: "Contoh: Keputih",
+                    icon: Icons.location_city_outlined,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  _buildInput(
+                    controller: districtController,
+                    label: "Kecamatan",
+                    hint: "Contoh: Sukolilo",
+                    icon: Icons.map_outlined,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  _buildInput(
+                    controller: cityController,
+                    label: "Kota",
+                    hint: "Contoh: Surabaya",
+                    icon: Icons.apartment_outlined,
                   ),
 
                   const SizedBox(height: 20),
@@ -372,11 +418,11 @@ class _AddPatientPageState extends State<AddPatientPage> {
       padding: const EdgeInsets.all(24),
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withValues(alpha: 0.7),
 
         borderRadius: BorderRadius.circular(24),
 
-        border: Border.all(color: Colors.white.withOpacity(0.5)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
 
         boxShadow: const [
           BoxShadow(
@@ -428,7 +474,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
             filled: true,
 
-            fillColor: Colors.white.withOpacity(0.6),
+            fillColor: Colors.white.withValues(alpha: 0.6),
 
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -472,11 +518,13 @@ class _AddPatientPageState extends State<AddPatientPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5),
+        color: Colors.white.withValues(alpha: 0.5),
 
         borderRadius: BorderRadius.circular(16),
 
-        border: Border.all(color: const Color(0xFFD1FAE5).withOpacity(0.5)),
+        border: Border.all(
+          color: const Color(0xFFD1FAE5).withValues(alpha: 0.5),
+        ),
       ),
 
       child: Row(

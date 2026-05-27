@@ -185,6 +185,29 @@ class PatientService {
     return PatientDetail.fromJson(row);
   }
 
+  Future<PatientDetail> getCurrentPatientDetail() async {
+    final userId = _client.auth.currentUser?.id;
+
+    if (userId == null) {
+      throw const AuthException('User belum login.');
+    }
+
+    final row =
+        await _client
+            .from('patients')
+            .select(
+              'id, patient_code, full_name, phone, address, guardian_name, guardian_phone, guardian_address, login_email, temporary_password, risk_level, treatment_status, treatment_start_date, treatment_end_date, treatment_progress, last_updated_at, created_at, updated_at',
+            )
+            .eq('user_id', userId)
+            .maybeSingle();
+
+    if (row == null) {
+      throw const AuthException('Data pasien tidak ditemukan.');
+    }
+
+    return PatientDetail.fromJson(row);
+  }
+
   Future<CreatedPatientCredentials> createPatient({
     required String fullName,
     String? phone,

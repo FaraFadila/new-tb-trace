@@ -22,8 +22,14 @@ class _MapPageState extends State<MapPage> {
 
     // 1. Data Dummy Kelurahan (Nantinya diganti dengan hasil ambil data dari tabel Supabase)
     _mapData = <KelurahanData>[
-      const KelurahanData('Keputih', Color(0xFFBF0A0A)), // Risiko Tinggi (Merah)
-      const KelurahanData('Gubeng', Color(0xFF878312)),  // Risiko Sedang (Kuning)
+      const KelurahanData(
+        'Keputih',
+        Color(0xFFBF0A0A),
+      ), // Risiko Tinggi (Merah)
+      const KelurahanData(
+        'Gubeng',
+        Color(0xFF878312),
+      ), // Risiko Sedang (Kuning)
       const KelurahanData('Sukolilo', Color(0xFF4D7B4F)), // Aman (Hijau)
     ];
 
@@ -31,10 +37,11 @@ class _MapPageState extends State<MapPage> {
     _shapeSource = MapShapeSource.network(
       'https://rvjrlbdjchdnzaxxmtwv.supabase.co/storage/v1/object/public/maps-data/kelurahan_surabaya.geojson',
       // Menggunakan 'name' karena data dari Overpass Turbo menggunakan key ini untuk nama daerah
-      shapeDataField: 'name', 
+      shapeDataField: 'name',
       dataCount: _mapData.length,
       primaryValueMapper: (int index) => _mapData[index].nama,
-      shapeColorValueMapper: (int index) => _mapData[index].warna.withOpacity(0.6),
+      shapeColorValueMapper:
+          (int index) => _mapData[index].warna.withValues(alpha: 0.6),
     );
   }
 
@@ -55,9 +62,12 @@ class _MapPageState extends State<MapPage> {
               // Layer 1: Peta Dasar (Jalan Raya & Batas Dunia dari OpenStreetMap)
               MapTileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                initialFocalLatLng: const MapLatLng(-7.2575, 112.7521), // Koordinat Pusat Surabaya
+                initialFocalLatLng: const MapLatLng(
+                  -7.2575,
+                  112.7521,
+                ), // Koordinat Pusat Surabaya
                 initialZoomLevel: 12,
-                
+
                 // Kontrol Interaksi Zoom & Geser Peta
                 zoomPanBehavior: MapZoomPanBehavior(
                   enableDoubleTapZooming: true,
@@ -70,16 +80,19 @@ class _MapPageState extends State<MapPage> {
                 sublayers: [
                   MapShapeSublayer(
                     source: _shapeSource,
-                    strokeColor: const Color(0xFF006E1C).withOpacity(0.5),
+                    strokeColor: const Color(0xFF006E1C).withValues(alpha: 0.5),
                     strokeWidth: 1.0,
-                    
+
                     // Memunculkan nama kelurahan saat di-tap/klik
                     shapeTooltipBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           _mapData[index].nama,
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
                       );
                     },
@@ -161,12 +174,12 @@ class _MapPageState extends State<MapPage> {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.75),
+            color: Colors.white.withValues(alpha: 0.75),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withOpacity(0.5)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 2,
                 offset: const Offset(0, 1),
               ),
