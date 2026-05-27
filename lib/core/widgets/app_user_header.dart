@@ -152,15 +152,38 @@ class CurrentUserNameText extends StatefulWidget {
   State<CurrentUserNameText> createState() => _CurrentUserNameTextState();
 }
 
-class CurrentUserEmailText extends StatelessWidget {
-  CurrentUserEmailText({super.key, required this.builder});
+class CurrentUserEmailText extends StatefulWidget {
+  const CurrentUserEmailText({
+    super.key,
+    required this.builder,
+    this.loadingEmail = '-',
+  });
 
   final Widget Function(BuildContext context, String email) builder;
+  final String loadingEmail;
+
+  @override
+  State<CurrentUserEmailText> createState() => _CurrentUserEmailTextState();
+}
+
+class _CurrentUserEmailTextState extends State<CurrentUserEmailText> {
   final UserProfileService _profileService = UserProfileService();
+  late final Future<String> _emailFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFuture = _profileService.currentEmailDisplay();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return builder(context, _profileService.currentEmail());
+    return FutureBuilder<String>(
+      future: _emailFuture,
+      builder: (context, snapshot) {
+        return widget.builder(context, snapshot.data ?? widget.loadingEmail);
+      },
+    );
   }
 }
 

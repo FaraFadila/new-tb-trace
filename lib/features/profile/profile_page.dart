@@ -1,24 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/services/user_profile_service.dart';
 import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/healthcare_bottom_navbar.dart';
 import '../../core/widgets/patient_bottom_navbar.dart';
 import '../../features/auth/login_page.dart';
 import 'edit_profile_page.dart';
 import 'profile_sidebar.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, this.isHealthcare = false});
 
   final bool isHealthcare;
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final UserProfileService _profileService = UserProfileService();
+  int _profileVersion = 0;
+
+  Future<void> _openEditProfile() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => EditProfilePage(
+              fallbackRoute:
+                  widget.isHealthcare
+                      ? '/profile-healthcare'
+                      : '/profile-patient',
+            ),
+      ),
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _profileVersion++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: ProfileSidebar(
         editProfileFallbackRoute:
-            isHealthcare ? '/profile-healthcare' : '/profile-patient',
+            widget.isHealthcare ? '/profile-healthcare' : '/profile-patient',
       ),
 
       backgroundColor: const Color(0xFFF4FBF1),
@@ -54,7 +84,7 @@ class ProfilePage extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 14,
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     offset: const Offset(0, 6),
                   ),
                 ],
@@ -65,6 +95,8 @@ class ProfilePage extends StatelessWidget {
 
             // ================= NAME =================
             CurrentUserNameText(
+              key: ValueKey('profile-name-$_profileVersion'),
+              loadingName: 'Memuat...',
               builder:
                   (context, displayName) => Text(
                     displayName,
@@ -79,6 +111,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 6),
 
             CurrentUserEmailText(
+              key: ValueKey('profile-email-$_profileVersion'),
               builder:
                   (context, email) => Text(
                     email,
@@ -97,21 +130,7 @@ class ProfilePage extends StatelessWidget {
               height: 54,
 
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-
-                    MaterialPageRoute(
-                      builder:
-                          (_) => EditProfilePage(
-                            fallbackRoute:
-                                isHealthcare
-                                    ? '/profile-healthcare'
-                                    : '/profile-patient',
-                          ),
-                    ),
-                  );
-                },
+                onPressed: _openEditProfile,
 
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
@@ -172,6 +191,7 @@ class ProfilePage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () async {
                   try {
+                    await _profileService.clearCachedProfile();
                     // 1. Proses sign out dari Supabase
                     await Supabase.instance.client.auth.signOut();
 
@@ -224,7 +244,7 @@ class ProfilePage extends StatelessWidget {
 
       // ================= BOTTOM NAVBAR =================
       bottomNavigationBar:
-          isHealthcare
+          widget.isHealthcare
               ? const HealthcareBottomNavbar(currentIndex: -1)
               : const PatientBottomNavbar(currentIndex: 3),
     );
@@ -252,7 +272,7 @@ class ProfilePage extends StatelessWidget {
           BoxShadow(
             blurRadius: 10,
             offset: const Offset(0, 4),
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           ),
         ],
       ),
@@ -264,7 +284,7 @@ class ProfilePage extends StatelessWidget {
             height: 46,
 
             decoration: BoxDecoration(
-              color: const Color(0xFF006D37).withOpacity(0.1),
+              color: const Color(0xFF006D37).withValues(alpha: 0.1),
 
               borderRadius: BorderRadius.circular(12),
             ),
