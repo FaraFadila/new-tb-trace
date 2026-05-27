@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/services/user_profile_service.dart';
 import '../../core/widgets/app_user_header.dart';
+import '../auth/login_page.dart';
 import 'edit_profile_page.dart';
 
 class ProfileSidebar extends StatefulWidget {
@@ -16,8 +19,43 @@ class ProfileSidebar extends StatefulWidget {
 }
 
 class _ProfileSidebarState extends State<ProfileSidebar> {
+  final UserProfileService _profileService = UserProfileService();
   bool notificationOn = true;
   bool darkModeOn = false;
+  bool isLoggingOut = false;
+
+  Future<void> _logOut() async {
+    if (isLoggingOut) return;
+
+    setState(() {
+      isLoggingOut = true;
+    });
+
+    try {
+      await _profileService.clearCachedProfile();
+      await Supabase.instance.client.auth.signOut();
+
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false,
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal log out: $error')));
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoggingOut = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +114,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
                       BoxShadow(
                         blurRadius: 14,
                         offset: const Offset(0, 6),
-                        color: Colors.black.withOpacity(0.12),
+                        color: Colors.black.withValues(alpha: 0.12),
                       ),
                     ],
                   ),
@@ -142,7 +180,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 10,
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                         ),
                       ],
                     ),
@@ -261,7 +299,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
                   // LOGOUT
                   // =========================
                   GestureDetector(
-                    onTap: () {},
+                    onTap: isLoggingOut ? null : _logOut,
 
                     child: Container(
                       width: double.infinity,
@@ -277,16 +315,26 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
                         borderRadius: BorderRadius.circular(16),
                       ),
 
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.logout, color: Color(0xFFD32F2F)),
+                          if (isLoggingOut)
+                            const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFFD32F2F),
+                              ),
+                            )
+                          else
+                            const Icon(Icons.logout, color: Color(0xFFD32F2F)),
 
-                          SizedBox(width: 14),
+                          const SizedBox(width: 14),
 
                           Text(
-                            "Log Out",
+                            isLoggingOut ? "Logging out..." : "Log Out",
 
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
 
@@ -353,7 +401,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
           BoxShadow(
             blurRadius: 10,
             offset: const Offset(0, 4),
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           ),
         ],
       ),
@@ -408,7 +456,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
           BoxShadow(
             blurRadius: 10,
             offset: const Offset(0, 4),
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           ),
         ],
       ),
@@ -461,7 +509,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
           BoxShadow(
             blurRadius: 10,
             offset: const Offset(0, 4),
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
           ),
         ],
       ),
@@ -483,7 +531,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
           Switch(
             value: value,
 
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
 
             activeTrackColor: const Color(0xFF27AE60),
 
