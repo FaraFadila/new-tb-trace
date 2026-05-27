@@ -212,32 +212,6 @@ class PatientService {
       temporaryPassword: credentials['temporary_password'] as String,
     );
 
-    await _storePatientCredentials(createdCredentials);
-
     return createdCredentials;
-  }
-
-  Future<void> _storePatientCredentials(
-    CreatedPatientCredentials credentials,
-  ) async {
-    final patientCode =
-        credentials.username.trim().isNotEmpty
-            ? credentials.username.trim()
-            : credentials.email.split('@').first.trim();
-
-    try {
-      await _client.rpc(
-        'set_patient_login_credentials',
-        params: {
-          'p_patient_code': patientCode,
-          'p_login_email': credentials.email,
-          'p_temporary_password': credentials.temporaryPassword,
-        },
-      );
-    } on PostgrestException catch (error) {
-      throw AuthException(
-        'Pasien berhasil dibuat, tapi credential gagal disimpan: ${error.message}',
-      );
-    }
   }
 }

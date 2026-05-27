@@ -416,7 +416,7 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        context.push('/patient-detail/$patientId');
+        _openPatientDetail(patientId);
       },
       child: Container(
         padding: EdgeInsets.all(16.w),
@@ -626,40 +626,46 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
                     ],
                   ),
 
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _openPatientDetail(patientId);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
 
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFECEEEE),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECEEEE),
 
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
 
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.visibility_outlined,
-                          size: 12,
-                          color: Color(0xFF006E1C),
-                        ),
-
-                        SizedBox(width: 6.w),
-
-                        Text(
-                          "Detail",
-
-                          style: TextStyle(
-                            fontSize: 12.sp,
-
-                            fontWeight: FontWeight.w700,
-
-                            color: const Color(0xFF006E1C),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.visibility_outlined,
+                            size: 12,
+                            color: Color(0xFF006E1C),
                           ),
-                        ),
-                      ],
+
+                          SizedBox(width: 6.w),
+
+                          Text(
+                            "Detail",
+
+                            style: TextStyle(
+                              fontSize: 12.sp,
+
+                              fontWeight: FontWeight.w700,
+
+                              color: const Color(0xFF006E1C),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -669,5 +675,9 @@ class _PatientManagementPageState extends State<PatientManagementPage> {
         ),
       ),
     );
+  }
+
+  void _openPatientDetail(String patientId) {
+    context.push('/patient-detail/${Uri.encodeComponent(patientId)}');
   }
 }

@@ -36,6 +36,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
   }
 
   Future<void> _savePatient() async {
+    if (isLoading) return;
+
     final fullName = nameController.text.trim();
 
     if (fullName.isEmpty) {
@@ -310,11 +312,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
               height: 52,
 
               child: ElevatedButton(
-                onPressed: () {
-                  if (!isLoading) {
-                    _savePatient();
-                  }
-                },
+                onPressed: isLoading ? null : _savePatient,
 
                 style: ElevatedButton.styleFrom(
                   elevation: 0,

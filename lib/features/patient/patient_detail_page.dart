@@ -36,14 +36,14 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFA),
+      appBar: const AppPageHeader(
+        title: 'Detail Pasien',
+        fallbackRoute: '/patient-management',
+      ),
       bottomNavigationBar: const HealthcareBottomNavbar(currentIndex: 3),
       body: SafeArea(
         child: Column(
           children: [
-            const AppPageHeader(
-              title: 'Detail Pasien',
-              fallbackRoute: '/patient-management',
-            ),
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refreshPatient,
