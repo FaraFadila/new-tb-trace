@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 
+import '../core/services/news_api_service.dart';
+
 // ================= AUTH =================
 import '../features/auth/start_page.dart';
 import '../features/auth/login_page.dart';
@@ -74,7 +76,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/patient-news-detail',
-      builder: (context, state) => const PatientNewsDetailPage(),
+      builder:
+          (context, state) => PatientNewsDetailPage(
+            article:
+                state.extra is NewsApiArticle
+                    ? state.extra as NewsApiArticle
+                    : null,
+          ),
     ),
     GoRoute(
       path: '/healthcare-news-detail',
