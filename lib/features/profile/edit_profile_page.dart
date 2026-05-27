@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tb_trace/core/services/user_profile_service.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 
@@ -18,17 +19,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController passwordController = TextEditingController(
-    text: "************",
-  );
+  final TextEditingController passwordController = TextEditingController();
 
-  final TextEditingController changePasswordController = TextEditingController(
-    text: "************",
-  );
+  final TextEditingController changePasswordController =
+      TextEditingController();
 
   String selectedCountry = "Indonesia";
 
   DateTime selectedDate = DateTime(1995, 5, 23);
+  bool isSaving = false;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
 
   @override
   void initState() {
@@ -43,6 +44,73 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (!mounted) return;
 
     nameController.text = displayName;
+  }
+
+  Future<void> _saveProfile() async {
+    if (isSaving) return;
+
+    final fullName = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = changePasswordController.text.trim();
+
+    if (fullName.isEmpty) {
+      _showMessage('Nama wajib diisi.');
+      return;
+    }
+
+    if (email.isEmpty || !email.contains('@')) {
+      _showMessage('Email valid wajib diisi.');
+      return;
+    }
+
+    if (password.isNotEmpty || confirmPassword.isNotEmpty) {
+      if (password.length < 6) {
+        _showMessage('Password minimal 6 karakter.');
+        return;
+      }
+
+      if (password != confirmPassword) {
+        _showMessage('Konfirmasi password tidak sama.');
+        return;
+      }
+    }
+
+    setState(() {
+      isSaving = true;
+    });
+
+    try {
+      await _profileService.updateAccount(
+        fullName: fullName,
+        email: email,
+        newPassword: password.isEmpty ? null : password,
+      );
+
+      if (!mounted) return;
+
+      passwordController.clear();
+      changePasswordController.clear();
+      _showMessage('Profil berhasil diperbarui.');
+    } on AuthException catch (error) {
+      _showMessage(error.message);
+    } catch (_) {
+      _showMessage('Gagal memperbarui profil. Periksa koneksi internet kamu.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSaving = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -102,7 +170,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           BoxShadow(
                             blurRadius: 16,
                             offset: const Offset(0, 6),
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                           ),
                         ],
                       ),
@@ -123,7 +191,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           boxShadow: [
                             BoxShadow(
                               blurRadius: 8,
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                             ),
                           ],
                         ),
@@ -170,18 +238,59 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
               const SizedBox(height: 10),
 
-              _inputField(controller: passwordController, obscure: true),
+              _inputField(
+                controller: passwordController,
+                obscure: obscurePassword,
+                hintText: 'Isi password baru',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                  icon: Icon(
+                    obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: const Color(0xFF006D37),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 24),
 
               // =========================
               // CHANGE PASSWORD
               // =========================
-              _label("Change Password"),
+              _label("Confirm Password"),
 
               const SizedBox(height: 10),
 
-              _inputField(controller: changePasswordController, obscure: true),
+              _inputField(
+                controller: changePasswordController,
+                obscure: obscureConfirmPassword,
+                hintText: 'Ulangi password baru',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      obscureConfirmPassword = !obscureConfirmPassword;
+                    });
+                  },
+                  icon: Icon(
+                    obscureConfirmPassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: const Color(0xFF006D37),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              const Text(
+                'Kosongkan password kalau tidak ingin menggantinya.',
+                style: TextStyle(fontSize: 12, color: Color(0xFF53615C)),
+              ),
 
               const SizedBox(height: 24),
 
@@ -239,7 +348,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     BoxShadow(
                       blurRadius: 10,
                       offset: const Offset(0, 4),
-                      color: Colors.black.withOpacity(0.02),
+                      color: Colors.black.withValues(alpha: 0.02),
                     ),
                   ],
                 ),
@@ -289,7 +398,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 56,
 
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: isSaving ? null : _saveProfile,
 
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
@@ -301,16 +410,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
 
-                  child: const Text(
-                    "Save Changes",
+                  child:
+                      isSaving
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                          : const Text(
+                            "Save Changes",
 
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
 
-                      color: Colors.white,
-                    ),
-                  ),
+                              color: Colors.white,
+                            ),
+                          ),
                 ),
               ),
 
@@ -343,6 +462,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget _inputField({
     required TextEditingController controller,
     bool obscure = false,
+    String? hintText,
+    Widget? suffixIcon,
   }) {
     return TextField(
       controller: controller,
@@ -351,6 +472,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
+        hintText: hintText,
+        hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+        suffixIcon: suffixIcon,
 
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
@@ -398,7 +522,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           BoxShadow(
             blurRadius: 10,
             offset: const Offset(0, 4),
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
           ),
         ],
       ),
