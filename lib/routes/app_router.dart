@@ -26,6 +26,7 @@ import '../features/news/patient_news_detail_page.dart';
 import '../features/patient/add_patient_page.dart';
 import '../features/patient/patient_detail_page.dart';
 import '../features/patient/patient_management_page.dart';
+import '../features/patient/patient_progress_page.dart';
 import '../features/patient/report_symptom_page.dart';
 
 // ================= PROFILE =================
@@ -113,6 +114,12 @@ final GoRouter appRouter = GoRouter(
       builder:
           (context, state) =>
               PatientDetailPage(patientId: state.pathParameters['id'] ?? ''),
+    ),
+    GoRoute(
+      path: '/patient-progress/:id',
+      builder:
+          (context, state) =>
+              PatientProgressPage(patientId: state.pathParameters['id'] ?? ''),
     ),
     GoRoute(
       path: '/patients',

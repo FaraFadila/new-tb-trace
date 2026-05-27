@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tb_trace/core/services/patient_service.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
@@ -89,6 +90,8 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
                       children: [
                         _summaryCard(patient),
                         SizedBox(height: 16.h),
+                        _updateProgressButton(patient.id),
+                        SizedBox(height: 16.h),
                         _detailSection(
                           title: 'Informasi Pasien',
                           children: [
@@ -161,6 +164,37 @@ class _PatientDetailPageState extends State<PatientDetailPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _updateProgressButton(String patientId) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50.h,
+      child: ElevatedButton.icon(
+        onPressed: () async {
+          final updated = await context.push<bool>(
+            '/patient-progress/${Uri.encodeComponent(patientId)}',
+          );
+
+          if (!mounted || updated != true) return;
+
+          _refreshPatient();
+        },
+        icon: Icon(Icons.trending_up_rounded, size: 20.sp),
+        label: Text(
+          'Update Progress Pengobatan',
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w700),
+        ),
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: const Color(0xFF006D37),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
         ),
       ),
     );

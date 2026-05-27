@@ -142,6 +142,21 @@ class PatientDetail {
 class PatientService {
   SupabaseClient get _client => Supabase.instance.client;
 
+  static String riskLevelForTreatmentProgress(double progress) {
+    final treatmentMonth = treatmentMonthForProgress(progress);
+
+    if (treatmentMonth <= 1) return 'high';
+    if (treatmentMonth <= 3) return 'medium';
+    return 'low';
+  }
+
+  static int treatmentMonthForProgress(double progress) {
+    final clampedProgress = progress.clamp(0.0, 1.0).toDouble();
+    if (clampedProgress == 0) return 1;
+
+    return (clampedProgress * 6).round().clamp(1, 6);
+  }
+
   Future<List<PatientSummary>> listPatients() async {
     final rows = await _client
         .from('patients')
@@ -213,5 +228,35 @@ class PatientService {
     );
 
     return createdCredentials;
+  }
+
+  Future<PatientDetail> updateTreatmentProgress({
+    required String patientId,
+    required double treatmentProgress,
+  }) async {
+    final clampedProgress = treatmentProgress.clamp(0.0, 1.0).toDouble();
+    final riskLevel = riskLevelForTreatmentProgress(clampedProgress);
+    final now = DateTime.now().toUtc().toIso8601String();
+    final row =
+        await _client
+            .from('patients')
+            .update({
+              'treatment_progress': clampedProgress,
+              'risk_level': riskLevel,
+              'treatment_status': clampedProgress >= 1 ? 'completed' : 'active',
+              'last_updated_at': now,
+              'updated_at': now,
+            })
+            .eq('id', patientId)
+            .select(
+              'id, patient_code, full_name, phone, address, guardian_name, guardian_phone, guardian_address, login_email, temporary_password, risk_level, treatment_status, treatment_start_date, treatment_end_date, treatment_progress, last_updated_at, created_at, updated_at',
+            )
+            .maybeSingle();
+
+    if (row == null) {
+      throw const AuthException('Pasien tidak ditemukan.');
+    }
+
+    return PatientDetail.fromJson(row);
   }
 }
