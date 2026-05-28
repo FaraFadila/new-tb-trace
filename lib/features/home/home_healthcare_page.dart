@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tb_trace/core/services/symptom_report_service.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
 
@@ -9,6 +10,8 @@ class HomeHealthcarePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final symptomReportService = SymptomReportService();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4FBF1),
 
@@ -215,19 +218,46 @@ class HomeHealthcarePage extends StatelessWidget {
 
                     SizedBox(height: 24.h),
 
-                    _progressItem("Batuk Terus Menerus", 0.85),
+                    ValueListenableBuilder<int>(
+                      valueListenable: symptomReportService.reportChanges,
+                      builder: (context, _, child) {
+                        return FutureBuilder<List<SymptomTrend>>(
+                          future: symptomReportService.recentTrends(),
+                          builder: (context, snapshot) {
+                            final trends =
+                                snapshot.data ??
+                                const [
+                                  SymptomTrend(
+                                    label: 'Batuk Terus Menerus',
+                                    value: 0.85,
+                                  ),
+                                  SymptomTrend(label: 'Demam', value: 0.62),
+                                  SymptomTrend(
+                                    label: 'Berkeringat Malam',
+                                    value: 0.45,
+                                  ),
+                                  SymptomTrend(
+                                    label: 'Kepatuhan Minum Obat',
+                                    value: 0.92,
+                                  ),
+                                ];
 
-                    SizedBox(height: 16.h),
-
-                    _progressItem("Demam", 0.62),
-
-                    SizedBox(height: 16.h),
-
-                    _progressItem("Berkeringat Malam", 0.45),
-
-                    SizedBox(height: 16.h),
-
-                    _progressItem("Kepatuhan Minum Obat", 0.92),
+                            return Column(
+                              children: [
+                                for (var i = 0; i < trends.length; i++) ...[
+                                  _progressItem(
+                                    trends[i].label,
+                                    trends[i].value,
+                                  ),
+                                  if (i != trends.length - 1)
+                                    SizedBox(height: 16.h),
+                                ],
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -253,9 +283,9 @@ class HomeHealthcarePage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
         gradient: LinearGradient(
-          colors: [Colors.white, color.withOpacity(0.08)],
+          colors: [Colors.white, color.withValues(alpha: 0.08)],
         ),
-        border: Border.all(color: color.withOpacity(0.15)),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,35 +352,6 @@ class HomeHealthcarePage extends StatelessWidget {
             minHeight: 8.h,
             backgroundColor: const Color(0xFFDDE5DB),
             valueColor: const AlwaysStoppedAnimation(Color(0xFF006D37)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // ================= NAV ITEM =================
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    bool active = false,
-  }) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: active ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
-        ),
-
-        SizedBox(height: 4.h),
-
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11.sp,
-            fontWeight: active ? FontWeight.w600 : FontWeight.w500,
-            color: active ? const Color(0xFF006E1C) : const Color(0xFF94A3B8),
           ),
         ),
       ],

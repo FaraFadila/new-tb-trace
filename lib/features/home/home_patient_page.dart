@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 
@@ -74,7 +75,7 @@ class HomePatientPage extends StatelessWidget {
                     BoxShadow(
                       blurRadius: 20,
                       offset: const Offset(0, 4),
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                     ),
                   ],
                 ),
@@ -115,7 +116,9 @@ class HomePatientPage extends StatelessWidget {
                             vertical: 6.h,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF006D37).withOpacity(0.1),
+                            color: const Color(
+                              0xFF006D37,
+                            ).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(999.r),
                           ),
                           child: Row(
@@ -154,7 +157,9 @@ class HomePatientPage extends StatelessWidget {
                           width: 48.w,
                           height: 48.w,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF27AE60).withOpacity(0.2),
+                            color: const Color(
+                              0xFF27AE60,
+                            ).withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -198,6 +203,7 @@ class HomePatientPage extends StatelessWidget {
                       title: "Zona Aman\nTerdekat",
                       icon: Iconsax.location,
                       isPrimary: false,
+                      onTap: () => context.go('/patient-map'),
                     ),
                   ),
 
@@ -208,6 +214,7 @@ class HomePatientPage extends StatelessWidget {
                       title: "Laporkan\nGejala",
                       icon: Iconsax.warning_2,
                       isPrimary: true,
+                      onTap: () => context.push('/report-symptom'),
                     ),
                   ),
                 ],
@@ -278,53 +285,61 @@ class HomePatientPage extends StatelessWidget {
     required String title,
     required IconData icon,
     required bool isPrimary,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      //height: 140.h,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      decoration: BoxDecoration(
-        gradient:
-            isPrimary
-                ? const LinearGradient(
-                  colors: [Color(0xFF27AE60), Color(0xFF006D37)],
-                )
-                : null,
-        color: isPrimary ? null : Colors.white,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16.r),
-        border: isPrimary ? null : Border.all(color: const Color(0xFFE8F8F1)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 48.w,
-            height: 48.w,
-            decoration: BoxDecoration(
-              color:
-                  isPrimary
-                      ? Colors.white.withOpacity(0.2)
-                      : const Color(0xFFD6E6DF),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: isPrimary ? Colors.white : const Color(0xFF596862),
-            ),
+        child: Ink(
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+          decoration: BoxDecoration(
+            gradient:
+                isPrimary
+                    ? const LinearGradient(
+                      colors: [Color(0xFF27AE60), Color(0xFF006D37)],
+                    )
+                    : null,
+            color: isPrimary ? null : Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border:
+                isPrimary ? null : Border.all(color: const Color(0xFFE8F8F1)),
           ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  color:
+                      isPrimary
+                          ? Colors.white.withValues(alpha: 0.2)
+                          : const Color(0xFFD6E6DF),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: isPrimary ? Colors.white : const Color(0xFF596862),
+                ),
+              ),
 
-          SizedBox(height: 14.h),
+              SizedBox(height: 14.h),
 
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18.sp,
-              height: 1.3,
-              fontWeight: FontWeight.w700,
-              color: isPrimary ? Colors.white : const Color(0xFF171D17),
-            ),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  height: 1.3,
+                  fontWeight: FontWeight.w700,
+                  color: isPrimary ? Colors.white : const Color(0xFF171D17),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -402,36 +417,6 @@ class HomePatientPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // ================= NAV ITEM =================
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    bool active = false,
-  }) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: active ? const Color(0xFF059669) : const Color(0xFF94A3B8),
-        ),
-
-        SizedBox(height: 6.h),
-
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10.sp,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w600,
-            color: active ? const Color(0xFF059669) : const Color(0xFF94A3B8),
-          ),
-        ),
-      ],
     );
   }
 }
