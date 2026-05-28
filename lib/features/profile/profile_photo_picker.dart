@@ -3,6 +3,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../core/services/user_profile_service.dart';
 
+enum _ProfilePhotoAction { camera, gallery, delete }
+
 class ProfilePhotoPicker {
   const ProfilePhotoPicker._();
 
@@ -10,7 +12,7 @@ class ProfilePhotoPicker {
     BuildContext context, {
     required UserProfileService profileService,
   }) async {
-    final source = await showModalBottomSheet<ImageSource>(
+    final action = await showModalBottomSheet<_ProfilePhotoAction>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -47,12 +49,27 @@ class ProfilePhotoPicker {
                   _PhotoSourceTile(
                     icon: Icons.photo_camera_outlined,
                     title: 'Ambil dari Kamera',
-                    onTap: () => Navigator.pop(context, ImageSource.camera),
+                    onTap:
+                        () =>
+                            Navigator.pop(context, _ProfilePhotoAction.camera),
                   ),
                   _PhotoSourceTile(
                     icon: Icons.photo_library_outlined,
                     title: 'Ambil dari Galeri',
-                    onTap: () => Navigator.pop(context, ImageSource.gallery),
+                    onTap:
+                        () =>
+                            Navigator.pop(context, _ProfilePhotoAction.gallery),
+                  ),
+                  const Divider(height: 20, color: Color(0xFFE8F8F1)),
+                  _PhotoSourceTile(
+                    icon: Icons.delete_outline_rounded,
+                    title: 'Hapus Foto Profil',
+                    iconColor: Color(0xFFBA1A1A),
+                    iconBackgroundColor: Color(0xFFFFEDEA),
+                    textColor: Color(0xFFBA1A1A),
+                    onTap:
+                        () =>
+                            Navigator.pop(context, _ProfilePhotoAction.delete),
                   ),
                 ],
               ),
@@ -60,9 +77,25 @@ class ProfilePhotoPicker {
           ),
     );
 
-    if (source == null) return false;
+    if (action == null) return false;
+
+    if (action == _ProfilePhotoAction.delete) {
+      await profileService.deleteProfilePhoto();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Foto profil berhasil dihapus.')),
+        );
+      }
+
+      return true;
+    }
 
     try {
+      final source =
+          action == _ProfilePhotoAction.camera
+              ? ImageSource.camera
+              : ImageSource.gallery;
       final pickedImage = await ImagePicker().pickImage(
         source: source,
         maxWidth: 900,
@@ -101,11 +134,17 @@ class _PhotoSourceTile extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.onTap,
+    this.iconColor = const Color(0xFF006D37),
+    this.iconBackgroundColor,
+    this.textColor = const Color(0xFF171D17),
   });
 
   final IconData icon;
   final String title;
   final VoidCallback onTap;
+  final Color iconColor;
+  final Color? iconBackgroundColor;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -115,17 +154,19 @@ class _PhotoSourceTile extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: const Color(0xFF006D37).withValues(alpha: 0.1),
+          color:
+              iconBackgroundColor ??
+              const Color(0xFF006D37).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: const Color(0xFF006D37)),
+        child: Icon(icon, color: iconColor),
       ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF171D17),
+          color: textColor,
         ),
       ),
       onTap: onTap,

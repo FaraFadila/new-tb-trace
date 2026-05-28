@@ -9,6 +9,7 @@ class UserProfileService {
   static const _cachedDisplayNameKey = 'current_user_display_name';
   static const _cachedEmailKey = 'current_user_email';
   static const _cachedPhotoKey = 'current_user_profile_photo';
+  static const _profilePhotoPrefix = 'profile_photo_';
   static final ValueNotifier<int> _profilePhotoVersion = ValueNotifier<int>(0);
 
   SupabaseClient get _client => Supabase.instance.client;
@@ -57,11 +58,12 @@ class UserProfileService {
 
   Future<Uint8List?> currentProfilePhotoBytes() async {
     final preferences = await SharedPreferences.getInstance();
-    if (!_matchesCachedUser(preferences, _client.auth.currentUser?.id)) {
-      return null;
-    }
+    final userId = _stringOrNull(_client.auth.currentUser?.id);
+    if (userId == null) return null;
 
-    final photo = _stringOrNull(preferences.getString(_cachedPhotoKey));
+    final photo =
+        _stringOrNull(preferences.getString(_profilePhotoKey(userId))) ??
+        await _migrateLegacyProfilePhoto(preferences, userId);
     if (photo == null) return null;
 
     try {
@@ -137,11 +139,25 @@ class UserProfileService {
   Future<void> updateProfilePhoto(Uint8List bytes) async {
     final preferences = await SharedPreferences.getInstance();
     final cleanUserId = _stringOrNull(_client.auth.currentUser?.id);
+    if (cleanUserId == null) return;
+
+    await preferences.setString(_cachedUserIdKey, cleanUserId);
+    await preferences.setString(
+      _profilePhotoKey(cleanUserId),
+      base64Encode(bytes),
+    );
+    await preferences.remove(_cachedPhotoKey);
+    _profilePhotoVersion.value++;
+  }
+
+  Future<void> deleteProfilePhoto() async {
+    final preferences = await SharedPreferences.getInstance();
+    final cleanUserId = _stringOrNull(_client.auth.currentUser?.id);
     if (cleanUserId != null) {
-      await preferences.setString(_cachedUserIdKey, cleanUserId);
+      await preferences.remove(_profilePhotoKey(cleanUserId));
     }
 
-    await preferences.setString(_cachedPhotoKey, base64Encode(bytes));
+    await preferences.remove(_cachedPhotoKey);
     _profilePhotoVersion.value++;
   }
 
@@ -166,10 +182,16 @@ class UserProfileService {
 
   Future<void> clearCachedProfile() async {
     final preferences = await SharedPreferences.getInstance();
+    final cleanUserId =
+        _stringOrNull(_client.auth.currentUser?.id) ??
+        _stringOrNull(preferences.getString(_cachedUserIdKey));
+    if (cleanUserId != null) {
+      await _migrateLegacyProfilePhoto(preferences, cleanUserId);
+    }
+
     await preferences.remove(_cachedUserIdKey);
     await preferences.remove(_cachedDisplayNameKey);
     await preferences.remove(_cachedEmailKey);
-    await preferences.remove(_cachedPhotoKey);
     _profilePhotoVersion.value++;
   }
 
@@ -194,6 +216,22 @@ class UserProfileService {
     return _stringOrNull(preferences.getString(_cachedUserIdKey)) ==
         expectedUserId;
   }
+
+  Future<String?> _migrateLegacyProfilePhoto(
+    SharedPreferences preferences,
+    String userId,
+  ) async {
+    if (!_matchesCachedUser(preferences, userId)) return null;
+
+    final legacyPhoto = _stringOrNull(preferences.getString(_cachedPhotoKey));
+    if (legacyPhoto == null) return null;
+
+    await preferences.setString(_profilePhotoKey(userId), legacyPhoto);
+    await preferences.remove(_cachedPhotoKey);
+    return legacyPhoto;
+  }
+
+  String _profilePhotoKey(String userId) => '$_profilePhotoPrefix$userId';
 
   String? _emailName(String? email) {
     final localPart = email?.split('@').first.trim();
