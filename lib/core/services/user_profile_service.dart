@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -5,8 +8,11 @@ class UserProfileService {
   static const _cachedUserIdKey = 'current_user_id';
   static const _cachedDisplayNameKey = 'current_user_display_name';
   static const _cachedEmailKey = 'current_user_email';
+  static const _cachedPhotoKey = 'current_user_profile_photo';
+  static final ValueNotifier<int> _profilePhotoVersion = ValueNotifier<int>(0);
 
   SupabaseClient get _client => Supabase.instance.client;
+  ValueListenable<int> get profilePhotoChanges => _profilePhotoVersion;
 
   Future<String> currentDisplayName() async {
     final user = _client.auth.currentUser;
@@ -47,6 +53,23 @@ class UserProfileService {
       email: user.email,
     );
     return displayName;
+  }
+
+  Future<Uint8List?> currentProfilePhotoBytes() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (!_matchesCachedUser(preferences, _client.auth.currentUser?.id)) {
+      return null;
+    }
+
+    final photo = _stringOrNull(preferences.getString(_cachedPhotoKey));
+    if (photo == null) return null;
+
+    try {
+      return base64Decode(photo);
+    } on FormatException {
+      await preferences.remove(_cachedPhotoKey);
+      return null;
+    }
   }
 
   String currentEmail() {
@@ -111,6 +134,17 @@ class UserProfileService {
     );
   }
 
+  Future<void> updateProfilePhoto(Uint8List bytes) async {
+    final preferences = await SharedPreferences.getInstance();
+    final cleanUserId = _stringOrNull(_client.auth.currentUser?.id);
+    if (cleanUserId != null) {
+      await preferences.setString(_cachedUserIdKey, cleanUserId);
+    }
+
+    await preferences.setString(_cachedPhotoKey, base64Encode(bytes));
+    _profilePhotoVersion.value++;
+  }
+
   Future<void> _cacheProfile({
     required String? userId,
     required String displayName,
@@ -135,6 +169,8 @@ class UserProfileService {
     await preferences.remove(_cachedUserIdKey);
     await preferences.remove(_cachedDisplayNameKey);
     await preferences.remove(_cachedEmailKey);
+    await preferences.remove(_cachedPhotoKey);
+    _profilePhotoVersion.value++;
   }
 
   Future<String?> _cachedDisplayName({required String? userId}) async {

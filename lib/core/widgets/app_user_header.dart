@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../services/user_profile_service.dart';
+import 'profile_avatar.dart';
 
 class AppUserHeader extends StatefulWidget implements PreferredSizeWidget {
   const AppUserHeader({
@@ -113,18 +114,12 @@ class _AppUserHeaderState extends State<AppUserHeader> {
             },
           ),
           SizedBox(width: 10.w),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
+          ProfileAvatar(
+            size: 44.r,
+            borderWidth: 0,
+            iconColor: widget.avatarIconColor,
+            iconSize: 23.sp,
             onTap: () => context.go(widget.profileRoute),
-            child: CircleAvatar(
-              radius: 22.r,
-              backgroundColor: const Color(0xFFEEF2F3),
-              child: Icon(
-                Icons.person,
-                size: 23.sp,
-                color: widget.avatarIconColor,
-              ),
-            ),
           ),
         ],
       ),

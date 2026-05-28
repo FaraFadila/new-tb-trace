@@ -3,8 +3,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/services/user_profile_service.dart';
 import '../../core/widgets/app_user_header.dart';
+import '../../core/widgets/profile_avatar.dart';
 import '../auth/login_page.dart';
 import 'edit_profile_page.dart';
+import 'profile_photo_picker.dart';
 
 class ProfileSidebar extends StatefulWidget {
   const ProfileSidebar({
@@ -23,6 +25,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
   bool notificationOn = true;
   bool darkModeOn = false;
   bool isLoggingOut = false;
+  int profilePhotoVersion = 0;
 
   Future<void> _logOut() async {
     if (isLoggingOut) return;
@@ -55,6 +58,19 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
         });
       }
     }
+  }
+
+  Future<void> _editProfilePhoto() async {
+    final updated = await ProfilePhotoPicker.show(
+      context,
+      profileService: _profileService,
+    );
+
+    if (!mounted || !updated) return;
+
+    setState(() {
+      profilePhotoVersion++;
+    });
   }
 
   @override
@@ -95,29 +111,18 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
             child: Column(
               children: [
                 // PROFILE IMAGE
-                Container(
-                  width: 92,
-                  height: 92,
-
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-
-                    border: Border.all(color: Colors.white, width: 3),
-
-                    image: const DecorationImage(
-                      image: AssetImage("assets/images/profile.png"),
-
-                      fit: BoxFit.cover,
+                ProfileAvatar(
+                  key: ValueKey('sidebar-profile-photo-$profilePhotoVersion'),
+                  size: 92,
+                  borderColor: Colors.white,
+                  onTap: _editProfilePhoto,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 14,
+                      offset: const Offset(0, 6),
+                      color: Colors.black.withValues(alpha: 0.12),
                     ),
-
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 14,
-                        offset: const Offset(0, 6),
-                        color: Colors.black.withValues(alpha: 0.12),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
 
                 const SizedBox(height: 16),

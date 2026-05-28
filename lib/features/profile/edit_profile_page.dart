@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tb_trace/core/services/user_profile_service.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
+import 'package:tb_trace/core/widgets/profile_avatar.dart';
+
+import 'profile_photo_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key, this.fallbackRoute = '/profile-patient'});
@@ -30,6 +33,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool isSaving = false;
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  int profilePhotoVersion = 0;
 
   @override
   void initState() {
@@ -105,6 +109,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  Future<void> _editProfilePhoto() async {
+    final updated = await ProfilePhotoPicker.show(
+      context,
+      profileService: _profileService,
+    );
+
+    if (!mounted || !updated) return;
+
+    setState(() {
+      profilePhotoVersion++;
+    });
+  }
+
   void _showMessage(String message) {
     if (!mounted) return;
 
@@ -146,26 +163,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
               // PROFILE IMAGE
               // =========================
               Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 140,
-
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-
-                        border: Border.all(
-                          color: const Color(0xFF006D37),
-                          width: 3,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _editProfilePhoto,
+                  child: Stack(
+                    children: [
+                      ProfileAvatar(
+                        key: ValueKey(
+                          'edit-profile-photo-$profilePhotoVersion',
                         ),
-
-                        image: const DecorationImage(
-                          image: AssetImage("assets/images/profile.png"),
-
-                          fit: BoxFit.cover,
-                        ),
-
+                        size: 140,
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 16,
@@ -174,36 +181,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                         ],
                       ),
-                    ),
 
-                    Positioned(
-                      bottom: 6,
-                      right: 6,
+                      Positioned(
+                        bottom: 6,
+                        right: 6,
 
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
 
-                        decoration: BoxDecoration(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
 
-                          shape: BoxShape.circle,
+                            shape: BoxShape.circle,
 
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 8,
-                              color: Colors.black.withValues(alpha: 0.08),
-                            ),
-                          ],
-                        ),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 8,
+                                color: Colors.black.withValues(alpha: 0.08),
+                              ),
+                            ],
+                          ),
 
-                        child: const Icon(
-                          Icons.camera_alt,
-                          size: 20,
-                          color: Color(0xFF006D37),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 20,
+                            color: Color(0xFF006D37),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 

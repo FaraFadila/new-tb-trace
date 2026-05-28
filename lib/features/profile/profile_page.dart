@@ -5,8 +5,10 @@ import '../../core/services/user_profile_service.dart';
 import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/healthcare_bottom_navbar.dart';
 import '../../core/widgets/patient_bottom_navbar.dart';
+import '../../core/widgets/profile_avatar.dart';
 import '../../features/auth/login_page.dart';
 import 'edit_profile_page.dart';
+import 'profile_photo_picker.dart';
 import 'profile_sidebar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -43,6 +45,19 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  Future<void> _editProfilePhoto() async {
+    final updated = await ProfilePhotoPicker.show(
+      context,
+      profileService: _profileService,
+    );
+
+    if (!mounted || !updated) return;
+
+    setState(() {
+      _profileVersion++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,28 +82,17 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 10),
 
             // ================= PROFILE IMAGE =================
-            Container(
-              width: 130,
-              height: 130,
-
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-
-                border: Border.all(color: const Color(0xFF006D37), width: 3),
-
-                image: const DecorationImage(
-                  image: AssetImage("assets/images/profile.png"),
-                  fit: BoxFit.cover,
+            ProfileAvatar(
+              key: ValueKey('profile-photo-$_profileVersion'),
+              size: 130,
+              onTap: _editProfilePhoto,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 14,
+                  color: Colors.black.withValues(alpha: 0.08),
+                  offset: const Offset(0, 6),
                 ),
-
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 14,
-                    color: Colors.black.withValues(alpha: 0.08),
-                    offset: const Offset(0, 6),
-                  ),
-                ],
-              ),
+              ],
             ),
 
             const SizedBox(height: 20),
