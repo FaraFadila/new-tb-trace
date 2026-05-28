@@ -2,12 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tb_trace/core/services/news_api_service.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 
 import '../../core/widgets/patient_bottom_navbar.dart';
 
-class HomePatientPage extends StatelessWidget {
+class HomePatientPage extends StatefulWidget {
   const HomePatientPage({super.key});
+
+  @override
+  State<HomePatientPage> createState() => _HomePatientPageState();
+}
+
+class _HomePatientPageState extends State<HomePatientPage> {
+  final NewsApiService _newsService = NewsApiService();
+  late final Future<List<NewsApiArticle>> _newsPreviewFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _newsPreviewFuture = _newsService.fetchTuberculosisNews();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -234,13 +249,23 @@ class HomePatientPage extends StatelessWidget {
                     ),
                   ),
 
-                  Text(
-                    "LIHAT SEMUA",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1,
-                      color: const Color(0xFF006D37),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8.r),
+                    onTap: () => context.go('/news-patient'),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 8.h,
+                      ),
+                      child: Text(
+                        "LIHAT SEMUA",
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1,
+                          color: const Color(0xFF006D37),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -248,29 +273,7 @@ class HomePatientPage extends StatelessWidget {
 
               SizedBox(height: 16.h),
 
-              SizedBox(
-                height: 260.h,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _articleCard(
-                      imagePath: "assets/images/tbc1.png",
-                      category: "Pencegahan",
-                      title: "Atasi Stigma Pasien TBC",
-                      author: "dr. panpan",
-                    ),
-
-                    SizedBox(width: 16.w),
-
-                    _articleCard(
-                      imagePath: "assets/images/tbc1.png",
-                      category: "Kesehatan",
-                      title: "Tips Menjaga Imunitas",
-                      author: "dr. Sarah",
-                    ),
-                  ],
-                ),
-              ),
+              _newsPreview(),
 
               SizedBox(height: 40.h),
             ],
@@ -345,12 +348,139 @@ class HomePatientPage extends StatelessWidget {
   }
 
   // ================= ARTICLE CARD =================
-  Widget _articleCard({
-    required String imagePath,
-    required String category,
-    required String title,
-    required String author,
-  }) {
+  Widget _newsPreview() {
+    return FutureBuilder<List<NewsApiArticle>>(
+      future: _newsPreviewFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(
+            height: 260.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: 2,
+              separatorBuilder: (context, index) => SizedBox(width: 16.w),
+              itemBuilder: (context, index) => _articleLoadingCard(),
+            ),
+          );
+        }
+
+        if (snapshot.hasError || (snapshot.data ?? []).isEmpty) {
+          return _newsMessageCard(
+            title: 'Berita belum tersedia',
+            subtitle: 'Buka halaman news untuk memuat ulang informasi TBC.',
+          );
+        }
+
+        final articles = (snapshot.data ?? []).take(4).toList();
+
+        return SizedBox(
+          height: 260.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: articles.length,
+            separatorBuilder: (context, index) => SizedBox(width: 16.w),
+            itemBuilder:
+                (context, index) => _articleCard(article: articles[index]),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _articleCard({required NewsApiArticle article}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16.r),
+        onTap: () => context.push('/patient-news-detail', extra: article),
+        child: Ink(
+          width: 260.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: const Color(0xFFE8F8F1)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 118.h,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDDE5DB),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(16.r),
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    width: 54.w,
+                    height: 54.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.72),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      _newsIcon(article.category),
+                      size: 26.sp,
+                      color: const Color(0xFF006D37),
+                    ),
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.category,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1,
+                        color: const Color(0xFF53615C),
+                      ),
+                    ),
+
+                    SizedBox(height: 8.h),
+
+                    Text(
+                      article.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        height: 1.25,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF171D17),
+                      ),
+                    ),
+
+                    SizedBox(height: 8.h),
+
+                    Text(
+                      article.author,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF3D4A3F),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _articleLoadingCard() {
     return Container(
       width: 260.w,
       decoration: BoxDecoration(
@@ -362,53 +492,93 @@ class HomePatientPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 130.h,
+            height: 118.h,
             decoration: BoxDecoration(
               color: const Color(0xFFDDE5DB),
               borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
             ),
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                height: 120.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
           ),
-
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  category,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1,
-                    color: const Color(0xFF53615C),
-                  ),
-                ),
-
+                _loadingLine(width: 92.w, height: 12.h),
+                SizedBox(height: 12.h),
+                _loadingLine(width: 196.w, height: 16.h),
                 SizedBox(height: 8.h),
+                _loadingLine(width: 160.w, height: 16.h),
+                SizedBox(height: 12.h),
+                _loadingLine(width: 80.w, height: 12.h),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
+  IconData _newsIcon(String category) {
+    switch (category) {
+      case 'Pengobatan':
+        return Icons.medical_services_outlined;
+      case 'Nutrisi':
+        return Icons.restaurant_outlined;
+      default:
+        return Iconsax.health;
+    }
+  }
+
+  Widget _loadingLine({required double width, required double height}) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: const Color(0xFFDDE5DB),
+        borderRadius: BorderRadius.circular(999.r),
+      ),
+    );
+  }
+
+  Widget _newsMessageCard({required String title, required String subtitle}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: const Color(0xFFE8F8F1)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44.w,
+            height: 44.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFF006D37).withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Iconsax.document_text, color: Color(0xFF006D37)),
+          ),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                     color: const Color(0xFF171D17),
                   ),
                 ),
-
-                SizedBox(height: 8.h),
-
+                SizedBox(height: 4.h),
                 Text(
-                  author,
+                  subtitle,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 13.sp,
+                    height: 1.35,
                     color: const Color(0xFF3D4A3F),
                   ),
                 ),
