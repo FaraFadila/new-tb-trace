@@ -20,6 +20,7 @@ class _PatientMapPageState extends State<PatientMapPage> {
   static const int _mapZoom = 15;
   static const int _tileSize = 256;
   static const int _tileRadius = 3;
+  static const double _tileBleed = 1;
   static const Map<String, _LatLng> _knownSurabayaPlaces = {
     'keputih': _LatLng(-7.2946, 112.8031),
     'gubeng': _LatLng(-7.2729, 112.7555),
@@ -243,50 +244,55 @@ class _PatientMapPageState extends State<PatientMapPage> {
       builder: (context, constraints) {
         _centerMapOnce(tileLayout, constraints.biggest);
 
-        return InteractiveViewer(
-          transformationController: _mapController,
-          constrained: false,
-          minScale: 0.75,
-          maxScale: 4,
-          boundaryMargin: const EdgeInsets.all(1600),
-          panEnabled: true,
-          scaleEnabled: true,
-          child: SizedBox(
-            width: tileLayout.size,
-            height: tileLayout.size,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                for (
-                  int x = tileLayout.startTileX;
-                  x <= tileLayout.endTileX;
-                  x++
-                )
+        return ColoredBox(
+          color: const Color(0xFFEFF3EF),
+          child: InteractiveViewer(
+            transformationController: _mapController,
+            constrained: false,
+            minScale: 0.75,
+            maxScale: 4,
+            boundaryMargin: const EdgeInsets.all(1600),
+            panEnabled: true,
+            scaleEnabled: true,
+            child: SizedBox(
+              width: tileLayout.size,
+              height: tileLayout.size,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
                   for (
-                    int y = tileLayout.startTileY;
-                    y <= tileLayout.endTileY;
-                    y++
+                    int x = tileLayout.startTileX;
+                    x <= tileLayout.endTileX;
+                    x++
                   )
-                    Positioned(
-                      left: (x - tileLayout.startTileX) * _tileSize.toDouble(),
-                      top: (y - tileLayout.startTileY) * _tileSize.toDouble(),
-                      width: _tileSize.toDouble(),
-                      height: _tileSize.toDouble(),
-                      child: Image.network(
-                        'https://tile.openstreetmap.org/$_mapZoom/$x/$y.png',
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.medium,
-                        errorBuilder:
-                            (context, error, stackTrace) =>
-                                Container(color: const Color(0xFFEFF3EF)),
+                    for (
+                      int y = tileLayout.startTileY;
+                      y <= tileLayout.endTileY;
+                      y++
+                    )
+                      Positioned(
+                        left:
+                            (x - tileLayout.startTileX) * _tileSize.toDouble(),
+                        top: (y - tileLayout.startTileY) * _tileSize.toDouble(),
+                        width: _tileSize + _tileBleed,
+                        height: _tileSize + _tileBleed,
+                        child: Image.network(
+                          'https://tile.openstreetmap.org/$_mapZoom/$x/$y.png',
+                          fit: BoxFit.fill,
+                          filterQuality: FilterQuality.none,
+                          gaplessPlayback: true,
+                          errorBuilder:
+                              (context, error, stackTrace) =>
+                                  const ColoredBox(color: Color(0xFFEFF3EF)),
+                        ),
                       ),
-                    ),
-                Positioned(
-                  left: tileLayout.markerOffset.dx - 26,
-                  top: tileLayout.markerOffset.dy - 26,
-                  child: _buildPatientMarkerIcon(),
-                ),
-              ],
+                  Positioned(
+                    left: tileLayout.markerOffset.dx - 26,
+                    top: tileLayout.markerOffset.dy - 26,
+                    child: _buildPatientMarkerIcon(),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -304,13 +310,11 @@ class _PatientMapPageState extends State<PatientMapPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _mapController.value =
-          Matrix4.identity()..translateByDouble(
-            viewportSize.width / 2 - tileLayout.markerOffset.dx,
-            viewportSize.height / 2 - tileLayout.markerOffset.dy,
-            0,
-            1,
-          );
+      _mapController.value = Matrix4.translationValues(
+        viewportSize.width / 2 - tileLayout.markerOffset.dx,
+        viewportSize.height / 2 - tileLayout.markerOffset.dy,
+        0,
+      );
     });
   }
 
@@ -714,14 +718,14 @@ class _PatientMapPageState extends State<PatientMapPage> {
   void _zoomIn() {
     setState(() {
       final matrix = _mapController.value.clone();
-      _mapController.value = matrix..scaleByDouble(1.25, 1.25, 1, 1);
+      _mapController.value = matrix * Matrix4.diagonal3Values(1.25, 1.25, 1);
     });
   }
 
   void _zoomOut() {
     setState(() {
       final matrix = _mapController.value.clone();
-      _mapController.value = matrix..scaleByDouble(0.8, 0.8, 1, 1);
+      _mapController.value = matrix * Matrix4.diagonal3Values(0.8, 0.8, 1);
     });
   }
 
