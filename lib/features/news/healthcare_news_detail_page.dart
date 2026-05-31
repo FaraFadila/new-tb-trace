@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/healthcare_bottom_navbar.dart';
 
@@ -12,6 +12,7 @@ class HealthcareNewsArticle {
     required this.author,
     required this.location,
     required this.verifiedBy,
+    this.sourceUrl,
     this.publishedAt = 'Today',
     this.readTime = '5 min read',
   });
@@ -22,8 +23,27 @@ class HealthcareNewsArticle {
   final String author;
   final String location;
   final String verifiedBy;
+  final String? sourceUrl;
   final String publishedAt;
   final String readTime;
+
+  // 🟢 TAMBAHKAN INI: Fungsi untuk mengubah data dari Supabase (Map) menjadi Objek Model
+  factory HealthcareNewsArticle.fromSupabase(Map<String, dynamic> json) {
+    return HealthcareNewsArticle(
+      category: json['category'] ?? 'Umum',
+      title: json['title'] ?? 'Tanpa Judul',
+      summary: json['summary'] ?? (json['content'] ?? 'Tidak ada ringkasan klinis ketersediaan artikel.'),
+      // Jika relasi nama author belum di-select, kita pasang fallback string dulu
+      author: json['profiles'] != null ? json['profiles']['full_name'] ?? 'Tim Medis' : 'Dokter Spesialis',
+      location: json['location'] ?? 'Fasilitas Kesehatan',
+      verifiedBy: json['is_medical_review'] == true ? 'Terverifikasi Medis' : 'Dalam Peninjauan',
+      sourceUrl: json['source_url'],
+      publishedAt: json['created_at'] != null 
+          ? json['created_at'].toString().substring(0, 10) // Ambil tanggal YYYY-MM-DD
+          : 'Today',
+      readTime: '5 min read',
+    );
+  }
 }
 
 class HealthcareNewsDetailPage extends StatelessWidget {
@@ -60,18 +80,22 @@ class HealthcareNewsDetailPage extends StatelessWidget {
               children: [
                 _Tag(label: news.category),
                 const Spacer(),
-                const Icon(
+                Icon(
                   Icons.check_circle,
                   size: 16,
-                  color: Color(0xFF006D37),
+                  color: news.verifiedBy == 'Dalam Peninjauan' 
+                      ? const Color(0xFF6B7280) 
+                      : const Color(0xFF006D37),
                 ),
                 SizedBox(width: 6.w),
                 Text(
-                  'Verified',
+                  news.verifiedBy == 'Dalam Peninjauan' ? 'Pending Review' : 'Verified',
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF006D37),
+                    color: news.verifiedBy == 'Dalam Peninjauan' 
+                        ? const Color(0xFF6B7280) 
+                        : const Color(0xFF006D37),
                   ),
                 ),
               ],
@@ -143,6 +167,39 @@ class HealthcareNewsDetailPage extends StatelessWidget {
               body:
                   'Dipublikasikan ${news.publishedAt} oleh ${news.author}. Estimasi waktu baca ${news.readTime}.',
             ),
+            SizedBox(height: 24.h), // Jarak tambahan sebelum tombol
+            if (news.sourceUrl != null && news.sourceUrl!.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                height: 50.h,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF006D37),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  icon: const Icon(Icons.open_in_new, color: Colors.white, size: 20),
+                  label: const Text(
+                    'Baca Artikel Asli',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final Uri url = Uri.parse(news.sourceUrl!);
+                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Gagal membuka link artikel')),
+                        );
+                      }
+                    }
+                  },
+                ),
+              ),
             SizedBox(height: 32.h),
           ],
         ),
@@ -152,11 +209,10 @@ class HealthcareNewsDetailPage extends StatelessWidget {
   }
 }
 
+// --- WIDGET PENDUKUNG tetep sama seperti codingan awalmu ---
 class _Tag extends StatelessWidget {
   const _Tag({required this.label});
-
   final String label;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -178,16 +234,10 @@ class _Tag extends StatelessWidget {
 }
 
 class _MetaRow extends StatelessWidget {
-  const _MetaRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
+  const _MetaRow({required this.icon, required this.label, required this.value});
   final IconData icon;
   final String label;
   final String value;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -225,10 +275,8 @@ class _MetaRow extends StatelessWidget {
 
 class _Section extends StatelessWidget {
   const _Section({required this.title, required this.body});
-
   final String title;
   final String body;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -240,7 +288,7 @@ class _Section extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),

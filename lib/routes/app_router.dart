@@ -21,6 +21,7 @@ import '../features/news/healthcare_news_detail_page.dart';
 import '../features/news/news_page.dart';
 import '../features/news/news_patient.dart';
 import '../features/news/patient_news_detail_page.dart';
+export '../features/news/healthcare_news_detail_page.dart';
 
 // ================= PATIENT =================
 import '../features/patient/add_patient_page.dart';

@@ -1,8 +1,11 @@
+import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:tb_trace/core/services/patient_service.dart';
-import 'package:tb_trace/core/widgets/app_user_header.dart';
+import '../map/MapPickerPage.dart'; // Pastikan ini tetap ada
+import '../../core/widgets/app_user_header.dart';
 
 class AddPatientPage extends StatefulWidget {
   const AddPatientPage({super.key});
@@ -12,536 +15,264 @@ class AddPatientPage extends StatefulWidget {
 }
 
 class _AddPatientPageState extends State<AddPatientPage> {
-  final PatientService _patientService = PatientService();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController villageController = TextEditingController();
-  final TextEditingController districtController = TextEditingController();
-  final TextEditingController cityController = TextEditingController(
-    text: 'Surabaya',
-  );
-  final TextEditingController guardianNameController = TextEditingController();
-  final TextEditingController guardianPhoneController = TextEditingController();
-  final TextEditingController guardianAddressController =
-      TextEditingController();
-
-  bool isLoading = false;
-  CreatedPatientCredentials? createdCredentials;
+  // 1. Variabel penampung form (Lama + Baru)
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _guardianNameController = TextEditingController();
+  final TextEditingController _guardianPhoneController = TextEditingController();
+  final TextEditingController _guardianAddressController = TextEditingController(); // Pastikan ada kolom guardian_address di DB
+  // Daftar kelurahan untuk demo (Otomatis urut abjad A-Z)
+  final List<String> _daftarKelurahan = [
+    // Surabaya Pusat
+    'Ketabang', 'Genteng', 'Embong Kaliasin', 'Keputran', 'Tegalsari', 'Kedungdoro', 'Wonorejo', 'Bubutan', 'Alun-Alun Contong', 'Peneleh',
+    
+    // Surabaya Timur 
+    'Baratajaya', 'Gubeng', 'Airlangga', 'Kertajaya', 'Mojo', 'Pucang Sewu', 'Pacar Keling', 'Tambaksari', 'Pacar Kembang', 'Ploso', 'Rangkah', 'Keputih', 'Klampis Ngasem', 'Menur Pumpungan', 'Nginden Jangkungan', 'Semolowaru', 'Medokan Ayu',
+    
+    // Surabaya Selatan
+    'Wonokromo', 'Darmo', 'Jagir', 'Ngagel', 'Ngagelrejo', 'Sawunggaling', 'Jemur Wonosari', 'Margorejo', 'Bendul Merisi', 'Ketintang', 'Gayungan',
+    
+    // Surabaya Barat
+    'Kebraon', 'Karang Pilang', 'Kedurus', 'Wiyung', 'Babatan', 'Balas Klumprik', 'Lontar', 'Sambikerep', 'Beringin', 'Made', 'Lakarsantri',
+    
+    // Surabaya Utara
+    'Krembangan Selatan', 'Krembangan Utara', 'Kemayoran', 'Perak Barat', 'Perak Timur', 'Bongkaran', 'Nyamplungan', 'Ampel', 'Pegirian', 'Sidotopo'
+  ]..sort();
+  // 2. Variabel penampung koordinat & tanggal
+  double? _selectedLatitude;
+  double? _selectedLongitude;
+  DateTime? _startDate;
+  DateTime? _endDate;
+  String? _selectedKelurahan;
+  
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    addressController.dispose();
-    villageController.dispose();
-    districtController.dispose();
-    cityController.dispose();
-    guardianNameController.dispose();
-    guardianPhoneController.dispose();
-    guardianAddressController.dispose();
+    _nameController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
+    _guardianNameController.dispose();
+    _guardianPhoneController.dispose();
+    _guardianAddressController.dispose();
     super.dispose();
   }
 
-  Future<void> _savePatient() async {
-    if (isLoading) return;
+  // Fungsi pembuat password otomatis
+  String _generateRandomPassword() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final rnd = Random();
+    return String.fromCharCodes(Iterable.generate(
+        8, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
+  }
 
-    final fullName = nameController.text.trim();
+  // Fungsi pemilih kalender
+  Future<void> _pilihTanggal(BuildContext context, bool isStart) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.green, // Warna kalender disesuaikan tema app
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _startDate = picked;
+        } else {
+          _endDate = picked;
+        }
+      });
+    }
+  }
 
-    if (fullName.isEmpty) {
-      _showMessage('Nama pasien wajib diisi.');
+  // Fungsi simpan data
+  Future<void> _simpanDataPasien() async {
+    // 1. Validasi Input Dasar
+    if (_nameController.text.isEmpty || _selectedLatitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harap isi Nama Pasien dan Pilih Lokasi di Peta!')),
+      );
       return;
     }
 
-    setState(() {
-      isLoading = true;
-      createdCredentials = null;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      await _patientService.createPatient(
-        fullName: fullName,
-        phone: _emptyToNull(phoneController.text),
-        address: _emptyToNull(_patientAddress()),
-        guardianName: _emptyToNull(guardianNameController.text),
-        guardianPhone: _emptyToNull(guardianPhoneController.text),
-        guardianAddress: _emptyToNull(guardianAddressController.text),
-      );
+      // 2. Generate Kode Pasien Otomatis
+      final randomNum = Random().nextInt(900000) + 100000;
+      String generatedPatientCode = "PT-$randomNum";
+      
+      // Ambil ID dokter yang sedang login
+      final currentHealthcareId = Supabase.instance.client.auth.currentUser?.id;
 
-      if (!mounted) return;
+      // 3. INSERT LANGSUNG KE DATABASE
+      await Supabase.instance.client.from('patients').insert({
+        'healthcare_id': currentHealthcareId,
+        'patient_code': generatedPatientCode,
+        'full_name': _nameController.text,
+        'kelurahan': _selectedKelurahan,
+        'address': _addressController.text,
+        'phone': _phoneController.text,
+        'guardian_name': _guardianNameController.text,
+        'guardian_phone': _guardianPhoneController.text,
+        'guardian_address': _guardianAddressController.text,
+        'treatment_start_date': _startDate?.toIso8601String().split('T')[0],
+        'treatment_end_date': _endDate?.toIso8601String().split('T')[0],
+        'latitude': _selectedLatitude,
+        'longitude': _selectedLongitude,
+      });
 
-      _showMessage('Pasien berhasil dibuat dan credential tersimpan.');
-      context.go('/patient-management');
-    } on AuthException catch (error) {
-      _showMessage(error.message);
-    } catch (_) {
-      _showMessage('Gagal menyimpan pasien. Periksa koneksi internet kamu.');
-    } finally {
+      // 4. Sukses dan Kembali ke Halaman Sebelumnya
       if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sip! Data Pasien Berhasil Disimpan ke Database!')),
+        );
+        Navigator.pop(context); 
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Waduh gagal menyimpan: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  String? _emptyToNull(String value) {
-    final trimmed = value.trim();
-    return trimmed.isEmpty ? null : trimmed;
-  }
-
-  String _patientAddress() {
-    return [
-      addressController.text,
-      villageController.text,
-      districtController.text,
-      cityController.text,
-      'Jawa Timur',
-      'Indonesia',
-    ].map((part) => part.trim()).where((part) => part.isNotEmpty).join(', ');
-  }
-
-  void _showMessage(String message) {
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8F5),
-
-      // APPBAR
-      appBar: const AppPageHeader(
-        title: 'Tambahkan Pasien Baru',
-        centerTitle: true,
-        fallbackRoute: '/patient-management',
+      appBar: AppBar(
+        title: const Text('Tambah Pasien Baru'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
       ),
-
-      // BODY
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // =========================
-            // INFORMASI PASIEN
-            // =========================
-            const Row(
-              children: [
-                Icon(Icons.people_outline, color: Color(0xFF10B981)),
-
-                SizedBox(width: 8),
-
-                Text(
-                  "Informasi Pasien",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF065F46),
-                  ),
-                ),
-              ],
-            ),
-
+            const Text('Informasi Pasien', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-
-            _glassCard(
-              child: Column(
-                children: [
-                  _buildInput(
-                    controller: nameController,
-                    label: "Nama Pasien",
-                    hint: "Nama Lengkap",
-                    icon: Icons.person_outline,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: phoneController,
-                    label: "Nomor Telepon Pribadi",
-                    hint: "+62 0000-0000-000",
-                    icon: Icons.phone_outlined,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: addressController,
-                    label: "Alamat Jalan",
-                    hint: "Nama jalan, nomor rumah, RT/RW",
-                    icon: Icons.location_on_outlined,
-                    maxLines: 3,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: villageController,
-                    label: "Kelurahan",
-                    hint: "Contoh: Keputih",
-                    icon: Icons.location_city_outlined,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: districtController,
-                    label: "Kecamatan",
-                    hint: "Contoh: Sukolilo",
-                    icon: Icons.map_outlined,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: cityController,
-                    label: "Kota",
-                    hint: "Contoh: Surabaya",
-                    icon: Icons.apartment_outlined,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: guardianNameController,
-                    label: "Nama Wali",
-                    hint: "Nama Lengkap",
-                    icon: Icons.person_outline,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: guardianPhoneController,
-                    label: "Nomor Telepon Wali",
-                    hint: "+62 0000-0000-000",
-                    icon: Icons.phone_outlined,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  _buildInput(
-                    controller: guardianAddressController,
-                    label: "Address Wali",
-                    hint: "Alamat Jalan, Kota, kode pos",
-                    icon: Icons.location_on_outlined,
-                    maxLines: 4,
-                  ),
-                ],
+            TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'Nama Lengkap Pasien', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: _phoneController, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Nomor Telepon Pasien', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: _addressController, maxLines: 2, decoration: const InputDecoration(labelText: 'Alamat Pasien', border: OutlineInputBorder())),
+            const SizedBox(height: 24),
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                labelText: 'Pilih Kelurahan',
+                border: OutlineInputBorder(),
               ),
+              value: _selectedKelurahan,
+              hint: const Text('Pilih Kelurahan Pasien'),
+              items: _daftarKelurahan.map((String kelurahan) {
+                return DropdownMenuItem<String>(
+                  value: kelurahan,
+                  child: Text(kelurahan),
+                );
+              }).toList(),
+              onChanged: (String? nilaiBaru) {
+                setState(() {
+                  _selectedKelurahan = nilaiBaru;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Kelurahan wajib dipilih!';
+                }
+                return null;
+              },
             ),
 
-            const SizedBox(height: 28),
-
-            // =========================
-            // LOGIN CREDENTIALS
-            // =========================
-            const Row(
-              children: [
-                Icon(Icons.lock_outline, color: Color(0xFF10B981)),
-
-                SizedBox(width: 8),
-
-                Text(
-                  "Login Credentials",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF065F46),
-                  ),
-                ),
-              ],
-            ),
-
+            const SizedBox(height: 24),
+            const Text('Informasi Wali', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-
-            _glassCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // USERNAME
-                  const Text(
-                    "Username Pasien (Auto-generated)",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF4A5746),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  _generatedField(
-                    text:
-                        createdCredentials?.username ??
-                        "Akan dibuat setelah pasien disimpan",
-                    icon: Icons.copy_outlined,
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // PASSWORD
-                  const Text(
-                    "Temporary Password",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF4A5746),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  _generatedField(
-                    text:
-                        createdCredentials?.temporaryPassword ??
-                        "Akan dibuat setelah pasien disimpan",
-                    icon: Icons.visibility_outlined,
-                  ),
-
-                  if (createdCredentials != null) ...[
-                    const SizedBox(height: 24),
-                    const Text(
-                      "Login Email Pasien",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF4A5746),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _generatedField(
-                      text: createdCredentials!.email,
-                      icon: Icons.email_outlined,
-                    ),
-                  ],
-
-                  const SizedBox(height: 14),
-
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: 14,
-                        color: Color(0xB3059669),
-                      ),
-
-                      SizedBox(width: 6),
-
-                      Expanded(
-                        child: Text(
-                          "Patient will be prompted to change this on first login.",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xB3059669),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            TextField(controller: _guardianNameController, decoration: const InputDecoration(labelText: 'Nama Wali/Pendamping', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: _guardianPhoneController, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Nomor Telepon Wali', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: _guardianAddressController, maxLines: 2, decoration: const InputDecoration(labelText: 'Alamat Wali', border: OutlineInputBorder())),
+            
+            const SizedBox(height: 24),
+            const Text('Jadwal Pengobatan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            
+            // Tombol Pilih Tanggal Mulai
+            OutlinedButton.icon(
+              onPressed: () => _pilihTanggal(context, true),
+              icon: const Icon(Icons.calendar_today, color: Colors.blue),
+              label: Text(_startDate == null ? 'Pilih Tanggal Mulai Pengobatan' : 'Mulai: ${_startDate!.day}/${_startDate!.month}/${_startDate!.year}'),
+            ),
+            const SizedBox(height: 12),
+            
+            // Tombol Pilih Tanggal Selesai
+            OutlinedButton.icon(
+              onPressed: () => _pilihTanggal(context, false),
+              icon: const Icon(Icons.event_available, color: Colors.blue),
+              label: Text(_endDate == null ? 'Pilih Tanggal Selesai Pengobatan' : 'Selesai: ${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'),
             ),
 
-            const SizedBox(height: 32),
-
-            // BUTTON
+            const SizedBox(height: 24),
+            const Text('Lokasi Tempat Tinggal', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            
             SizedBox(
               width: double.infinity,
-              height: 52,
-
-              child: ElevatedButton(
-                onPressed: isLoading ? null : _savePatient,
-
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+              height: 50,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final LatLng? picked = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MapPickerPage()),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      _selectedLatitude = picked.latitude;
+                      _selectedLongitude = picked.longitude;
+                    });
+                  }
+                },
+                icon: Icon(
+                  _selectedLatitude == null ? Icons.map : Icons.check_circle, 
+                  color: _selectedLatitude == null ? Colors.blue : Colors.green,
                 ),
-
-                child: Ink(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF006D37), Color(0xFF27AE60)],
-                    ),
-                  ),
-
-                  child: Center(
-                    child:
-                        isLoading
-                            ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                            : const Text(
-                              "Simpan Pasien",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                  ),
+                label: Text(
+                  _selectedLatitude == null ? 'Pilih Titik Lokasi Rumah (Peta)' : 'Lokasi Berhasil Dipilih (Ganti?)',
+                  style: TextStyle(color: _selectedLatitude == null ? Colors.blue : Colors.green),
                 ),
               ),
             ),
+            
+            const SizedBox(height: 32),
 
-            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                onPressed: _isLoading ? null : _simpanDataPasien,
+                child: _isLoading 
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Simpan Data Pasien', style: TextStyle(fontSize: 16, color: Colors.white)),
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  // =========================
-  // GLASS CARD
-  // =========================
-  static Widget _glassCard({required Widget child}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.7),
-
-        borderRadius: BorderRadius.circular(24),
-
-        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
-
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(16, 185, 129, 0.05),
-            blurRadius: 32,
-            offset: Offset(0, 8),
-          ),
-        ],
-      ),
-
-      child: child,
-    );
-  }
-
-  // =========================
-  // INPUT FIELD
-  // =========================
-  static Widget _buildInput({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    int maxLines = 1,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFF4A5746),
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-
-          decoration: InputDecoration(
-            hintText: hint,
-
-            hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
-
-            prefixIcon: Icon(icon, color: const Color(0xFF34D399)),
-
-            filled: true,
-
-            fillColor: Colors.white.withValues(alpha: 0.6),
-
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-
-              borderSide: const BorderSide(color: Color(0xFFD1FAE5)),
-            ),
-
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-
-              borderSide: const BorderSide(color: Color(0xFFD1FAE5)),
-            ),
-
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-
-              borderSide: const BorderSide(
-                color: Color(0xFF10B981),
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // =========================
-  // GENERATED FIELD
-  // =========================
-  static Widget _generatedField({
-    required String text,
-    required IconData icon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.5),
-
-        borderRadius: BorderRadius.circular(16),
-
-        border: Border.all(
-          color: const Color(0xFFD1FAE5).withValues(alpha: 0.5),
-        ),
-      ),
-
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF064E3B),
-              ),
-            ),
-          ),
-
-          Icon(icon, color: const Color(0xFF059669)),
-        ],
       ),
     );
   }

@@ -1,7 +1,6 @@
 name: tb_trace
 description: "TB Trace Flutter Project"
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,20 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  
+  # UI & Basics
   cupertino_icons: ^1.0.8
-
-  # State Management
-  flutter_riverpod: ^3.3.1
-
-  # Navigation
-  go_router: ^17.2.3
-
-  # Networking
-  dio: ^5.9.2
-  pretty_dio_logger: ^1.4.0
-
-  # UI
   google_fonts: ^8.1.0
   flutter_svg: ^2.2.4
   flutter_screenutil: ^5.9.3
@@ -32,31 +20,34 @@ dependencies:
   gap: ^3.0.1
   iconsax: ^0.0.8
 
-  # Utilities
-  intl: ^0.20.2
-  shared_preferences: ^2.5.5
+  # State & Nav
+  flutter_riverpod: ^3.3.1
+  go_router: ^17.2.3
 
-  # Maps & Location
-  google_maps_flutter: ^2.17.0
-  geolocator: ^14.0.2
-  geocoding: ^4.0.0
-
-  # Images
-  cached_network_image: ^3.4.1
+  # Networking
+  dio: ^5.9.2
+  pretty_dio_logger: ^1.4.0
+  
+  # Backend & Data
   supabase_flutter: ^2.12.4
   flutter_dotenv: ^6.0.1
-  syncfusion_flutter_maps: ^33.2.7
+  shared_preferences: ^2.5.5
+  intl: ^0.20.2
+  url_launcher: ^6.3.2
+
+  # Maps (Menggunakan FlutterMap saja agar stabil)
+  flutter_map: ^8.3.0
+  latlong2: ^0.9.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
-
-  #assets
   assets:
     - assets/images/start_illustration.png
     - assets/images/tbc1.png
+    - assets/maps/kelurahan_surabaya.geojson
