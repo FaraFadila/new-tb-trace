@@ -13,6 +13,11 @@ type CreatePatientRequest = {
   guardian_name?: string;
   guardian_phone?: string;
   guardian_address?: string;
+  kelurahan?: string;
+  latitude?: number;
+  longitude?: number;
+  treatment_start_date?: string;
+  treatment_end_date?: string;
 };
 
 function json(body: unknown, status = 200) {
@@ -148,6 +153,11 @@ Deno.serve(async (req: Request) => {
       guardian_address: payload.guardian_address ?? null,
       login_email: patientEmail,
       temporary_password: temporaryPass,
+      kelurahan: payload.kelurahan ?? null,
+      latitude: payload.latitude ?? null,
+      longitude: payload.longitude ?? null,
+      treatment_start_date: payload.treatment_start_date ?? null,
+      treatment_end_date: payload.treatment_end_date ?? null,
     })
     .select("id, patient_code, full_name")
     .single();

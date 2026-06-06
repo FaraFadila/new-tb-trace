@@ -215,6 +215,11 @@ class PatientService {
     String? guardianName,
     String? guardianPhone,
     String? guardianAddress,
+    String? kelurahan,
+    double? latitude,
+    double? longitude,
+    String? treatmentStartDate,
+    String? treatmentEndDate,
   }) async {
     final response = await _client.functions.invoke(
       'create-patient',
@@ -225,6 +230,11 @@ class PatientService {
         'guardian_name': guardianName,
         'guardian_phone': guardianPhone,
         'guardian_address': guardianAddress,
+        'kelurahan': kelurahan,
+        'latitude': latitude,
+        'longitude': longitude,
+        'treatment_start_date': treatmentStartDate,
+        'treatment_end_date': treatmentEndDate,
       },
     );
 
