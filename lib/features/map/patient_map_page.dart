@@ -2,8 +2,6 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-
 import '../../core/services/patient_service.dart';
 import '../../core/widgets/app_user_header.dart';
 import '../../core/widgets/patient_bottom_navbar.dart';
@@ -83,25 +81,6 @@ class _PatientMapPageState extends State<PatientMapPage> {
           isApproximate: true,
         ),
       );
-    }
-
-    for (final query in _addressQueries(address)) {
-      try {
-        final locations = await locationFromAddress(query);
-
-        if (locations.isNotEmpty) {
-          final location = locations.first;
-          return _setResolvedPatientLocation(
-            _PatientMapLocation(
-              patient: patient,
-              coordinate: _LatLng(location.latitude, location.longitude),
-              isApproximate: query != address,
-            ),
-          );
-        }
-      } catch (_) {
-        continue;
-      }
     }
 
     return _setResolvedPatientLocation(
