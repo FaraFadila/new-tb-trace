@@ -78,13 +78,9 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/patient-news-detail',
-      builder:
-          (context, state) => PatientNewsDetailPage(
-            article:
-                state.extra is NewsApiArticle
-                    ? state.extra as NewsApiArticle
-                    : null,
-          ),
+      builder: (context, state) => PatientNewsDetailPage(
+        article: state.extra as HealthcareNewsArticle,
+      ),
     ),
     GoRoute(
       path: '/healthcare-news-detail',

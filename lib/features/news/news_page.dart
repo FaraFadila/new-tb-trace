@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 import 'package:tb_trace/core/widgets/healthcare_bottom_navbar.dart';
-
-import 'healthcare_news_detail_page.dart';
+import 'package:tb_trace/features/news/healthcare_news_detail_page.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});

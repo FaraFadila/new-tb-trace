@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tb_trace/core/services/news_api_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tb_trace/core/widgets/app_user_header.dart';
 
 import '../../core/widgets/patient_bottom_navbar.dart';
+import 'healthcare_news_detail_page.dart'; 
 
 class NewsPatientPage extends StatefulWidget {
   const NewsPatientPage({super.key});
@@ -13,16 +14,15 @@ class NewsPatientPage extends StatefulWidget {
 }
 
 class _NewsPatientPageState extends State<NewsPatientPage> {
-  final NewsApiService _newsService = NewsApiService();
   final TextEditingController _searchController = TextEditingController();
-  late Future<List<NewsApiArticle>> _newsFuture;
+  late Future<List<HealthcareNewsArticle>> _newsFuture; 
   String _selectedCategory = 'All';
   String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _newsFuture = _newsService.fetchTuberculosisNews();
+    _newsFuture = _fetchNewsFromSupabase(); 
   }
 
   @override
@@ -31,11 +31,28 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
     super.dispose();
   }
 
+  // Mengambil data dari tabel news_articles Supabase
+  Future<List<HealthcareNewsArticle>> _fetchNewsFromSupabase() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('news_articles')
+          .select('*, profiles(full_name)')
+          .eq('status', 'published')
+          .order('created_at', ascending: false);
+
+      return (response as List<dynamic>)
+          .map((json) => HealthcareNewsArticle.fromSupabase(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint('Error fetching news: $e');
+      throw Exception('Gagal memuat berita dari server.');
+    }
+  }
+
   Future<void> _refreshNews() async {
     setState(() {
-      _newsFuture = _newsService.fetchTuberculosisNews();
+      _newsFuture = _fetchNewsFromSupabase();
     });
-
     await _newsFuture;
   }
 
@@ -57,7 +74,8 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
                 const SizedBox(height: 16),
                 _buildFilterChips(),
                 const SizedBox(height: 24),
-                FutureBuilder<List<NewsApiArticle>>(
+                
+                FutureBuilder<List<HealthcareNewsArticle>>(
                   future: _newsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -79,8 +97,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
                     if (articles.isEmpty) {
                       return _messageState(
                         title: 'Berita tidak ditemukan',
-                        subtitle:
-                            'Coba ubah kata pencarian atau pilih kategori lain.',
+                        subtitle: 'Belum ada berita yang dipublikasikan oleh dokter.',
                       );
                     }
 
@@ -148,7 +165,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
           _buildChip('All'),
           _buildChip('Pencegahan'),
           _buildChip('Pengobatan'),
-          _buildChip('Nutrisi'),
+          _buildChip('Gaya Hidup'), 
         ],
       ),
     );
@@ -185,7 +202,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
     );
   }
 
-  Widget _buildNewsList(List<NewsApiArticle> articles) {
+  Widget _buildNewsList(List<HealthcareNewsArticle> articles) {
     return Column(
       children: [
         for (final article in articles) ...[
@@ -197,7 +214,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
     );
   }
 
-  Widget _buildNewsCard({required NewsApiArticle article}) {
+  Widget _buildNewsCard({required HealthcareNewsArticle article}) {
     return GestureDetector(
       onTap: () {
         context.push('/patient-news-detail', extra: article);
@@ -263,6 +280,8 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
             const SizedBox(height: 8),
             Text(
               article.summary,
+              maxLines: 2, 
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 14,
                 color: Color(0xFF3D4A3F),
@@ -274,20 +293,20 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.check_circle,
                   size: 12,
-                  color: Color(0xFF006D37),
+                  color: article.verifiedBy == 'Dalam Peninjauan' ? const Color(0xFF6B7280) : const Color(0xFF006D37),
                 ),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    'VERIFIED SOURCE: ${article.verifiedBy.toUpperCase()}',
+                    'STATUS: ${article.verifiedBy.toUpperCase()}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
-                      color: Color(0xFF006D37),
+                      color: article.verifiedBy == 'Dalam Peninjauan' ? const Color(0xFF6B7280) : const Color(0xFF006D37),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -305,7 +324,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
     );
   }
 
-  List<NewsApiArticle> _visibleArticles(List<NewsApiArticle> articles) {
+  List<HealthcareNewsArticle> _visibleArticles(List<HealthcareNewsArticle> articles) {
     final query = _searchQuery.trim().toLowerCase();
 
     return articles.where((article) {
@@ -315,7 +334,7 @@ class _NewsPatientPageState extends State<NewsPatientPage> {
           query.isEmpty ||
           article.title.toLowerCase().contains(query) ||
           article.summary.toLowerCase().contains(query) ||
-          article.source.toLowerCase().contains(query);
+          article.location.toLowerCase().contains(query); 
 
       return matchesCategory && matchesSearch;
     }).toList();
